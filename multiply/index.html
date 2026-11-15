@@ -137,7 +137,7 @@ button,a{font-family:inherit;color:inherit}
     </div>
     <div id="scene" class="box">
       <div id="mon"></div>
-      <div id="hpwrap"><div class="lbl" id="hpl">몬스터 체력</div><div id="hp"><i id="hpf" style="width:100%"></i></div><div id="dots"></div></div>
+      <div id="hpwrap"><div class="lbl" id="hpl">몬스터 체력</div><div id="hp"><i id="hpf" style="width:100%"></i></div></div>
       <div id="streak"></div>
     </div>
     <div id="probwrap" class="box"><div id="prob"></div><canvas id="ans"></canvas><canvas id="pen"></canvas>
@@ -320,7 +320,6 @@ function render(){
   const left=TOTAL-R.cleared;
   $('hpf').style.width=(left/TOTAL*100)+'%';
   $('hpl').textContent='몬스터 체력 '+left+'/'+TOTAL;
-  let d=''; for(let i=0;i<TOTAL;i++) d+='<i class="'+(i<R.cleared?'on':'')+'"></i>'; $('dots').innerHTML=d;
   const st=$('streak'); if(R.streak>=2){ st.style.display='block'; st.textContent='🔥 '+R.streak+'연속!'; } else st.style.display='none';
   if(!cur){ $('prob').innerHTML=''; return; }
   const act=padOn?selKey():null;
