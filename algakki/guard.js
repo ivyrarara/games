@@ -75,7 +75,7 @@ function showParent(){
   let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
   if(lim) h+='<div class="row"><b>오늘만 시간 더 주기</b><div class="chips">'+[10,20,30].map(v=>'<button class="chip" data-ga="extra" data-v="'+v+'">+'+v+'분</button>').join('')+'</div></div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
-    +'<div class="row">'+(resetAsk?'<b>두 게임 전적을 모두 지울까요?</b><div class="chips"><button class="chip" data-ga="score-yes">지우기</button><button class="chip" data-ga="score-no">취소</button></div>':'<button class="chip" data-ga="score">전적 초기화</button>')+'</div>'
+    +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-ga="score-yes">지우기</button><button class="chip" data-ga="score-no">취소</button></div>':'<button class="chip" data-ga="score">전적 초기화</button>')+'</div>'
     +'<button class="go" data-ga="close">닫기</button>';
   open(h,'parent');
 }
@@ -89,7 +89,7 @@ ov.addEventListener('click',e=>{
   else if(a==='extra'){ const s=dayState(); s.extra+=+t.dataset.v; LS.set('day',s); showParent(); tick(true); }
   else if(a==='score'){ resetAsk=true; showParent(); }
   else if(a==='score-no'){ resetAsk=false; showParent(); }
-  else if(a==='score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); resetAsk=false; if(opts.onReset) opts.onReset(); showParent(); }
+  else if(a==='score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); LS.set('score.mult',null); resetAsk=false; if(opts.onReset) opts.onReset(); showParent(); }
   else if(a==='close') back();
 });
 function tick(noCount){
