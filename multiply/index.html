@@ -20,9 +20,9 @@ button,a{font-family:inherit;color:inherit}
 #head{display:flex;gap:8px;flex-wrap:wrap}
 .chip2{flex:1;min-width:0;padding:8px 10px;font-size:15px;text-align:center;white-space:nowrap}
 .chip2.low{background:#fff0c9;border-color:#e0a100}
-#scene{position:relative;height:178px;display:flex;align-items:center;justify-content:center;gap:16px;overflow:hidden;
+#scene{position:relative;height:130px;display:flex;align-items:center;justify-content:center;gap:16px;overflow:hidden;
   background:linear-gradient(#cfe9ff,#eaf6ff 60%,#bfe3a8 60%,#a5d68a)}
-#mon{width:150px;height:150px}
+#mon{width:106px;height:106px}
 #mon svg{width:100%;height:100%;overflow:visible}
 .m-idle{animation:bob 1.7s ease-in-out infinite}
 .m-hurt{animation:hit .55s}
@@ -44,7 +44,9 @@ button,a{font-family:inherit;color:inherit}
 @keyframes burst{0%{transform:translate(-50%,-50%) scale(.4);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3) rotate(240deg);opacity:0}}
 #probwrap{flex:1;min-height:0;position:relative;overflow:hidden}
 #prob{position:absolute;inset:0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:18px;padding:8px 14px}
-#pen{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#pen,#ans{position:absolute;inset:0;width:100%;height:100%}
+#pen{touch-action:none;cursor:crosshair;z-index:1}
+#ans{pointer-events:none}
 #pentools{position:absolute;right:8px;top:8px;display:flex;gap:6px;z-index:2}
 .pt{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--edge);background:var(--c,#fff);font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
 .pt.on{box-shadow:0 0 0 4px #ffc400}
@@ -53,10 +55,10 @@ button,a{font-family:inherit;color:inherit}
 .eq.sm{font-size:50px}
 #msg{min-height:96px;font-size:21px;line-height:1.35}
 #msg.ok{color:var(--good)} #msg.no{color:#c2410c} #msg.hint{color:#2563eb}
-.vf{--cs:76px;display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
+.vf{--cs:min(100px,calc((var(--vh)*100 - 305px)/3));display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
 .vf .lab{color:#2563eb;font-size:20px;height:26px;line-height:26px}
 .vf .cc{height:38px;width:100%;display:flex;align-items:center;justify-content:center}
-.cell{width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center;font-size:48px;border:2px dotted #8a8a99;background:#fff;color:var(--ink)}
+.cell{width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center;font-size:calc(var(--cs)*.62);border:2px dotted #8a8a99;background:#fff;color:var(--ink)}
 .cell.fix{border-color:#c9c9d6;background:#fcfcff}
 .cell.act{border:3px solid var(--blue);background:#eef4ff;animation:blink 1s ease-in-out infinite}
 .cell.ok{color:var(--good);background:#f0fbf3}
@@ -79,6 +81,12 @@ button,a{font-family:inherit;color:inherit}
 #pad .zero{grid-column:span 2}
 #pad .hint{background:#fff6cc;font-size:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
 #pad .hint small{font-size:14px;margin-top:2px}
+#right.nopad{width:170px}
+#right.nopad #pad{grid-template-columns:1fr}
+#right.nopad #pad button:not(.hint){display:none}
+#right.nopad #pad{flex:none;height:150px}
+#right.nopad #mini{grid-template-columns:1fr 1fr;margin-top:auto}
+#bPad.on{background:#fff6cc}
 #pad .hint.hl{animation:pulse 1s ease-in-out infinite;background:#ffe27a}
 #mini{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .mini{min-height:54px;border:0;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--edge);font-size:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;padding:2px}
@@ -108,10 +116,13 @@ button,a{font-family:inherit;color:inherit}
   #app{flex-direction:column;gap:8px}
   #right{width:100%;flex:none;height:min(48%,430px)}
   #scene{height:150px} #mon{width:124px;height:124px}
-  .vf{--cs:68px} .eq{font-size:46px}
+  .vf{--cs:min(100px,26vw)} .eq{font-size:46px}
+  #right.nopad{width:100%;height:auto;flex-direction:row;flex-wrap:wrap}
+  #right.nopad #pad{flex:1;min-width:120px;height:auto}
+  #right.nopad #mini{grid-template-columns:repeat(4,1fr);flex:3;margin-top:0}
   #hpwrap{width:180px}
 }
-@media (max-height:520px) and (orientation:landscape){#scene{height:150px}#mon{width:124px;height:124px}.eq{font-size:46px}}
+@media (max-height:520px) and (orientation:landscape){.eq{font-size:46px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -128,7 +139,7 @@ button,a{font-family:inherit;color:inherit}
       <div id="hpwrap"><div class="lbl" id="hpl">몬스터 체력</div><div id="hp"><i id="hpf" style="width:100%"></i></div><div id="dots"></div></div>
       <div id="streak"></div>
     </div>
-    <div id="probwrap" class="box"><div id="prob"></div><canvas id="pen"></canvas>
+    <div id="probwrap" class="box"><div id="prob"></div><canvas id="ans"></canvas><canvas id="pen"></canvas>
       <div id="pentools">
         <button class="pt on" data-t="#2b2b35" style="--c:#2b2b35" aria-label="검정 펜"></button>
         <button class="pt" data-t="#2563eb" style="--c:#2563eb" aria-label="파랑 펜"></button>
@@ -141,6 +152,7 @@ button,a{font-family:inherit;color:inherit}
     <div id="pad"></div>
     <div id="mini">
       <button class="mini" id="bMenu">☰<span>메뉴</span></button>
+      <button class="mini" id="bPad">⌨<span>숫자판</span></button>
       <button class="mini" id="bSound">🔊<span>소리</span></button>
       <button class="mini holdable" id="bParent">👪<span>부모님</span><small>꾹 누르기</small></button>
     </div>
@@ -297,6 +309,7 @@ function render(){
   $('prob').innerHTML=f+'<div class="side"><div class="eq">'+cur.a+' × '+cur.b+'</div><div id="msg" class="'+msgC+'">'+msgT+'</div></div>';
   const hb=$('pad').querySelector('.hint'); if(hb) hb.classList.toggle('hl',phase==='ask'&&cur.wrong>0&&!cur.hinted);
   $('bSound').innerHTML=(muted?'🔇':'🔊')+'<span>'+(muted?'소리 꺼짐':'소리')+'</span>';
+  layoutAct();
 }
 
 /* ---------- flow ---------- */
@@ -314,7 +327,7 @@ function hint(){
   if(phase!=='ask'||!cur||cur.pos>=cur.cells.length) return;
   cur.hinted=true; say(hintText(cur.cells[cur.pos].k),'hint'); render();
 }
-function enter(d){
+function enter(d,fromPen){
   const c=cur.cells[cur.pos];
   if(d===c.ans){
     cur.vals[c.k]=d; cur.pos++;
@@ -325,7 +338,7 @@ function enter(d){
   cur.wa[c.k]=(cur.wa[c.k]||0)+1;
   const q=cur; q.badK=c.k;
   if(cur.wa[c.k]>=2){ cur.hinted=true; say('같이 계산해 봐요! '+hintText(c.k),'hint'); }
-  else say('아쉬워요! 다시 한 번 생각해 봐요 🤔','no');
+  else say((fromPen?'"'+d+'"(으)로 읽었어요. ':'')+'아쉬워요! 다시 한 번 생각해 봐요 🤔','no');
   render();
   setTimeout(()=>{ if(cur===q){ q.badK=null; render(); } },450);
 }
@@ -388,7 +401,7 @@ $('overlay').addEventListener('click',e=>{
 function press(k){
   if(phase!=='ask'||overlayMode) return;
   if(k==='💡'){ hint(); return; }
-  if(/^\d$/.test(k)){ sfx.key(); enter(+k); }
+  if(/^\d$/.test(k)){ sfx.key(); resetAns(); enter(+k); }
 }
 $('pad').addEventListener('pointerdown',e=>{ unlock(); const b=e.target.closest('button'); if(b){ e.preventDefault(); press(b.dataset.k); } });
 $('prob').addEventListener('pointerdown',e=>{
@@ -404,39 +417,120 @@ bP.addEventListener('pointerdown',()=>{ bP.classList.add('hold'); holdT=setTimeo
 function vh(){ document.documentElement.style.setProperty('--vh',(window.innerHeight/100)+'px'); }
 window.addEventListener('resize',vh); vh();
 
-/* ---------- 연습장 (펜으로 쓰기) ---------- */
-const pen=$('pen'),pctx=pen.getContext('2d');
-let ink='#2b2b35',erase=false,pdraw=null;
+/* ---------- 연습장 + 칸에 직접 쓰기 ---------- */
+const pen=$('pen'),pctx=pen.getContext('2d'),anv=$('ans'),actx=anv.getContext('2d');
+let ink='#2b2b35',erase=false,pdraw=null,actRect=null,ansS={strokes:[],cur:null,t:null};
 function sizePen(){
   const dpr=Math.min(window.devicePixelRatio||1,2),w=pen.clientWidth,h=pen.clientHeight;
   if(!w||!h) return;
   const W=Math.round(w*dpr),H=Math.round(h*dpr);
-  if(pen.width!==W||pen.height!==H){ pen.width=W; pen.height=H; }
-  pctx.setTransform(dpr,0,0,dpr,0,0); pctx.lineCap='round'; pctx.lineJoin='round';
+  for(const [c,x] of [[pen,pctx],[anv,actx]]){
+    if(c.width!==W||c.height!==H){ c.width=W; c.height=H; }
+    x.setTransform(dpr,0,0,dpr,0,0); x.lineCap='round'; x.lineJoin='round';
+  }
 }
-function clearPen(){ pctx.save(); pctx.setTransform(1,0,0,1,0,0); pctx.clearRect(0,0,pen.width,pen.height); pctx.restore(); }
+function wipe(c,x){ x.save(); x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,c.width,c.height); x.restore(); }
+function clearPen(){ wipe(pen,pctx); resetAns(); }
+function resetAns(){ clearTimeout(ansS.t); ansS={strokes:[],cur:null,t:null}; wipe(anv,actx); }
 const pp=e=>{ const r=pen.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
-function stroke(a,b){
-  pctx.globalCompositeOperation=erase?'destination-out':'source-over';
-  pctx.strokeStyle=ink; pctx.lineWidth=erase?34:5;
-  pctx.beginPath(); pctx.moveTo(a.x,a.y); pctx.lineTo(b.x,b.y); pctx.stroke();
+function stroke(x,a,b){
+  x.globalCompositeOperation=(x===pctx&&erase)?'destination-out':'source-over';
+  x.strokeStyle=ink; x.lineWidth=(x===pctx&&erase)?34:5;
+  x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke();
 }
-pen.addEventListener('pointerdown',e=>{ unlock(); sizePen(); try{pen.setPointerCapture(e.pointerId);}catch(_){} pdraw=pp(e); stroke(pdraw,pdraw); });
-pen.addEventListener('pointermove',e=>{ if(!pdraw) return; const q=pp(e); stroke(pdraw,q); pdraw=q; });
-['pointerup','pointercancel'].forEach(ev=>pen.addEventListener(ev,()=>{ pdraw=null; }));
+function layoutAct(){
+  const el=$('prob').querySelector('.cell.act'); if(!el||phase!=='ask'){ actRect=null; return; }
+  const r=el.getBoundingClientRect(),o=pen.getBoundingClientRect();
+  actRect={x:r.left-o.left,y:r.top-o.top,w:r.width,h:r.height};
+}
+const inAct=(p,m)=>actRect&&p.x>=actRect.x-m&&p.x<=actRect.x+actRect.w+m&&p.y>=actRect.y-m&&p.y<=actRect.y+actRect.h+m;
+
+/* 손글씨 숫자 인식 (기기 안에서 실행, 서버 전송 없음) */
+let MODEL=null;
+fetch('digits.json').then(r=>r.json()).then(m=>{
+  const b=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+  const W1=new Int8Array(b(m.w1).buffer),W2=new Int8Array(b(m.w2).buffer);
+  MODEL={h:m.h,W1,W2,s1:m.s1,s2:m.s2,b1:m.b1,b2:m.b2};
+}).catch(()=>{ MODEL=null; padOn=true; applyPad(); });
+function classify(x){
+  const {h,W1,W2,s1,s2,b1,b2}=MODEL,hid=new Float32Array(h);
+  for(let j=0;j<h;j++) hid[j]=b1[j];
+  for(let i=0;i<784;i++){ const v=x[i]; if(v>0.01){ const o=i*h; for(let j=0;j<h;j++) hid[j]+=v*W1[o+j]*s1; } }
+  const out=new Float32Array(10);
+  for(let k=0;k<10;k++) out[k]=b2[k];
+  for(let j=0;j<h;j++){ const v=hid[j]; if(v>0){ const o=j*10; for(let k=0;k<10;k++) out[k]+=v*W2[o+k]*s2; } }
+  let mx=-1e9; for(const v of out) if(v>mx) mx=v;
+  let s=0; const pr=Array.from(out,v=>{ const e=Math.exp(v-mx); s+=e; return e; });
+  return pr.map(v=>v/s);
+}
+function rasterDigit(strokes,bb,dx,dy){
+  const side=Math.max(bb.w,bb.h,1),sc=20/side,cv=document.createElement('canvas'); cv.width=cv.height=28;
+  const g=cv.getContext('2d'); g.lineCap='round'; g.lineJoin='round'; g.strokeStyle='#fff'; g.lineWidth=2.4; g.fillStyle='#fff';
+  const tx=p=>(p.x-(bb.x+bb.w/2))*sc+14+dx, ty=p=>(p.y-(bb.y+bb.h/2))*sc+14+dy;
+  for(const s of strokes){
+    if(s.length===1){ g.beginPath(); g.arc(tx(s[0]),ty(s[0]),1.3,0,7); g.fill(); continue; }
+    g.beginPath(); g.moveTo(tx(s[0]),ty(s[0])); for(let i=1;i<s.length;i++) g.lineTo(tx(s[i]),ty(s[i])); g.stroke();
+  }
+  const d=g.getImageData(0,0,28,28).data,a=new Float32Array(784);
+  for(let i=0;i<784;i++) a[i]=d[i*4+3]/255;
+  return a;
+}
+function readDigit(strokes){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const s of strokes) for(const q of s){ x0=Math.min(x0,q.x); y0=Math.min(y0,q.y); x1=Math.max(x1,q.x); y1=Math.max(y1,q.y); }
+  const bb={x:x0,y:y0,w:x1-x0,h:y1-y0};
+  if(Math.max(bb.w,bb.h)<14) return null;
+  let a=rasterDigit(strokes,bb,0,0),m=0,cx=0,cy=0;
+  for(let i=0;i<784;i++){ m+=a[i]; cx+=a[i]*(i%28); cy+=a[i]*Math.floor(i/28); }
+  if(m>0) a=rasterDigit(strokes,bb,14-cx/m,14-cy/m);
+  const pr=classify(a); let top=0; for(let k=1;k<10;k++) if(pr[k]>pr[top]) top=k;
+  return {top,p:pr};
+}
+function recognizeAns(){
+  const strokes=ansS.strokes; ansS.t=null;
+  if(phase!=='ask'||!cur||cur.pos>=cur.cells.length||!MODEL){ resetAns(); return; }
+  const r=readDigit(strokes); resetAns();
+  const want=cur.cells[cur.pos].ans;
+  if(!r){ say('칸 안에 숫자를 크게 써 줄래요? ✏️','no'); render(); return; }
+  let d=r.top;
+  if(d!==want&&r.p[want]>=0.2) d=want;
+  if(d!==want&&r.p[r.top]<0.5){ say('숫자를 잘 못 읽었어요. 한 번 더 또박또박 써 줄래요? ✏️','no'); render(); return; }
+  sfx.key(); enter(d,true);
+}
+pen.addEventListener('pointerdown',e=>{
+  unlock(); sizePen(); try{pen.setPointerCapture(e.pointerId);}catch(_){}
+  const q=pp(e);
+  if(!erase&&MODEL&&phase==='ask'&&inAct(q,18)){
+    clearTimeout(ansS.t); ansS.cur=[q]; ansS.strokes.push(ansS.cur); pdraw={p:q,a:true}; stroke(actx,q,q);
+  }else{ pdraw={p:q,a:false}; stroke(pctx,q,q); }
+});
+pen.addEventListener('pointermove',e=>{
+  if(!pdraw) return; const q=pp(e);
+  if(pdraw.a){ ansS.cur.push(q); stroke(actx,pdraw.p,q); } else stroke(pctx,pdraw.p,q);
+  pdraw.p=q;
+});
+['pointerup','pointercancel'].forEach(ev=>pen.addEventListener(ev,()=>{
+  if(pdraw&&pdraw.a){ ansS.cur=null; clearTimeout(ansS.t); ansS.t=setTimeout(recognizeAns,850); }
+  pdraw=null;
+}));
 $('pentools').addEventListener('click',e=>{
   const b=e.target.closest('.pt'); if(!b) return;
   const t=b.dataset.t;
-  if(t==='clear'){ clearPen(); return; }
+  if(t==='clear'){ wipe(pen,pctx); return; }
   if(t==='erase'){ erase=true; } else { erase=false; ink=t; }
   document.querySelectorAll('#pentools .pt').forEach(x=>x.classList.toggle('on',x===b));
 });
-window.addEventListener('resize',()=>setTimeout(sizePen,150));
+window.addEventListener('resize',()=>setTimeout(()=>{ sizePen(); layoutAct(); },150));
+
+/* 숫자판 보이기/숨기기 */
+let padOn=LS.get('mult.pad',false);
+function applyPad(){ $('right').classList.toggle('nopad',!padOn); $('bPad').classList.toggle('on',padOn); setTimeout(()=>{ sizePen(); layoutAct(); },50); }
+$('bPad').addEventListener('click',()=>{ padOn=!padOn; LS.set('mult.pad',padOn); applyPad(); });
 
 /* boot */
-renderPad(); renderHead(); setMood('idle'); sizePen(); showMenu();
+renderPad(); renderHead(); setMood('idle'); sizePen(); applyPad(); showMenu();
 Guard.start({onTick:s=>{ const b=$('timeBox'); b.textContent=Guard.label(s); b.className='box chip2'+(s<=300?' low':''); },onReset:renderHead});
-window.__mult={sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
+window.__mult={readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
 })();
 </script>
 </body>

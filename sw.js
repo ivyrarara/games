@@ -1,5 +1,5 @@
-const V='chess-v4';
-const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','algakki/index.html','algakki/guard.js','multiply/index.html'];
+const V='chess-v5';
+const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','algakki/index.html','algakki/guard.js','multiply/index.html','multiply/digits.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{
