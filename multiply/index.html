@@ -105,6 +105,7 @@ button,a{font-family:inherit;color:inherit}
 .card{background:var(--card);border-radius:24px;padding:18px 22px;width:min(600px,100%);max-height:100%;overflow:auto;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.18)}
 .card h1{margin:0 0 8px;font-size:32px}.card h2{margin:0 0 8px;font-size:28px}
 .lvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.lock{margin:6px 0 12px;padding:12px;border-radius:14px;background:#ececf0;color:#7a7a88;font-size:17px}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
 .lv.hw{background:#fff8e1;border-color:#e0a100}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
@@ -357,6 +358,7 @@ function render(){
 
 /* ---------- flow ---------- */
 function startRound(lv){
+  if(!hwAllDone()) return;
   level=lv; LS.set('mult.level',lv);
   qs=genRound(lv); R={cleared:0,first:0,streak:0,best:0,total:TOTAL,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
   closeOverlay(); phase='ask'; setMood('idle'); nextQ();
@@ -425,14 +427,20 @@ function endRound(){
 function openOverlay(h,m){ overlayMode=m; const o=$('overlay'); o.innerHTML='<div class="card">'+h+'</div>'; o.className='on'; }
 function closeOverlay(){ overlayMode=''; const o=$('overlay'); o.className=''; o.innerHTML=''; }
 function starStr(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
+function hwAllDone(){ const d=LS.get('mult.hwdone',null)||{}; return [1,2,3].every(k=>d[k]); }
 function showMenu(){
-  const all=getStars();
-  let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">세로셈으로 써서 풀고 몬스터를 물리쳐요</div><div class="lvs">';
-  for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+' '+LV[k].n+'<small>예: '+LV[k].ex+'</small><div class="stars">'+starStr(all[k]||0)+'</div></button>';
-  h+='</div><div class="hws">';
-  const done=LS.get('mult.hwdone',null)||{};
+  const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=hwAllDone();
+  let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">'+(open?'숙제를 다 했어요! 연습 문제도 풀 수 있어요':'먼저 숙제를 풀어요')+'</div>';
+  h+='<div class="hws">';
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>';
   h+='</div>';
+  if(open){
+    h+='<div class="lvs">';
+    for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+' '+LV[k].n+'<small>예: '+LV[k].ex+'</small><div class="stars">'+starStr(all[k]||0)+'</div></button>';
+    h+='</div>';
+  }else{
+    h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
+  }
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
   h+='<div class="links"><a class="go alt" href="../">♟ 체스</a><a class="go alt" href="../algakki/">🪨 알까기</a></div>';
   openOverlay(h,'menu');
