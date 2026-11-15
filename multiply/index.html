@@ -57,7 +57,7 @@ button,a{font-family:inherit;color:inherit}
 .eq.sm{font-size:50px}
 #msg{min-height:96px;font-size:21px;line-height:1.35}
 #msg.ok{color:var(--good)} #msg.no{color:#c2410c} #msg.hint{color:#2563eb}
-.vf{--cs:min(100px,calc((var(--vh)*100 - 270px)/3.62));display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
+.vf{--cs:min(100px,calc((var(--vh)*100 - 240px)/3.62));display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
 .vf .lab{color:#2563eb;font-size:20px;height:26px;line-height:26px}
 .vf .cc{height:calc(var(--cs)*.62);width:100%;display:flex;align-items:center;justify-content:center}
 .cell{width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center;font-size:calc(var(--cs)*.62);border:2px dotted #8a8a99;background:#fff;color:var(--ink)}
@@ -324,7 +324,7 @@ function render(){
   if(!cur){ $('prob').innerHTML=''; return; }
   const act=padOn?selKey():null;
   const cell=k=>{ const v=cur.vals[k]; return '<div class="cell'+(act===k?' act':'')+(v!==undefined?' ok':'')+(cur.badK===k?' bad':'')+'" data-k="'+k+'">'+(v!==undefined?v:'')+'</div>'; };
-  const f='<div class="vf"><div class="lab">백</div><div class="lab">십</div><div class="lab">일</div>'
+  const f='<div class="vf">'
     +'<div class="cc"></div><div class="cc"><div class="cell carry" data-k="c"></div></div><div class="cc"></div>'
     +'<div class="cell fix"></div><div class="cell fix">'+cur.t+'</div><div class="cell fix">'+cur.o+'</div>'
     +'<div class="cell fix">X</div><div class="cell fix"></div><div class="cell fix">'+cur.b+'</div>'
