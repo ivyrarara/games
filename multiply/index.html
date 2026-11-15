@@ -107,6 +107,8 @@ button,a{font-family:inherit;color:inherit}
 .lvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
 .lv.hw{background:#fff8e1;border-color:#e0a100}
+.lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
+.lv.hw.done .stars{color:#9a9aa8;font-size:17px}
 .lv{border:3px solid var(--edge);border-radius:18px;background:#fff;padding:10px 8px;cursor:pointer;font-size:19px;line-height:1.3}
 .lv small{display:block;font-size:14px;opacity:.65}
 .lv .stars{font-size:20px;color:#ffb400;min-height:26px}
@@ -170,11 +172,11 @@ const LV={1:{n:'올림 없는 곱셈',ex:'21 × 4'},2:{n:'올림 한 번',ex:'14
 let level=LS.get('mult.level',2), qs=[], cur=null, input='', phase='menu', R=null, mood='idle', msgT='', msgC='', muted=false, overlayMode='';
 const TOTAL=10;
 const CIR='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔';
-/* 숙제 학습지 (왼쪽 위부터 세로로 ①~⑥, 다음 줄 ⑦~⑫ ... 번호순) */
+/* 숙제 학습지: 1회→3회로 갈수록 어려움(올림·백의 자리 문제 비율 기준). 각 회차 안은 종이 번호순 */
 const HW={
- 1:[[26,4],[15,9],[27,4],[17,6],[35,3],[14,7],[19,2],[29,3],[16,8],[12,5],[15,2],[17,7],[26,3],[17,4],[15,6],[15,4],[12,9],[18,8],[49,2],[15,7],[12,6],[15,3],[34,3],[16,6]],
- 2:[[14,6],[36,3],[17,9],[28,2],[27,4],[38,2],[17,8],[17,2],[18,5],[15,4],[35,2],[19,3],[19,2],[13,9],[17,7],[14,5],[28,3],[16,3],[27,3],[45,2],[13,6],[26,4],[15,7],[14,4]],
- 3:[[18,3],[47,2],[12,5],[14,6],[14,5],[19,9],[48,2],[18,6],[25,4],[18,2],[15,4],[17,7],[15,9],[12,9],[35,2],[16,4],[12,6],[18,9],[24,4],[29,4],[39,2],[12,8],[29,3],[45,2]]
+ 1:[[14,6],[36,3],[17,9],[28,2],[27,4],[38,2],[17,8],[17,2],[18,5],[15,4],[35,2],[19,3],[19,2],[13,9],[17,7],[14,5],[28,3],[16,3],[27,3],[45,2],[13,6],[26,4],[15,7],[14,4]],
+ 2:[[18,3],[47,2],[12,5],[14,6],[14,5],[19,9],[48,2],[18,6],[25,4],[18,2],[15,4],[17,7],[15,9],[12,9],[35,2],[16,4],[12,6],[18,9],[24,4],[29,4],[39,2],[12,8],[29,3],[45,2]],
+ 3:[[26,4],[15,9],[27,4],[17,6],[35,3],[14,7],[19,2],[29,3],[16,8],[12,5],[15,2],[17,7],[26,3],[17,4],[15,6],[15,4],[12,9],[18,8],[49,2],[15,7],[12,6],[15,3],[34,3],[16,6]]
 };
 
 /* ---------- sound ---------- */
@@ -415,6 +417,7 @@ function endRound(){
   setMood('dead');
   const fr=R.first/R.total,stars=fr>=.9?3:fr>=.7?2:fr>=.4?1:0,sk=R.hw?'hw'+R.hw:level;
   const all=getStars(); if(stars>(all[sk]||0)){ all[sk]=stars; LS.set('mult.stars',all); }
+  if(R.hw){ const d=LS.get('mult.hwdone',null)||{}; d[R.hw]=true; LS.set('mult.hwdone',d); }
   setTimeout(()=>{ sfx.win(); burst(14); showEnd(stars); },1000);
 }
 
@@ -427,7 +430,8 @@ function showMenu(){
   let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">세로셈으로 써서 풀고 몬스터를 물리쳐요</div><div class="lvs">';
   for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+' '+LV[k].n+'<small>예: '+LV[k].ex+'</small><div class="stars">'+starStr(all[k]||0)+'</div></button>';
   h+='</div><div class="hws">';
-  for(const k of [1,2,3]) h+='<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>';
+  const done=LS.get('mult.hwdone',null)||{};
+  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>';
   h+='</div>';
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
   h+='<div class="links"><a class="go alt" href="../">♟ 체스</a><a class="go alt" href="../algakki/">🪨 알까기</a></div>';
@@ -438,8 +442,8 @@ function showEnd(stars){
   openOverlay('<div class="big">🏆</div><div class="bigstars">'+starStr(stars)+'</div><h2>'+msg+'</h2>'
     +'<div class="sub">처음에 바로 맞힌 문제 '+R.first+'/'+R.total+' · 최고 연속 '+R.best+'</div>'
     +(R.hw?'<div class="sub">'+(R.missed.length?'다시 볼 문제: '+R.missed.sort((a,b)=>a-b).map(n=>CIR[n-1]).join(' '):'모두 한 번에 맞혔어요!')+'</div>':'')
-    +'<button class="go" data-act="again">한 번 더 ('+(R.hw?'숙제 '+R.hw+'회':'Lv'+level)+')</button>'
-    +'<button class="go alt" data-act="menu">메뉴로</button>','end');
+    +(R.hw?'':'<button class="go" data-act="again">한 번 더 (Lv'+level+')</button>')
+    +'<button class="go'+(R.hw?'':' alt')+'" data-act="menu">메뉴로</button>','end');
 }
 $('overlay').addEventListener('click',e=>{
   unlock();
