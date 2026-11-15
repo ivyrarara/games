@@ -28,6 +28,7 @@ button,a{font-family:inherit;color:inherit}
 .m-hurt{animation:hit .55s}
 .m-laugh{animation:hop .6s}
 .m-dead{animation:die 1s forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bob{50%{transform:translateY(-8px) scale(1.03,.97)}}
 @keyframes hit{0%{transform:translateX(0)}15%{transform:translateX(-14px) rotate(-6deg)}35%{transform:translateX(14px) rotate(6deg)}55%{transform:translateX(-10px)}75%{transform:translateX(8px)}100%{transform:none}}
 @keyframes hop{30%{transform:translateY(-26px)}60%{transform:translateY(0) scale(1.08,.9)}100%{transform:none}}
@@ -47,24 +48,25 @@ button,a{font-family:inherit;color:inherit}
 #pen,#ans{position:absolute;inset:0;width:100%;height:100%}
 #pen{touch-action:none;cursor:crosshair;z-index:1}
 #ans{pointer-events:none}
-#pentools{position:absolute;right:8px;top:8px;display:flex;gap:6px;z-index:2}
-.pt{width:38px;height:38px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--edge);background:var(--c,#fff);font-size:18px;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#pentools{position:absolute;right:10px;top:10px;display:flex;gap:10px;z-index:2}
+.pt{width:92px;height:76px;border-radius:20px;border:3px solid #fff;box-shadow:0 0 0 2px var(--edge);background:#fff;font-size:32px;line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;cursor:pointer}
+.pt span{font-size:15px}
 .pt.on{box-shadow:0 0 0 4px #ffc400}
 .eq{font-size:54px;line-height:1;white-space:nowrap}
 .eq .a{display:inline-block;min-width:1.7em;border-bottom:6px solid var(--blue);color:var(--blue);padding:0 .1em;animation:none}
 .eq.sm{font-size:50px}
 #msg{min-height:96px;font-size:21px;line-height:1.35}
 #msg.ok{color:var(--good)} #msg.no{color:#c2410c} #msg.hint{color:#2563eb}
-.vf{--cs:min(100px,calc((var(--vh)*100 - 305px)/3));display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
+.vf{--cs:min(100px,calc((var(--vh)*100 - 270px)/3.62));display:grid;grid-template-columns:repeat(3,var(--cs));flex:none;align-items:center;justify-items:center}
 .vf .lab{color:#2563eb;font-size:20px;height:26px;line-height:26px}
-.vf .cc{height:38px;width:100%;display:flex;align-items:center;justify-content:center}
+.vf .cc{height:calc(var(--cs)*.62);width:100%;display:flex;align-items:center;justify-content:center}
 .cell{width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center;font-size:calc(var(--cs)*.62);border:2px dotted #8a8a99;background:#fff;color:var(--ink)}
 .cell.fix{border-color:#c9c9d6;background:#fcfcff}
 .cell.act{border:3px solid var(--blue);background:#eef4ff;animation:blink 1s ease-in-out infinite}
 .cell.ok{color:var(--good);background:#f0fbf3}
 .cell.bad{animation:shake .4s;background:#ffe4dc;border-color:#e4572e}
-.cc .cell.carry{width:62%;height:34px;font-size:24px;color:#e8590c;border:2px dotted #e8590c}
-.cc .cell.carry.act{border:3px solid #e8590c;background:#fff4e6}
+.cc .cell.carry{position:relative;width:calc(var(--cs)*.9);height:calc(var(--cs)*.58);border:2px dotted #e8590c;background:#fff8f0}
+.cc .cell.carry::after{content:'올림';position:absolute;left:5px;top:2px;font-size:11px;color:#e8590c;opacity:.75}
 .ln{grid-column:1/4;width:100%;height:5px;background:#2a2a33;margin:3px 0}
 .side{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:8px;text-align:left}
 @keyframes blink{50%{box-shadow:0 0 0 5px rgba(59,111,216,.25)}}
@@ -88,7 +90,7 @@ button,a{font-family:inherit;color:inherit}
 #right.nopad #mini{grid-template-columns:1fr 1fr;margin-top:auto}
 #bPad.on{background:#fff6cc}
 #pad .hint.hl{animation:pulse 1s ease-in-out infinite;background:#ffe27a}
-#mini{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .mini{min-height:54px;border:0;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--edge);font-size:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;padding:2px}
 .mini:active{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
 .mini.hl{background:#fff1b8;animation:pulse 1s ease-in-out infinite}
@@ -132,7 +134,6 @@ button,a{font-family:inherit;color:inherit}
     <div id="head">
       <div class="box chip2" id="lvName"></div>
       <div class="box chip2" id="rec"></div>
-      <div class="box chip2" id="timeBox"></div>
     </div>
     <div id="scene" class="box">
       <div id="mon"></div>
@@ -141,11 +142,8 @@ button,a{font-family:inherit;color:inherit}
     </div>
     <div id="probwrap" class="box"><div id="prob"></div><canvas id="ans"></canvas><canvas id="pen"></canvas>
       <div id="pentools">
-        <button class="pt on" data-t="#2b2b35" style="--c:#2b2b35" aria-label="검정 펜"></button>
-        <button class="pt" data-t="#2563eb" style="--c:#2563eb" aria-label="파랑 펜"></button>
-        <button class="pt" data-t="#dc2626" style="--c:#dc2626" aria-label="빨강 펜"></button>
-        <button class="pt er" data-t="erase" aria-label="지우개">🧽</button>
-        <button class="pt cl" data-t="clear" aria-label="전체 지우기">🗑</button>
+        <button class="pt on" data-t="pen" aria-label="펜">✏️<span>펜</span></button>
+        <button class="pt" data-t="erase" aria-label="지우개">🧽<span>지우개</span></button>
       </div></div>
   </div>
   <div id="right">
@@ -217,23 +215,52 @@ function genRound(lv){
 }
 
 /* ---------- monster ---------- */
-function monsterSVG(lv,m){
+function monsterSVG(lv,m,d){
+  d=Math.max(0,Math.min(TOTAL,d||0));
   const C={1:['#a6ec9f','#4cb85a'],2:['#a9d4ff','#4a90e2'],3:['#ffcb8a','#e8822a'],4:['#e0b5ff','#9b5de5']}[lv];
-  const x=(cx,cy)=>'<path d="M'+(cx-7)+' '+(cy-7)+'L'+(cx+7)+' '+(cy+7)+'M'+(cx+7)+' '+(cy-7)+'L'+(cx-7)+' '+(cy+7)+'" stroke="#2a2a33" stroke-width="5" stroke-linecap="round"/>';
-  const eye=(cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="15" fill="#fff"/><circle cx="'+(cx+2)+'" cy="'+(cy+2)+'" r="7" fill="#2a2a33"/><circle cx="'+(cx+5)+'" cy="'+(cy-1)+'" r="2.5" fill="#fff"/>';
-  const eyes=(m==='hurt'||m==='dead')?x(75,92)+x(125,92):eye(75,92)+eye(125,92);
-  const mouth=m==='laugh'?'<path d="M72 120 Q100 160 128 120Z" fill="#7a1f2b"/><path d="M86 140 Q100 150 114 140 Q100 132 86 140Z" fill="#ff8aa0"/>'
-    :(m==='hurt'||m==='dead')?'<path d="M80 134 q10 -10 20 0 q10 10 20 0" fill="none" stroke="#2a2a33" stroke-width="5" stroke-linecap="round"/>'
-    :'<path d="M78 124 Q100 146 122 124" fill="none" stroke="#2a2a33" stroke-width="5" stroke-linecap="round"/>';
-  return '<svg viewBox="0 0 200 180"><defs><radialGradient id="mg" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="'+C[0]+'"/><stop offset="1" stop-color="'+C[1]+'"/></radialGradient></defs>'
+  const K='#2a2a33';
+  const x=(cx,cy)=>'<path d="M'+(cx-7)+' '+(cy-7)+'L'+(cx+7)+' '+(cy+7)+'M'+(cx+7)+' '+(cy-7)+'L'+(cx-7)+' '+(cy+7)+'" stroke="'+K+'" stroke-width="5" stroke-linecap="round"/>';
+  const eye=(cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="15" fill="#fff"/><circle cx="'+(cx+2)+'" cy="'+(cy+2)+'" r="7" fill="'+K+'"/><circle cx="'+(cx+5)+'" cy="'+(cy-1)+'" r="2.5" fill="#fff"/>';
+  const lid=(cx,cy)=>'<path d="M'+(cx-16)+' '+(cy+1)+'A16 16 0 0 1 '+(cx+16)+' '+(cy+1)+'Z" fill="'+C[1]+'" stroke="'+K+'" stroke-width="3" stroke-linejoin="round"/>';
+  const dizzy=(cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="14" fill="#fff" stroke="'+K+'" stroke-width="2"/><path d="M'+cx+' '+cy+'m0 -2a2 2 0 1 1 -2 2a4 4 0 1 1 4 -4a7 7 0 1 1 -7 7a10 10 0 1 1 10 -10" fill="none" stroke="'+K+'" stroke-width="2.2" stroke-linecap="round"/>';
+  const hurt=(m==='hurt'||m==='dead'||d>=9);
+  let eyes;
+  if(hurt) eyes=x(75,92)+x(125,92);
+  else if(d>=7) eyes=dizzy(75,92)+dizzy(125,92);
+  else if(d>=3) eyes=eye(75,94)+eye(125,94)+lid(75,94)+lid(125,94);
+  else eyes=eye(75,92)+eye(125,92);
+  let mouth;
+  if(m==='laugh') mouth='<path d="M72 120 Q100 160 128 120Z" fill="#7a1f2b"/><path d="M86 140 Q100 150 114 140 Q100 132 86 140Z" fill="#ff8aa0"/>';
+  else if(hurt||d>=7) mouth='<path d="M78 140 Q100 118 122 140" fill="none" stroke="'+K+'" stroke-width="5" stroke-linecap="round"/>'+(d>=9?'<path d="M96 134 v14 a6 6 0 0 0 12 0 v-14Z" fill="#ff8aa0" stroke="'+K+'" stroke-width="3" stroke-linejoin="round"/>':'');
+  else if(d>=4) mouth='<path d="M80 130 q10 -5 20 0 q10 5 20 0" fill="none" stroke="'+K+'" stroke-width="5" stroke-linecap="round"/>';
+  else mouth='<path d="M78 124 Q100 146 122 124" fill="none" stroke="'+K+'" stroke-width="5" stroke-linecap="round"/>';
+  const band=(cx,cy,rot,w)=>'<g transform="rotate('+rot+' '+cx+' '+cy+')"><rect x="'+(cx-w/2)+'" y="'+(cy-8)+'" width="'+w+'" height="16" rx="4" fill="#f6e3c2" stroke="'+K+'" stroke-width="3"/><path d="M'+(cx-4)+' '+(cy-8)+'v16M'+(cx+4)+' '+(cy-8)+'v16" stroke="#d9b98a" stroke-width="2"/></g>';
+  let dmg='';
+  if(d>=1) dmg+=band(100,52,-18,40);
+  if(d>=2) dmg+='<ellipse cx="46" cy="98" rx="12" ry="9" fill="rgba(105,55,150,.55)"/>';
+  if(d>=3) dmg+=band(150,136,32,30);
+  if(d>=4) dmg+='<circle cx="134" cy="58" r="10" fill="rgba(255,255,255,.35)" stroke="'+K+'" stroke-width="2.5"/><path d="M130 54q3-3 6 0" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>'
+    +'<path d="M170 68q-7 11 0 15q7-4 0-15Z" fill="#7ec8ff" stroke="'+K+'" stroke-width="2"/>';
+  if(d>=5) dmg+='<path d="M58 106q16 9 34 0M108 106q16 9 34 0" fill="none" stroke="rgba(90,50,130,.7)" stroke-width="4" stroke-linecap="round"/>';
+  if(d>=6) dmg+='<path d="M92 42l-9 15l11 7l-7 13" fill="none" stroke="'+K+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  if(d>=8) dmg+='<path d="M52 120q-7 12 0 16q7-4 0-16Z" fill="#7ec8ff" stroke="'+K+'" stroke-width="2"/><path d="M100 150l5 7l-10 0Z" fill="none"/>'
+    +'<ellipse cx="148" cy="94" rx="16" ry="13" fill="rgba(70,30,110,.35)"/>';
+  if(d>=9) dmg+=band(62,148,-25,26);
+  const star=(cx,cy,r)=>{ let s=''; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r; s+=(i?'L':'M')+(cx+rr*Math.cos(a)).toFixed(1)+' '+(cy+rr*Math.sin(a)).toFixed(1); } return '<path d="'+s+'Z" fill="#ffd23f" stroke="'+K+'" stroke-width="1.8" stroke-linejoin="round"/>'; };
+  const stars=d>=7?'<g style="transform-origin:100px 22px;animation:spin 2.4s linear infinite">'+star(70,22,9)+star(100,10,9)+star(130,22,9)+'</g>':'';
+  const hit=m==='hurt'?'<path d="M150 40l8 14l16-4l-8 14l12 10l-17 2l-2 17l-11-13l-14 8l4-16l-14-8l16-4Z" fill="#fff36b" stroke="#e8590c" stroke-width="3" stroke-linejoin="round"/>':'';
+  const earL=d>=6?'M42 70L24 48L70 52Z':'M42 62L30 22L72 48Z', earR=d>=6?'M158 70L176 48L130 52Z':'M158 62L170 22L128 48Z';
+  const s=1-0.016*d, sat=1-0.055*d, br=1-0.025*d;
+  return '<svg viewBox="0 0 200 180" style="filter:saturate('+sat.toFixed(2)+') brightness('+br.toFixed(2)+')"><defs><radialGradient id="mg" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="'+C[0]+'"/><stop offset="1" stop-color="'+C[1]+'"/></radialGradient></defs>'
     +'<ellipse cx="100" cy="168" rx="62" ry="9" fill="rgba(0,0,0,.18)"/>'
-    +'<path d="M42 62 L30 22 L72 48Z M158 62 L170 22 L128 48Z" fill="'+C[1]+'" stroke="#2a2a33" stroke-width="3" stroke-linejoin="round"/>'
-    +'<ellipse cx="100" cy="106" rx="78" ry="66" fill="url(#mg)" stroke="#2a2a33" stroke-width="4"/>'
+    +'<g transform="translate(100 170) scale(1 '+s.toFixed(3)+') translate(-100 -170)">'
+    +'<path d="'+earL+' '+earR+'" fill="'+C[1]+'" stroke="'+K+'" stroke-width="3" stroke-linejoin="round"/>'
+    +'<ellipse cx="100" cy="106" rx="78" ry="66" fill="url(#mg)" stroke="'+K+'" stroke-width="4"/>'
     +'<ellipse cx="68" cy="66" rx="18" ry="9" fill="rgba(255,255,255,.45)" transform="rotate(-25 68 66)"/>'
-    +eyes+'<circle cx="52" cy="118" r="9" fill="rgba(255,120,140,.5)"/><circle cx="148" cy="118" r="9" fill="rgba(255,120,140,.5)"/>'+mouth+'</svg>';
+    +eyes+'<circle cx="52" cy="118" r="9" fill="rgba(255,120,140,.5)"/><circle cx="148" cy="118" r="9" fill="rgba(255,120,140,.5)"/>'+mouth+dmg+'</g>'+stars+hit+'</svg>';
 }
 function setMood(m,ms){
-  mood=m; const el=$('mon'); el.innerHTML=monsterSVG(level,m); el.className='m-'+m;
+  mood=m; const el=$('mon'); el.innerHTML=monsterSVG(level,m,R?R.cleared:0); el.className='m-'+m;
   if(ms&&m!=='dead') setTimeout(()=>{ if(mood===m) setMood('idle'); },ms);
 }
 function burst(n){
@@ -257,7 +284,6 @@ function say(t,c){ msgT=t; msgC=c||''; const m=$('msg'); if(m){ m.textContent=t;
 const cellIdx=k=>cur.cells.findIndex(c=>c.k===k);
 function buildCells(q){
   const oneP=q.o*q.b,c=Math.floor(oneP/10),ts=q.t*q.b+c,cells=[{k:'o',ans:oneP%10}];
-  if(c>0) cells.push({k:'c',ans:c});
   cells.push({k:'t',ans:ts%10});
   if(ts>=10) cells.push({k:'h',ans:Math.floor(ts/10)});
   return cells;
@@ -275,20 +301,19 @@ function similar(q){
   }
   const c=genQ(level); c.app=q.app; return c;
 }
+const LAB={o:'일',t:'십',h:'백'};
 function prompt(){
-  const k=cur.cells[cur.pos].k,{c}=info(cur);
-  if(k==='o') return '일의 자리부터! '+cur.o+' × '+cur.b+' 의 일의 자리 숫자를 아래 칸에 써요';
-  if(k==='c') return '올림이 생겼어요! 십의 자리 위 작은 칸에 올림 숫자를 써요';
-  if(k==='t') return '십의 자리: '+cur.t+' × '+cur.b+(c?' + 올림 '+c:'')+' 의 일의 자리 숫자를 써요';
-  return '100이 넘어요! 남은 숫자를 백의 자리에 써요';
+  return '일·십·백 칸에 쓰고 싶은 순서대로 써요. 올림은 위 칸에 연습장처럼 적어요 ✏️';
 }
 function hintText(k){
   const {oneP,c,ts}=info(cur);
-  if(k==='o') return cur.o+' × '+cur.b+' = '+oneP+(c?' → 일의 자리에 '+oneP%10+', 올림 '+c:' → 일의 자리에 '+oneP);
-  if(k==='c') return oneP+'에서 십의 자리 숫자 '+c+'을 올림 칸에 써요';
-  if(k==='t') return cur.t+' × '+cur.b+(c?' + '+c:'')+' = '+ts+(ts>=10?' → 십의 자리에 '+ts%10+', 백의 자리에 '+Math.floor(ts/10):' → 십의 자리에 '+ts);
+  if(k==='o') return cur.o+' × '+cur.b+' = '+oneP+(c?' → 일의 자리에 '+oneP%10+', 올림 '+c+' (위 칸에 적어 둬요)':' → 일의 자리에 '+oneP);
+  if(k==='t') return cur.t+' × '+cur.b+(c?' + 올림 '+c:'')+' = '+ts+(ts>=10?' → 십의 자리에 '+ts%10+', 백의 자리에 '+Math.floor(ts/10):' → 십의 자리에 '+ts);
   return ts+'에서 10이 넘는 부분 '+Math.floor(ts/10)+'을 백의 자리에 써요';
 }
+const unfilled=k=>cur&&cur.cells.some(c=>c.k===k)&&cur.vals[k]===undefined;
+const nextKey=()=>{ const c=cur.cells.find(x=>cur.vals[x.k]===undefined); return c?c.k:null; };
+const selKey=()=>unfilled(cur.sel)?cur.sel:nextKey();
 function render(){
   renderHead();
   if(!R) return;
@@ -298,11 +323,10 @@ function render(){
   let d=''; for(let i=0;i<TOTAL;i++) d+='<i class="'+(i<R.cleared?'on':'')+'"></i>'; $('dots').innerHTML=d;
   const st=$('streak'); if(R.streak>=2){ st.style.display='block'; st.textContent='🔥 '+R.streak+'연속!'; } else st.style.display='none';
   if(!cur){ $('prob').innerHTML=''; return; }
-  const act=cur.pos<cur.cells.length?cur.cells[cur.pos].k:null;
-  const cell=(k,extra)=>{ const v=cur.vals[k]; return '<div class="cell '+(extra||'')+(act===k?' act':'')+(v!==undefined?' ok':'')+(cur.badK===k?' bad':'')+'" data-k="'+k+'">'+(v!==undefined?v:'')+'</div>'; };
-  const ci=cellIdx('c'),showC=ci>=0&&cur.pos>=ci;
+  const act=padOn?selKey():null;
+  const cell=k=>{ const v=cur.vals[k]; return '<div class="cell'+(act===k?' act':'')+(v!==undefined?' ok':'')+(cur.badK===k?' bad':'')+'" data-k="'+k+'">'+(v!==undefined?v:'')+'</div>'; };
   const f='<div class="vf"><div class="lab">백</div><div class="lab">십</div><div class="lab">일</div>'
-    +'<div class="cc"></div><div class="cc">'+(showC?cell('c','carry'):'')+'</div><div class="cc"></div>'
+    +'<div class="cc"></div><div class="cc"><div class="cell carry" data-k="c"></div></div><div class="cc"></div>'
     +'<div class="cell fix"></div><div class="cell fix">'+cur.t+'</div><div class="cell fix">'+cur.o+'</div>'
     +'<div class="cell fix">X</div><div class="cell fix"></div><div class="cell fix">'+cur.b+'</div>'
     +'<div class="ln"></div>'+cell('h')+cell('t')+cell('o')+'</div>';
@@ -320,25 +344,28 @@ function startRound(lv){
 }
 function nextQ(){
   if(!qs.length){ endRound(); return; }
-  cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.pos=0; cur.vals={}; cur.wrong=0; cur.hinted=false; cur.badK=null; cur.wa={};
+  cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.vals={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.badK=null; cur.wa={};
   phase='ask'; clearPen(); say((cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪 ':'')+prompt(),''); render();
 }
 function hint(){
-  if(phase!=='ask'||!cur||cur.pos>=cur.cells.length) return;
-  cur.hinted=true; say(hintText(cur.cells[cur.pos].k),'hint'); render();
+  if(phase!=='ask'||!cur) return;
+  const k=selKey(); if(!k) return;
+  cur.hinted=true; say(hintText(k),'hint'); render();
 }
-function enter(d,fromPen){
-  const c=cur.cells[cur.pos];
+function enter(d){ const k=selKey(); if(k) enterAt(k,d,false); }
+function enterAt(k,d,fromPen){
+  if(!unfilled(k)) return;
+  const c=cur.cells.find(x=>x.k===k);
   if(d===c.ans){
-    cur.vals[c.k]=d; cur.pos++;
-    if(cur.pos>=cur.cells.length){ solved(); return; }
-    sfx.step(); say(prompt(),'ok'); render(); return;
+    cur.vals[k]=d; cur.sel=null;
+    if(cur.cells.every(x=>cur.vals[x.k]!==undefined)){ solved(); return; }
+    sfx.step(); say('좋아요! 나머지 칸도 써 봐요 ✏️','ok'); render(); return;
   }
   cur.wrong++; R.streak=0; bump('w'); sfx.no(); setMood('laugh',600);
-  cur.wa[c.k]=(cur.wa[c.k]||0)+1;
-  const q=cur; q.badK=c.k;
-  if(cur.wa[c.k]>=2){ cur.hinted=true; say('같이 계산해 봐요! '+hintText(c.k),'hint'); }
-  else say((fromPen?'"'+d+'"(으)로 읽었어요. ':'')+'아쉬워요! 다시 한 번 생각해 봐요 🤔','no');
+  cur.wa[k]=(cur.wa[k]||0)+1;
+  const q=cur; q.badK=k;
+  if(cur.wa[k]>=2){ cur.hinted=true; say('같이 계산해 봐요! '+hintText(k),'hint'); }
+  else say((fromPen?'\"'+d+'\"(으)로 읽었어요. ':'')+'아쉬워요! '+LAB[k]+'의 자리를 다시 생각해 봐요 🤔','no');
   render();
   setTimeout(()=>{ if(cur===q){ q.badK=null; render(); } },450);
 }
@@ -404,10 +431,6 @@ function press(k){
   if(/^\d$/.test(k)){ sfx.key(); resetAns(); enter(+k); }
 }
 $('pad').addEventListener('pointerdown',e=>{ unlock(); const b=e.target.closest('button'); if(b){ e.preventDefault(); press(b.dataset.k); } });
-$('prob').addEventListener('pointerdown',e=>{
-  const c=e.target.closest('.cell[data-k]'); if(!c||phase!=='ask'||!cur||cur.pos>=cur.cells.length) return;
-  if(c.dataset.k!==cur.cells[cur.pos].k) say('일의 자리부터 차례로 써요 👉','no');
-});
 document.addEventListener('keydown',e=>{ if(/^[0-9]$/.test(e.key)) press(e.key); });
 $('bMenu').addEventListener('click',showMenu);
 $('bSound').addEventListener('click',()=>{ muted=!muted; render(); if(!muted){unlock();sfx.step();} });
@@ -419,7 +442,7 @@ window.addEventListener('resize',vh); vh();
 
 /* ---------- 연습장 + 칸에 직접 쓰기 ---------- */
 const pen=$('pen'),pctx=pen.getContext('2d'),anv=$('ans'),actx=anv.getContext('2d');
-let ink='#2b2b35',erase=false,pdraw=null,actRect=null,ansS={strokes:[],cur:null,t:null};
+const ink='#2b2b35';let erase=false,pdraw=null,zones={},ansS={};
 function sizePen(){
   const dpr=Math.min(window.devicePixelRatio||1,2),w=pen.clientWidth,h=pen.clientHeight;
   if(!w||!h) return;
@@ -428,22 +451,40 @@ function sizePen(){
     if(c.width!==W||c.height!==H){ c.width=W; c.height=H; }
     x.setTransform(dpr,0,0,dpr,0,0); x.lineCap='round'; x.lineJoin='round';
   }
+  redrawAns();
 }
 function wipe(c,x){ x.save(); x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,c.width,c.height); x.restore(); }
 function clearPen(){ wipe(pen,pctx); resetAns(); }
-function resetAns(){ clearTimeout(ansS.t); ansS={strokes:[],cur:null,t:null}; wipe(anv,actx); }
+function resetAns(){ for(const k in ansS) clearTimeout(ansS[k].t); ansS={}; wipe(anv,actx); }
+function redrawAns(){ wipe(anv,actx); for(const k in ansS) for(const s of ansS[k].strokes) for(let i=0;i<s.length;i++) stroke(actx,s[Math.max(0,i-1)],s[i],s.col); }
 const pp=e=>{ const r=pen.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; };
-function stroke(x,a,b){
-  x.globalCompositeOperation=(x===pctx&&erase)?'destination-out':'source-over';
-  x.strokeStyle=ink; x.lineWidth=(x===pctx&&erase)?34:5;
+function stroke(x,a,b,col){
+  const er=(x===pctx&&erase);
+  x.globalCompositeOperation=er?'destination-out':'source-over';
+  x.strokeStyle=col||ink; x.lineWidth=er?34:5;
   x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke();
 }
+/* 인식 영역: 보이는 칸보다 사방으로 50% 넓게. 겹치는 곳은 가장 가까운 칸으로 */
 function layoutAct(){
-  const el=$('prob').querySelector('.cell.act'); if(!el||phase!=='ask'){ actRect=null; return; }
-  const r=el.getBoundingClientRect(),o=pen.getBoundingClientRect();
-  actRect={x:r.left-o.left,y:r.top-o.top,w:r.width,h:r.height};
+  zones={}; if(phase!=='ask'||!cur) return;
+  const o=pen.getBoundingClientRect();
+  for(const k of ['o','t','h']){
+    const el=$('prob').querySelector('.cell[data-k="'+k+'"]'); if(!el) continue;
+    const r=el.getBoundingClientRect();
+    zones[k]={x:r.left-o.left,y:r.top-o.top,w:r.width,h:r.height,m:r.width*0.5};
+  }
 }
-const inAct=(p,m)=>actRect&&p.x>=actRect.x-m&&p.x<=actRect.x+actRect.w+m&&p.y>=actRect.y-m&&p.y<=actRect.y+actRect.h+m;
+function zoneAt(p){
+  let best=null,bd=1e9;
+  for(const k in zones){
+    if(cur.vals[k]!==undefined) continue;
+    const z=zones[k];
+    if(p.x<z.x-z.m||p.x>z.x+z.w+z.m||p.y<z.y-z.m||p.y>z.y+z.h+z.m) continue;
+    const d=Math.hypot(p.x-(z.x+z.w/2),p.y-(z.y+z.h/2)); if(d<bd){ bd=d; best=k; }
+  }
+  return best;
+}
+function markSel(){ const a=padOn?selKey():null; document.querySelectorAll('#prob .cell.act').forEach(e=>e.classList.remove('act')); if(a){ const e=$('prob').querySelector('.cell[data-k="'+a+'"]'); if(e) e.classList.add('act'); } }
 
 /* 손글씨 숫자 인식 (기기 안에서 실행, 서버 전송 없음) */
 let MODEL=null;
@@ -486,38 +527,41 @@ function readDigit(strokes){
   const pr=classify(a); let top=0; for(let k=1;k<10;k++) if(pr[k]>pr[top]) top=k;
   return {top,p:pr};
 }
-function recognizeAns(){
-  const strokes=ansS.strokes; ansS.t=null;
-  if(phase!=='ask'||!cur||cur.pos>=cur.cells.length||!MODEL){ resetAns(); return; }
-  const r=readDigit(strokes); resetAns();
-  const want=cur.cells[cur.pos].ans;
-  if(!r){ say('칸 안에 숫자를 크게 써 줄래요? ✏️','no'); render(); return; }
-  let d=r.top;
+function recognizeAns(k){
+  const a=ansS[k]; if(!a) return;
+  const strokes=a.strokes; delete ansS[k]; redrawAns();
+  if(phase!=='ask'||!cur||!MODEL||cur.vals[k]!==undefined) return;
+  const cell=cur.cells.find(c=>c.k===k);
+  if(!cell){ say('이 문제에서는 '+LAB[k]+'의 자리 칸이 필요 없어요. 비워 두세요 🙂','no'); render(); return; }
+  const r=readDigit(strokes);
+  if(!r){ say('숫자를 크게 써 줄래요? ✏️','no'); render(); return; }
+  const want=cell.ans; let d=r.top;
   if(d!==want&&r.p[want]>=0.2) d=want;
   if(d!==want&&r.p[r.top]<0.5){ say('숫자를 잘 못 읽었어요. 한 번 더 또박또박 써 줄래요? ✏️','no'); render(); return; }
-  sfx.key(); enter(d,true);
+  sfx.key(); enterAt(k,d,true);
 }
 pen.addEventListener('pointerdown',e=>{
   unlock(); sizePen(); try{pen.setPointerCapture(e.pointerId);}catch(_){}
-  const q=pp(e);
-  if(!erase&&MODEL&&phase==='ask'&&inAct(q,18)){
-    clearTimeout(ansS.t); ansS.cur=[q]; ansS.strokes.push(ansS.cur); pdraw={p:q,a:true}; stroke(actx,q,q);
-  }else{ pdraw={p:q,a:false}; stroke(pctx,q,q); }
+  const q=pp(e),k=(!erase&&MODEL&&phase==='ask')?zoneAt(q):null;
+  if(k){
+    cur.sel=k; markSel();
+    const a=ansS[k]||(ansS[k]={strokes:[],t:null}); clearTimeout(a.t);
+    const s=[q]; s.col=ink; a.strokes.push(s); pdraw={p:q,k,s}; stroke(actx,q,q,ink);
+  }else{ pdraw={p:q,k:null}; stroke(pctx,q,q); }
 });
 pen.addEventListener('pointermove',e=>{
   if(!pdraw) return; const q=pp(e);
-  if(pdraw.a){ ansS.cur.push(q); stroke(actx,pdraw.p,q); } else stroke(pctx,pdraw.p,q);
+  if(pdraw.k){ pdraw.s.push(q); stroke(actx,pdraw.p,q,pdraw.s.col); } else stroke(pctx,pdraw.p,q);
   pdraw.p=q;
 });
 ['pointerup','pointercancel'].forEach(ev=>pen.addEventListener(ev,()=>{
-  if(pdraw&&pdraw.a){ ansS.cur=null; clearTimeout(ansS.t); ansS.t=setTimeout(recognizeAns,850); }
+  if(pdraw&&pdraw.k){ const k=pdraw.k,a=ansS[k]; if(a){ clearTimeout(a.t); a.t=setTimeout(()=>recognizeAns(k),850); } }
   pdraw=null;
 }));
 $('pentools').addEventListener('click',e=>{
   const b=e.target.closest('.pt'); if(!b) return;
   const t=b.dataset.t;
-  if(t==='clear'){ wipe(pen,pctx); return; }
-  if(t==='erase'){ erase=true; } else { erase=false; ink=t; }
+  erase=(t==='erase');
   document.querySelectorAll('#pentools .pt').forEach(x=>x.classList.toggle('on',x===b));
 });
 window.addEventListener('resize',()=>setTimeout(()=>{ sizePen(); layoutAct(); },150));
@@ -529,8 +573,8 @@ $('bPad').addEventListener('click',()=>{ padOn=!padOn; LS.set('mult.pad',padOn);
 
 /* boot */
 renderPad(); renderHead(); setMood('idle'); sizePen(); applyPad(); showMenu();
-Guard.start({onTick:s=>{ const b=$('timeBox'); b.textContent=Guard.label(s); b.className='box chip2'+(s<=300?' low':''); },onReset:renderHead});
-window.__mult={readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
+Guard.start({noLimit:true,onReset:renderHead});
+window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
 })();
 </script>
 </body>

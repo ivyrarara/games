@@ -96,7 +96,7 @@ function tick(noCount){
   const now=Date.now(), dt=Math.min(5,(now-tickLast)/1000);
   if(!noCount){
     tickLast=now;
-    if(started&&document.visibilityState==='visible'&&mode===''){
+    if(started&&!opts.noLimit&&document.visibilityState==='visible'&&mode===''){
       const s=dayState(); s.used+=dt;
       if(now-saveAt>4000){ LS.set('day',s); saveAt=now; }
       if(timeLeft()<=0) showLock();
@@ -113,7 +113,7 @@ window.Guard={
     opts=o||{};
     if(!LS.get('parent',null)){ location.replace('../'); return; }
     started=true; tickLast=Date.now();
-    if(timeLeft()<=0) showLock();
+    if(!opts.noLimit&&timeLeft()<=0) showLock();
     tick(true);
   },
   parentFlow,
