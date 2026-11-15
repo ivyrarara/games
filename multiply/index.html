@@ -29,6 +29,8 @@ button,a{font-family:inherit;color:inherit}
 .m-laugh{animation:hop .6s}
 .m-dead{animation:die 1s forwards}
 @keyframes spin{to{transform:rotate(360deg)}}
+#scene .fist{position:absolute;font-size:70px;line-height:1;margin:0 0 0 -35px;pointer-events:none;z-index:5;animation:punch .72s ease-in forwards}
+@keyframes punch{0%{transform:translate(190px,-24px) scale(.5) rotate(28deg);opacity:0}20%{opacity:1}48%{transform:translate(-8px,6px) scale(1.4) rotate(-8deg);opacity:1}62%{transform:translate(-2px,4px) scale(1.25) rotate(-4deg);opacity:1}100%{transform:translate(70px,-10px) scale(.8) rotate(10deg);opacity:0}}
 @keyframes bob{50%{transform:translateY(-8px) scale(1.03,.97)}}
 @keyframes hit{0%{transform:translateX(0)}15%{transform:translateX(-14px) rotate(-6deg)}35%{transform:translateX(14px) rotate(6deg)}55%{transform:translateX(-10px)}75%{transform:translateX(8px)}100%{transform:none}}
 @keyframes hop{30%{transform:translateY(-26px)}60%{transform:translateY(0) scale(1.08,.9)}100%{transform:none}}
@@ -63,10 +65,10 @@ button,a{font-family:inherit;color:inherit}
 .cell{width:var(--cs);height:var(--cs);display:flex;align-items:center;justify-content:center;font-size:calc(var(--cs)*.62);border:2px dotted #8a8a99;background:#fff;color:var(--ink)}
 .cell.fix{border-color:#c9c9d6;background:#fcfcff}
 .cell.act{border:3px solid var(--blue);background:#eef4ff;animation:blink 1s ease-in-out infinite}
-.cell.ok{color:var(--good);background:#f0fbf3}
-.cell.bad{animation:shake .4s;background:#ffe4dc;border-color:#e4572e}
-.cc .cell.carry{position:relative;width:calc(var(--cs)*.9);height:calc(var(--cs)*.58);border:2px dotted #e8590c;background:#fff8f0}
-.cc .cell.carry::after{content:'올림';position:absolute;left:5px;top:2px;font-size:11px;color:#e8590c;opacity:.75}
+.cell.good{color:#1d4ed8;border:3px solid #2563eb;background:#e8f0ff}
+.cell.bad{color:#c81e1e;border:3px solid #e03131;background:#ffe9e9}
+.cell.flash{animation:shake .4s}
+.cc .cell.carry{width:calc(var(--cs)*.9);height:calc(var(--cs)*.58);border:0;background:transparent}
 .ln{grid-column:1/4;width:100%;height:5px;background:#2a2a33;margin:3px 0}
 .side{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:8px;text-align:left}
 @keyframes blink{50%{box-shadow:0 0 0 5px rgba(59,111,216,.25)}}
@@ -263,6 +265,13 @@ function setMood(m,ms){
   mood=m; const el=$('mon'); el.innerHTML=monsterSVG(level,m,R?R.cleared:0); el.className='m-'+m;
   if(ms&&m!=='dead') setTimeout(()=>{ if(mood===m) setMood('idle'); },ms);
 }
+function punch(){
+  const sc=$('scene'),m=$('mon'),f=document.createElement('div');
+  f.className='fist'; f.textContent='👊';
+  f.style.left=(m.offsetLeft+m.offsetWidth*0.5)+'px'; f.style.top=(m.offsetTop+m.offsetHeight*0.3)+'px';
+  sc.appendChild(f); setTimeout(()=>f.remove(),800);
+  setTimeout(()=>{ sfx.hit(); burst(8); setMood('hurt',600); },340);
+}
 function burst(n){
   const sc=$('scene');
   for(let i=0;i<n;i++){
@@ -311,8 +320,8 @@ function hintText(k){
   if(k==='t') return cur.t+' × '+cur.b+(c?' + 올림 '+c:'')+' = '+ts+(ts>=10?' → 십의 자리에 '+ts%10+', 백의 자리에 '+Math.floor(ts/10):' → 십의 자리에 '+ts);
   return ts+'에서 10이 넘는 부분 '+Math.floor(ts/10)+'을 백의 자리에 써요';
 }
-const unfilled=k=>cur&&cur.cells.some(c=>c.k===k)&&cur.vals[k]===undefined;
-const nextKey=()=>{ const c=cur.cells.find(x=>cur.vals[x.k]===undefined); return c?c.k:null; };
+const unfilled=k=>cur&&cur.cells.some(c=>c.k===k)&&cur.res[k]!=='ok';
+const nextKey=()=>{ const c=cur.cells.find(x=>cur.res[x.k]!=='ok'&&cur.vals[x.k]===undefined)||cur.cells.find(x=>cur.res[x.k]!=='ok'); return c?c.k:null; };
 const selKey=()=>unfilled(cur.sel)?cur.sel:nextKey();
 function render(){
   renderHead();
@@ -323,7 +332,7 @@ function render(){
   const st=$('streak'); if(R.streak>=2){ st.style.display='block'; st.textContent='🔥 '+R.streak+'연속!'; } else st.style.display='none';
   if(!cur){ $('prob').innerHTML=''; return; }
   const act=padOn?selKey():null;
-  const cell=k=>{ const v=cur.vals[k]; return '<div class="cell'+(act===k?' act':'')+(v!==undefined?' ok':'')+(cur.badK===k?' bad':'')+'" data-k="'+k+'">'+(v!==undefined?v:'')+'</div>'; };
+  const cell=k=>{ const v=cur.vals[k],r=cur.res[k]; return '<div class="cell'+(act===k?' act':'')+(v!==undefined?' has':'')+(r==='ok'?' good':'')+(r==='bad'?' bad'+(cur.flash?' flash':''):'')+'" data-k="'+k+'">'+(v!==undefined?v:'')+'</div>'; };
   const f='<div class="vf">'
     +'<div class="cc"></div><div class="cc"><div class="cell carry" data-k="c"></div></div><div class="cc"></div>'
     +'<div class="cell fix"></div><div class="cell fix">'+cur.t+'</div><div class="cell fix">'+cur.o+'</div>'
@@ -343,7 +352,7 @@ function startRound(lv){
 }
 function nextQ(){
   if(!qs.length){ endRound(); return; }
-  cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.vals={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.badK=null; cur.wa={};
+  cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.vals={}; cur.res={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.flash=false; cur.wa={};
   phase='ask'; clearPen(); say(cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪':'',''); render();
 }
 function hint(){
@@ -352,21 +361,22 @@ function hint(){
   cur.hinted=true; say(hintText(k),'hint'); render();
 }
 function enter(d){ const k=selKey(); if(k) enterAt(k,d,false); }
-function enterAt(k,d,fromPen){
+function enterAt(k,d){
   if(!unfilled(k)) return;
-  const c=cur.cells.find(x=>x.k===k);
-  if(d===c.ans){
-    cur.vals[k]=d; cur.sel=null;
-    if(cur.cells.every(x=>cur.vals[x.k]!==undefined)){ solved(); return; }
-    sfx.step(); say('','ok'); render(); return;
+  cur.vals[k]=d; delete cur.res[k]; cur.sel=null;
+  if(cur.cells.some(c=>cur.vals[c.k]===undefined)){ say('',''); render(); return; }
+  let bad=0;
+  for(const c of cur.cells){
+    if(cur.res[c.k]) continue;
+    if(cur.vals[c.k]===c.ans) cur.res[c.k]='ok';
+    else{ cur.res[c.k]='bad'; bad++; cur.wrong++; cur.wa[c.k]=(cur.wa[c.k]||0)+1; bump('w'); }
   }
-  cur.wrong++; R.streak=0; bump('w'); sfx.no(); setMood('laugh',600);
-  cur.wa[k]=(cur.wa[k]||0)+1;
-  const q=cur; q.badK=k;
-  if(cur.wa[k]>=2){ cur.hinted=true; say('같이 계산해 봐요! '+hintText(k),'hint'); }
-  else say((fromPen?'\"'+d+'\"(으)로 읽었어요. ':'')+'아쉬워요! '+LAB[k]+'의 자리를 다시 생각해 봐요 🤔','no');
-  render();
-  setTimeout(()=>{ if(cur===q){ q.badK=null; render(); } },450);
+  if(!bad){ solved(); return; }
+  R.streak=0; sfx.no(); setMood('laugh',600);
+  const hc=cur.cells.find(c=>cur.res[c.k]==='bad'&&cur.wa[c.k]>=2);
+  if(hc){ cur.hinted=true; say('같이 계산해 봐요! '+hintText(hc.k),'hint'); } else say('','');
+  cur.flash=true; render();
+  const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; render(); } },450);
 }
 function solved(){
   const helped=cur.wrong>0||cur.hinted;
@@ -375,7 +385,7 @@ function solved(){
   if(!helped){ clear=true; if(cur.app===1) R.first++; R.streak++; R.best=Math.max(R.best,R.streak); }
   else if(cur.app>=2) clear=true;
   if(clear){
-    R.cleared++; sfx.ok(); sfx.hit(); burst(8); setMood('hurt',600);
+    R.cleared++; sfx.ok(); punch();
     say(!helped?'정답! 🎉 '+(R.streak>=3?R.streak+'연속!':'멋져요'):'잘했어요! 👏','ok');
   }else{
     sfx.step(); say('잘했어요! 비슷한 문제가 한 번 더 나와요 😉','ok');
@@ -476,7 +486,7 @@ function layoutAct(){
 function zoneAt(p){
   let best=null,bd=1e9;
   for(const k in zones){
-    if(cur.vals[k]!==undefined) continue;
+    if(cur.res[k]==='ok') continue;
     const z=zones[k];
     if(p.x<z.x-z.m||p.x>z.x+z.w+z.m||p.y<z.y-z.m||p.y>z.y+z.h+z.m) continue;
     const d=Math.hypot(p.x-(z.x+z.w/2),p.y-(z.y+z.h/2)); if(d<bd){ bd=d; best=k; }
@@ -529,7 +539,7 @@ function readDigit(strokes){
 function recognizeAns(k){
   const a=ansS[k]; if(!a) return;
   const strokes=a.strokes; delete ansS[k]; redrawAns();
-  if(phase!=='ask'||!cur||!MODEL||cur.vals[k]!==undefined) return;
+  if(phase!=='ask'||!cur||!MODEL||cur.res[k]==='ok') return;
   const cell=cur.cells.find(c=>c.k===k);
   if(!cell){ say('이 문제에서는 '+LAB[k]+'의 자리 칸이 필요 없어요. 비워 두세요 🙂','no'); render(); return; }
   const r=readDigit(strokes);
@@ -537,7 +547,7 @@ function recognizeAns(k){
   const want=cell.ans; let d=r.top;
   if(d!==want&&r.p[want]>=0.2) d=want;
   if(d!==want&&r.p[r.top]<0.5){ say('숫자를 잘 못 읽었어요. 한 번 더 또박또박 써 줄래요? ✏️','no'); render(); return; }
-  sfx.key(); enterAt(k,d,true);
+  sfx.key(); enterAt(k,d);
 }
 pen.addEventListener('pointerdown',e=>{
   unlock(); sizePen(); try{pen.setPointerCapture(e.pointerId);}catch(_){}
