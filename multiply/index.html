@@ -330,7 +330,7 @@ function render(){
     +'<div class="cell fix"></div><div class="cell fix">'+cur.t+'</div><div class="cell fix">'+cur.o+'</div>'
     +'<div class="cell fix">X</div><div class="cell fix"></div><div class="cell fix">'+cur.b+'</div>'
     +'<div class="ln"></div>'+cell('h')+cell('t')+cell('o')+'</div>';
-  $('prob').innerHTML=f+'<div class="side"><div class="eq">'+cur.a+' × '+cur.b+'</div><div id="msg" class="'+msgC+'">'+msgT+'</div></div>';
+  $('prob').innerHTML=f+'<div class="side"><div id="msg" class="'+msgC+'">'+msgT+'</div></div>';
   const hb=$('pad').querySelector('.hint'); if(hb) hb.classList.toggle('hl',phase==='ask'&&cur.wrong>0&&!cur.hinted);
   $('bSound').innerHTML=(muted?'🔇':'🔊')+'<span>'+(muted?'소리 꺼짐':'소리')+'</span>';
   layoutAct();
@@ -345,7 +345,7 @@ function startRound(lv){
 function nextQ(){
   if(!qs.length){ endRound(); return; }
   cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.vals={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.badK=null; cur.wa={};
-  phase='ask'; clearPen(); say((cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪 ':'')+prompt(),''); render();
+  phase='ask'; clearPen(); say(cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪':'',''); render();
 }
 function hint(){
   if(phase!=='ask'||!cur) return;
@@ -359,7 +359,7 @@ function enterAt(k,d,fromPen){
   if(d===c.ans){
     cur.vals[k]=d; cur.sel=null;
     if(cur.cells.every(x=>cur.vals[x.k]!==undefined)){ solved(); return; }
-    sfx.step(); say('좋아요! 나머지 칸도 써 봐요 ✏️','ok'); render(); return;
+    sfx.step(); say('','ok'); render(); return;
   }
   cur.wrong++; R.streak=0; bump('w'); sfx.no(); setMood('laugh',600);
   cur.wa[k]=(cur.wa[k]||0)+1;
