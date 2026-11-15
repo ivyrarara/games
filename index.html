@@ -122,6 +122,8 @@ button{font-family:inherit;color:inherit}
 .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:0 auto}
 .pad button{min-height:56px;font-size:26px;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--edge);cursor:pointer}
 .pad button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
+.info{display:flex;flex-direction:column;gap:10px}
+@media (orientation:portrait){.info{flex-direction:row;gap:8px}.info>.box{flex:1;padding:8px 6px;font-size:15px}}
 </style>
 </head>
 <body>
@@ -164,7 +166,7 @@ button{font-family:inherit;color:inherit}
   <aside id="panel">
     <div id="status" class="box"></div>
     <div id="tip" class="box"></div>
-    <div id="timeBox" class="box time"></div>
+    <div class="info"><div id="scoreBox" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bUndo">↩ 되돌리기</button>
       <button class="btn" id="bHint">💡 힌트</button>
@@ -507,7 +509,7 @@ function newGame(){
   G=newState(); keys=[posKey(G)]; LM=legalMoves(G);
   sel=-1; tmap=new Map(); last=null; hint=null; over=false; result=null; thinking=false; capAnim=null;
   flipped = cfg.mode==='cpu' && cfg.color===-1;
-  closeOverlay(); saveGame(); render(); maybeCpu();
+  closeOverlay(); scoredKey=null; saveGame(); render(); maybeCpu();
 }
 function endCheck(){
   result=null;
@@ -521,7 +523,7 @@ function play(m){
   makeMove(G,m); keys.push(posKey(G));
   sel=-1; tmap=new Map(); hint=null; last=m; animSq=m.t;
   capAnim=m.c?{sq:m.fl===2?m.t+(m.p>0?8:-8):m.t,v:m.c,t:Date.now()}:null;
-  LM=legalMoves(G); endCheck(); saveGame();
+  LM=legalMoves(G); endCheck(); if(over) recordResult(); saveGame();
   if(!over){ if(inCheck(G)) sfx.check(); else if(m.c) sfx.cap(); else sfx.move(); }
   render();
   if(over){ const id=gameId; setTimeout(()=>{ if(id===gameId&&over) showEnd(); },800); }
@@ -560,10 +562,11 @@ function undo(){
   if(thinking||overlayMode) return;
   const minLen=(cfg.mode==='cpu'&&cfg.color===-1)?1:0;
   if(G.stack.length<=minLen) return;
-  gameId++;
+  const wasOver=over; gameId++;
   do{ undoMove(G); keys.pop(); }while(cfg.mode==='cpu'&&G.turn!==cfg.color&&G.stack.length>minLen);
   last=G.stack.length?G.stack[G.stack.length-1].m:null;
   LM=legalMoves(G); sel=-1; tmap=new Map(); hint=null; over=false; result=null; animSq=-1; capAnim=null;
+  if(wasOver) unrecordResult();
   saveGame(); render();
 }
 function showHint(){
@@ -643,6 +646,7 @@ function render(){
   $('bUndo').disabled=thinking||G.stack.length<=((cfg.mode==='cpu'&&cfg.color===-1)?1:0);
   $('bHint').disabled=over||thinking||!isMyTurn();
   $('bSound').textContent=muted?'🔇 소리 꺼짐':'🔊 소리';
+  renderScore();
 }
 
 function resultText(){
@@ -671,6 +675,7 @@ function showMenu(){
     h+='<div class="row"><b>내 말 색깔</b><div class="chips">'+chip('color',1,'흰색 (먼저 시작)')+chip('color',-1,'검정')+'</div></div>';
   }
   h+='<button class="go" data-act="start">시작하기</button>';
+  h+='<a class="go alt" href="algakki/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🪨 알까기 하러 가기</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   openOverlay(h,'menu');
 }
@@ -721,7 +726,8 @@ const LS={
   get(k,d){ try{ const v=localStorage.getItem('chess.'+k); return v==null?d:JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem('chess.'+k,JSON.stringify(v)); }catch(e){} }
 };
-function saveGame(){ LS.set('game',{cfg,flipped,moves:G.stack.map(u=>[u.m.f,u.m.t,u.m.pr||0])}); }
+let scoredKey=null, resetAsk=false;
+function saveGame(){ LS.set('game',{cfg,flipped,sk:scoredKey,moves:G.stack.map(u=>[u.m.f,u.m.t,u.m.pr||0])}); }
 function loadSaved(){
   const sv=LS.get('game',null); if(!sv||!sv.cfg||!Array.isArray(sv.moves)) return false;
   try{
@@ -731,10 +737,28 @@ function loadSaved(){
       if(!m) return false;
       makeMove(g,m); ks.push(posKey(g));
     }
-    cfg=sv.cfg; G=g; keys=ks; flipped=!!sv.flipped;
+    cfg=sv.cfg; G=g; keys=ks; flipped=!!sv.flipped; scoredKey=sv.sk||null;
     LM=legalMoves(G); last=G.stack.length?G.stack[G.stack.length-1].m:null; endCheck();
     return true;
   }catch(e){ return false; }
+}
+
+/* ---------- 전적 ---------- */
+const SCK='score.chess';
+function getScore(){ const d={cpu:{a:0,b:0,d:0},two:{a:0,b:0,d:0}}; const s=LS.get(SCK,d)||d; s.cpu=s.cpu||d.cpu; s.two=s.two||d.two; return s; }
+function recordResult(){
+  const sc=getScore(), m=cfg.mode; let k='d';
+  if(result.t==='mate') k=m==='cpu'?(result.w===cfg.color?'a':'b'):(result.w===1?'a':'b');
+  sc[m][k]++; LS.set(SCK,sc); scoredKey={m,k};
+}
+function unrecordResult(){
+  if(!scoredKey) return;
+  const sc=getScore(); if(sc[scoredKey.m][scoredKey.k]>0) sc[scoredKey.m][scoredKey.k]--;
+  LS.set(SCK,sc); scoredKey=null;
+}
+function renderScore(){
+  const r=getScore()[cfg.mode], d=r.d?' · 무 '+r.d:'';
+  $('scoreBox').textContent=cfg.mode==='cpu'?'🏆 나 '+r.a+' : '+r.b+' 컴퓨터'+d:'🏆 흰색 '+r.a+' : '+r.b+' 검정'+d;
 }
 
 /* ---------- 부모 확인 (기기 지문/화면 잠금, 없으면 PIN) ---------- */
@@ -853,11 +877,12 @@ function showParent(){
     +[10,20,30].map(v=>'<button class="chip" data-act="p-extra" data-v="'+v+'">+'+v+'분</button>').join('')+'</div></div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
     +'<div class="row"><button class="chip" data-act="p-rereg">확인 방법 다시 정하기</button></div>'
+    +'<div class="row">'+(resetAsk?'<b>두 게임 전적을 모두 지울까요?</b><div class="chips"><button class="chip" data-act="p-score-yes">지우기</button><button class="chip" data-act="p-score-no">취소</button></div>':'<button class="chip" data-act="p-score">전적 초기화</button>')+'</div>'
     +'<button class="go" data-act="p-close">닫기</button>';
   openOverlay(h,'parent');
 }
 function backFromParent(){ tickLast=Date.now(); if(timeLeft()<=0) showLock(); else closeOverlay(); updateTime(); }
-async function parentFlow(){ if(await confirmParent()) showParent(); else backFromParent(); }
+async function parentFlow(){ resetAsk=false; if(await confirmParent()) showParent(); else backFromParent(); }
 
 $('overlay').addEventListener('click',async e=>{
   const t=e.target.closest('[data-lim],[data-act]'); if(!t) return;
@@ -880,6 +905,9 @@ $('overlay').addEventListener('click',async e=>{
   } else if(a==='l-parent'){ parentFlow(); }
   else if(a==='p-extra'){ const s=dayState(); s.extra+=+t.dataset.v; LS.set('day',s); showParent(); updateTime(); }
   else if(a==='p-rereg'){ setupLimit=LS.get('limit',30); showSetup(); }
+  else if(a==='p-score'){ resetAsk=true; showParent(); }
+  else if(a==='p-score-no'){ resetAsk=false; showParent(); }
+  else if(a==='p-score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); resetAsk=false; renderScore(); showParent(); }
   else if(a==='p-close'){ backFromParent(); }
 });
 
