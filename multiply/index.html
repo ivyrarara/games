@@ -107,7 +107,7 @@ button,a{font-family:inherit;color:inherit}
 .lvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .lock{margin:6px 0 12px;padding:12px;border-radius:14px;background:#ececf0;color:#7a7a88;font-size:17px}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
-.lv.hw{background:#fff8e1;border-color:#e0a100}
+.lv.hw{background:#ffe27a;border-color:#e0a100}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
 .lv.hw.done .stars{color:#9a9aa8;font-size:17px}
 .lv{border:3px solid var(--edge);border-radius:18px;background:#fff;padding:10px 8px;cursor:pointer;font-size:19px;line-height:1.3}
@@ -364,6 +364,7 @@ function startRound(lv){
   closeOverlay(); phase='ask'; setMood('idle'); nextQ();
 }
 function startHw(s){
+  { const d=LS.get('mult.hwdone',null)||{}; if(s!==[1,2,3].find(k=>!d[k])) return; }
   qs=HW[s].map(([a,b],i)=>({a,b,t:Math.floor(a/10),o:a%10,ans:a*b,app:0,n:i+1}));
   R={hw:s,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
   closeOverlay(); phase='ask'; setMood('idle'); nextQ();
@@ -432,7 +433,8 @@ function showMenu(){
   const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=hwAllDone();
   let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">'+(open?'숙제를 다 했어요! 연습 문제도 풀 수 있어요':'먼저 숙제를 풀어요')+'</div>';
   h+='<div class="hws">';
-  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>';
+  const nxt=[1,2,3].find(k=>!done[k]);
+  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
     h+='<div class="lvs">';
