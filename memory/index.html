@@ -47,7 +47,7 @@ button,a{font-family:inherit;color:inherit}
 .go{width:100%;min-height:60px;margin-top:8px;border:0;border-radius:18px;background:var(--good);color:#fff;font-size:26px;box-shadow:0 5px 0 #20703a;cursor:pointer;display:block;text-align:center;text-decoration:none;line-height:60px;padding:0}
 .go:active{transform:translateY(4px);box-shadow:0 1px 0 #20703a}
 .go.alt{background:#fff;color:#2a2a33;box-shadow:0 5px 0 var(--edge);font-size:20px;min-height:52px;line-height:52px}
-.links{display:flex;gap:8px;flex-wrap:wrap}.links .go{margin-top:8px;flex:1;min-width:90px}
+.links{display:flex;gap:8px;flex-wrap:wrap}.links .go{margin-top:8px;flex:1 1 28%;min-width:90px;line-height:1.2;min-height:48px;padding:10px 6px;display:flex;align-items:center;justify-content:center}
 .big{font-size:56px;line-height:1.1}
 .lvbar{display:flex;align-items:center;gap:12px;margin:10px 4px 4px;font-size:17px}.lvbar span{white-space:nowrap}
 #lvtrack{position:relative;flex:1;height:52px;margin:0 22px;touch-action:none;cursor:pointer}
@@ -86,8 +86,7 @@ button,a{font-family:inherit;color:inherit}
 const $=id=>document.getElementById(id);
 const LS=Guard.LS;
 const LVE=['','🐣','🐥','🐰','🦊','🐯','🦁','🐲'];
-const PAIRS=[0,6,6,8,8,10,10,12];
-const REMEMBER=[0,.18,.32,.48,.64,.8,.92,1];
+const PAIRS=[0,3,4,5,6,8,10,12];
 const S='stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"';
 /* 몬스터 12종 (직접 그린 그림) */
 const MON=[
@@ -107,7 +106,7 @@ const MON=[
 const monSVG=i=>'<svg viewBox="0 0 100 100">'+MON[i].svg+'</svg>';
 const BACK='<svg viewBox="0 0 100 100"><polygon points="50,6 58,34 86,24 68,48 94,62 64,66 70,94 50,76 30,94 36,66 6,62 32,48 14,24 42,34" fill="#17163f" stroke="#111" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="50" r="10" fill="#ffd23f" stroke="#111" stroke-width="4"/></svg>';
 
-let cfg={level:1},cards=[],turn=0,first=-1,lock=false,over=false,sa=0,sb=0,gid=0,known=new Set(),overlayMode='',muted=false,lvNote='',started=false;
+let cfg={level:1},cards=[],first=-1,lock=false,over=false,gid=0,fails=0,overlayMode='',muted=false,started=false,previewing=false;
 const D=ms=>window.__fast?8:ms;
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
@@ -118,10 +117,11 @@ function tone(f0,f1,d,t,v,dl){if(muted)return;try{AC=AC||new (window.AudioContex
 const sfx={flip:()=>tone(520,640,.07,'triangle',.06),ok:()=>{tone(660,660,.12,'triangle',.09);tone(880,880,.18,'triangle',.09,.1)},no:()=>tone(260,190,.18,'sawtooth',.04),
  win:()=>[523,659,784,1046,1318].forEach((f,i)=>tone(f,f,.22,'triangle',.09,i*.12)),lose:()=>[392,330,262].forEach((f,i)=>tone(f,f,.25,'sine',.09,i*.18))};
 
-/* 전적 */
+/* 기록: 단계별 최소 실패 횟수 */
 const SCK='score.memory';
-function getScore(){const d={a:0,b:0,d:0};return LS.get(SCK,d)||d;}
-function renderRec(){const r=getScore();$('rec').textContent='🏆 나 '+r.a+' : '+r.b+' 컴퓨터'+(r.d?' · 무 '+r.d:'');}
+function getRec(){const r=LS.get(SCK,null);return (r&&r.best)?r:{best:{}};}
+function bestOf(lv){const v=getRec().best[lv];return v==null?null:v;}
+function renderRec(){const b=bestOf(cfg.level);$('rec').textContent='🏆 이 단계 최고: '+(b==null?'아직 없어요':'실패 '+b+'번');}
 
 /* 배치 */
 function layout(){
@@ -151,85 +151,69 @@ function build(){
 }
 const el=i=>$('board').children[i];
 function setStatus(t,s,cls){const e=$('status');e.className='box'+(cls?' '+cls:'');e.innerHTML=t+(s?'<small>'+s+'</small>':'');}
-function updateScore(){const left=cards.filter(c=>c.s!=='done').length/2;$('score').textContent='나 '+sa+' : '+sb+' 컴퓨터 · 남은 짝 '+left;$('bSound').textContent=muted?'🔇 꺼짐':'🔊 소리';renderRec();}
+function updateScore(){const left=cards.filter(c=>c.s!=='done').length/2;$('score').textContent='실패 '+fails+'번 · 남은 짝 '+left;$('bSound').textContent=muted?'🔇 꺼짐':'🔊 소리';renderRec();}
 
 /* 진행 */
 function newGame(){
-  gid++;over=false;lock=false;first=-1;turn=0;sa=0;sb=0;known=new Set();lvNote='';started=true;
+  gid++;over=false;lock=true;first=-1;fails=0;started=true;previewing=true;
   const n=PAIRS[cfg.level],ids=shuffle(MON.map((_,i)=>i)).slice(0,n);
-  cards=shuffle(ids.concat(ids)).map(m=>({m,s:'down'}));
-  closeOverlay();build();updateScore();
-  setStatus('내 차례!','카드를 두 장 뒤집어서 같은 짝을 찾아요','me');
+  cards=shuffle(ids.concat(ids)).map(m=>({m,s:'up'}));
+  closeOverlay();build();
+  document.querySelectorAll('#board .c').forEach(e=>e.classList.add('up'));
+  updateScore();
+  /* 시작할 때 전체 카드를 잠깐 보여줘요: 짝이 많을수록 길게 (약 3~6초) */
+  const id=gid,total=Math.round(2000+n*350);let left=Math.ceil(total/1000);
+  setStatus('잘 보고 외워요! 👀',left+'초 뒤에 카드가 뒤집혀요','me');
+  const tk=setInterval(()=>{if(id!==gid){clearInterval(tk);return;}left--;if(left>0)setStatus('잘 보고 외워요! 👀',left+'초 뒤에 카드가 뒤집혀요','me');},D(1000));
+  setTimeout(()=>{
+    clearInterval(tk);if(id!==gid)return;
+    cards.forEach((c,i)=>{c.s='down';el(i).classList.remove('up');});
+    previewing=false;lock=false;sfx.flip();
+    setStatus('같은 짝을 찾아요','카드를 두 장 뒤집어요','me');
+  },D(total));
 }
-function observe(i){if(Math.random()<REMEMBER[cfg.level])known.add(i);else known.delete(i);}
-function reveal(i){cards[i].s='up';el(i).classList.add('up');sfx.flip();observe(i);}
+function reveal(i){cards[i].s='up';el(i).classList.add('up');sfx.flip();}
 function onTap(i){
   unlock();
-  if(lock||over||turn!==0||overlayMode||!cards[i]||cards[i].s!=='down')return;
+  if(lock||over||previewing||overlayMode||!cards[i]||cards[i].s!=='down')return;
   reveal(i);
   if(first<0){first=i;return;}
   resolve(first,i);first=-1;
 }
 function resolve(a,b){
-  lock=true;const id=gid,mine=turn===0;
+  lock=true;const id=gid;
   setTimeout(()=>{
     if(id!==gid)return;
     if(cards[a].m===cards[b].m){
-      cards[a].s=cards[b].s='done';known.delete(a);known.delete(b);
-      el(a).classList.add('done');el(b).classList.add('done');sfx.ok();
-      if(mine)sa++;else sb++;updateScore();
+      cards[a].s=cards[b].s='done';
+      el(a).classList.add('done');el(b).classList.add('done');sfx.ok();updateScore();
       if(cards.every(c=>c.s==='done')){setTimeout(()=>{if(id===gid)finish();},D(700));return;}
-      setStatus(mine?'짝이 맞았어요! 🎉':'컴퓨터가 짝을 찾았어요','한 번 더!',mine?'ok':'');
-      lock=false;if(!mine)setTimeout(()=>{if(id===gid)cpuMove();},D(700));
+      setStatus('짝이 맞았어요! 🎉','계속 찾아요','ok');
+      lock=false;
     }else{
-      sfx.no();
+      sfx.no();fails++;updateScore();
+      setStatus('아쉬워요, 다시!','실패 '+fails+'번');
       setTimeout(()=>{
         if(id!==gid)return;
         cards[a].s=cards[b].s='down';el(a).classList.remove('up');el(b).classList.remove('up');
-        turn=mine?1:0;lock=false;
-        if(turn===1){setStatus('컴퓨터 차례','');setTimeout(()=>{if(id===gid)cpuMove();},D(700));}
-        else setStatus('내 차례!','카드를 두 장 뒤집어요','me');
+        lock=false;setStatus('같은 짝을 찾아요','카드를 두 장 뒤집어요','me');
       },D(900));
     }
   },D(650));
 }
-function downIdx(){return cards.map((c,i)=>c.s==='down'?i:-1).filter(i=>i>=0);}
-function cpuMove(){
-  if(over)return;const id=gid;turn=1;setStatus('컴퓨터 차례','');lock=true;
-  const downs=downIdx(),kn=[...known].filter(i=>cards[i].s==='down');
-  let pair=null;
-  for(let x=0;x<kn.length&&!pair;x++)for(let y=x+1;y<kn.length;y++)if(cards[kn[x]].m===cards[kn[y]].m){pair=[kn[x],kn[y]];break;}
-  let a,b;
-  const unknown=downs.filter(i=>!known.has(i));
-  if(pair){a=pair[0];b=pair[1];}
-  else{
-    a=(unknown.length?unknown:downs)[Math.floor(Math.random()*(unknown.length||downs.length))];
-  }
-  setTimeout(()=>{
-    if(id!==gid)return;reveal(a);
-    if(!pair){
-      const partner=[...known].find(i=>i!==a&&cards[i].s==='down'&&cards[i].m===cards[a].m);
-      if(partner!==undefined)b=partner;
-      else{const rest=downIdx().filter(i=>i!==a),un=rest.filter(i=>!known.has(i)),pool=un.length?un:rest;b=pool[Math.floor(Math.random()*pool.length)];}
-    }
-    setTimeout(()=>{if(id!==gid)return;reveal(b);resolve(a,b);},D(850));
-  },D(700));
-}
 function finish(){
-  over=true;const k=sa>sb?'a':sa<sb?'b':'d',sc=getScore();sc[k]++;LS.set(SCK,sc);
-  const prev=cfg.level;
-  if(k==='a'){cfg.level=Math.min(7,cfg.level+1);lvNote=cfg.level>prev?'⬆ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 올라가요!':'🏅 가장 높은 단계예요!';}
-  else if(k==='b'){cfg.level=Math.max(1,cfg.level-1);if(cfg.level<prev)lvNote='⬇ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 내려가요';}
-  LS.set('memory.level',cfg.level);if(k==='b')sfx.lose();else sfx.win();
-  renderRec();
-  openOverlay('<div class="big">'+(k==='a'?'🏆':k==='b'?'🤖':'🤝')+'</div><h2>'+(k==='a'?'내가 이겼어요! 🎉':k==='b'?'컴퓨터가 이겼어요':'무승부예요')+'</h2><div class="sub">나 '+sa+' : '+sb+' 컴퓨터</div>'
-   +(lvNote?'<div style="font-size:22px;margin:6px 0">'+lvNote+'</div>':'')+'<button class="go" data-act="again">한 판 더</button><button class="go alt" data-act="menu">메뉴</button>','end');
+  over=true;const r=getRec(),old=r.best[cfg.level],isNew=(old==null||fails<old);
+  if(isNew){r.best[cfg.level]=fails;LS.set(SCK,r);}
+  sfx.win();renderRec();
+  const nextBtn=cfg.level<7?'<button class="go" data-act="next">⬆ 더 많은 카드로 ('+PAIRS[cfg.level+1]*2+'장)</button>':'';
+  openOverlay('<div class="big">'+(fails===0?'🏆':'🎉')+'</div><h2>'+(fails===0?'한 번도 안 틀렸어요!':'모두 찾았어요!')+'</h2><div class="sub">실패 '+fails+'번'+(isNew?' · ⭐ 새 기록!':' · 최고 기록 '+old+'번')+'</div>'
+   +nextBtn+'<button class="go'+(nextBtn?' alt':'')+'" data-act="again">한 판 더</button><button class="go alt" data-act="menu">메뉴</button>','end');
 }
 
 /* 메뉴 */
 function openOverlay(h,m){overlayMode=m;const o=$('overlay');o.innerHTML='<div class="pop">'+h+'</div>';o.className='on';}
 function closeOverlay(){overlayMode='';const o=$('overlay');o.className='';o.innerHTML='';}
-function setLv(n){cfg.level=n;LS.set('memory.level',n);const t=$('lvthumb');if(!t)return;t.style.left=((n-1)/6*100)+'%';t.textContent=LVE[n];document.querySelectorAll('#lvtrack .dt').forEach((d,i)=>d.classList.toggle('on',i<n));}
+function setLv(n){cfg.level=n;LS.set('memory.level',n);renderRec();const lc=$('lvcount');if(lc)lc.textContent=PAIRS[n]*2+'장';const t=$('lvthumb');if(!t)return;t.style.left=((n-1)/6*100)+'%';t.textContent=LVE[n];document.querySelectorAll('#lvtrack .dt').forEach((d,i)=>d.classList.toggle('on',i<n));}
 function initLvBar(){
   const tr=$('lvtrack');if(!tr)return;setLv(cfg.level);let drag=false;
   const pick=e=>{const r=tr.getBoundingClientRect();setLv(Math.max(1,Math.min(7,Math.round((e.clientX-r.left)/r.width*6)+1)));};
@@ -238,14 +222,14 @@ function initLvBar(){
   ['pointerup','pointercancel'].forEach(ev=>tr.addEventListener(ev,()=>{drag=false;}));
 }
 function showMenu(){
-  let h='<h1>🧠 Memory</h1><div class="sub">카드를 두 장씩 뒤집어서 같은 짝을 찾아요. 컴퓨터보다 많이 찾으면 이겨요</div>';
-  h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
+  let h='<h1>🧠 Memory</h1><div class="sub">처음에 카드를 잠깐 보여줘요. 잘 외웠다가 카드를 두 장씩 뒤집어서 같은 짝을 모두 찾아요. 틀린 횟수가 적을수록 좋아요</div>';
+  h+='<div class="row"><b>카드 개수</b> <small id="lvcount"></small> <small>단계가 높을수록 카드가 많아져요</small><div class="lvbar"><span>적게</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>많이</span></div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
   if(started&&!over)h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ Chess</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 Connect 4</a><a class="go alt" href="../spot/">👀 Spot It</a><a class="go alt" href="../uno/">🃏 UNO</a></div>';
   openOverlay(h,'menu');initLvBar();
 }
-$('overlay').addEventListener('click',e=>{unlock();const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;if(a==='start'||a==='again')newGame();else if(a==='menu')showMenu();else if(a==='close')closeOverlay();});
+$('overlay').addEventListener('click',e=>{unlock();const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;if(a==='start'||a==='again')newGame();else if(a==='next'){setLv(Math.min(7,cfg.level+1));newGame();}else if(a==='menu')showMenu();else if(a==='close')closeOverlay();});
 $('board').addEventListener('pointerdown',e=>{const c=e.target.closest('.c');if(c){e.preventDefault();onTap(+c.dataset.i);}});
 $('bAgain').addEventListener('click',newGame);
 $('bMenu').addEventListener('click',showMenu);
@@ -261,7 +245,7 @@ cfg.level=Math.max(1,Math.min(7,LS.get('memory.level',1)));
 renderRec();setStatus('시작하기를 눌러요','');updateScore();
 showMenu();
 Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className='box time'+(s<=300?' low':'');},onReset:renderRec});
-window.__mem={get cards(){return cards;},get turn(){return turn;},get over(){return over;},get sa(){return sa;},get sb(){return sb;},get cfg(){return cfg;},get lock(){return lock;},newGame,tap:onTap};
+window.__mem={get cards(){return cards;},get over(){return over;},get fails(){return fails;},get previewing(){return previewing;},get cfg(){return cfg;},get lock(){return lock;},newGame,tap:onTap};
 })();
 </script>
 </body>
