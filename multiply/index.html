@@ -120,6 +120,7 @@ button,a{font-family:inherit;color:inherit}
 .lvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .lock{margin:6px 0 12px;padding:12px;border-radius:14px;background:#ececf0;color:#7a7a88;font-size:17px}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
+.lv.prac{width:100%;margin-top:10px;font-size:26px;padding:16px 0}
 .lv.hw{background:#ffe27a;border-color:#e0a100}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
 .lv.hw.done .stars{color:#9a9aa8;font-size:17px}
@@ -192,7 +193,7 @@ button,a{font-family:inherit;color:inherit}
 const $=id=>document.getElementById(id);
 const LS=Guard.LS, rand=n=>Math.floor(Math.random()*n);
 const LV={1:{n:'올림 없는 곱셈',ex:'21 × 4'},2:{n:'올림 한 번',ex:'14 × 6'},3:{n:'100 넘는 곱셈',ex:'47 × 6'},4:{n:'섞어서 도전',ex:'여러 가지'}};
-let level=LS.get('mult.level',2), qs=[], cur=null, input='', phase='menu', R=null, mood='idle', msgT='', msgC='', muted=false, overlayMode='';
+let level=4, qs=[], cur=null, input='', phase='menu', R=null, mood='idle', msgT='', msgC='', muted=false, overlayMode='';
 const TOTAL=10;
 const CIR='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔';
 /* 숙제 학습지: 1회→3회로 갈수록 어려움(올림·백의 자리 문제 비율 기준). 각 회차 안은 종이 번호순 */
@@ -231,7 +232,7 @@ const bump=k=>{ const s=getStats(); s[k]++; LS.set(SCK,s); };
 const getStars=()=>LS.get('mult.stars',null)||{};
 function renderHead(){
   const s=getStats();
-  $('lvName').textContent=(R&&R.hw)?'📒 숙제 '+R.hw+'회 · '+(cur&&cur.n?CIR[cur.n-1]+'번':'연습 문제'):'Lv'+level+' '+LV[level].n;
+  $('lvName').textContent=(R&&R.hw)?'📒 숙제 '+R.hw+'회 · '+(cur&&cur.n?CIR[cur.n-1]+'번':'연습 문제'):'✏️ 연습문제';
   $('rec').textContent='🏆 정답 '+s.r+' : 오답 '+s.w;
 }
 
@@ -447,7 +448,7 @@ function render(){
 
 /* ---------- flow ---------- */
 function startRound(lv){
-  level=lv; LS.set('mult.level',lv);
+  level=4;
   qs=genRound(lv); R={cleared:0,first:0,streak:0,best:0,total:TOTAL,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
   closeOverlay(); phase='ask'; renderDragons(); setMood('idle'); nextQ();
 }
@@ -553,9 +554,7 @@ function showMenu(){
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
-    h+='<div class="sec">연습문제</div><div class="lvs">';
-    for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+'</button>';
-    h+='</div>';
+    h+='<button class="lv prac" data-lv="4">✏️ 연습문제</button>';
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
@@ -569,7 +568,7 @@ function showEnd(stars){
   openOverlay('<div class="big">🏆</div><div class="bigstars">'+starStr(stars)+'</div><h2>'+msg+'</h2>'
     +'<div class="sub">처음에 바로 맞힌 문제 '+R.first+'/'+R.total+' · 최고 연속 '+R.best+'</div>'
     +(R.hw?'<div class="sub">'+(R.missed.length?'다시 볼 문제: '+R.missed.sort((a,b)=>a-b).map(n=>CIR[n-1]).join(' '):'모두 한 번에 맞혔어요!')+'</div>':'')
-    +(R.hw?'':'<button class="go" data-act="again">한 번 더 (Lv'+level+')</button>')
+    +(R.hw?'':'<button class="go" data-act="again">한 번 더</button>')
     +'<button class="go'+(R.hw?'':' alt')+'" data-act="menu">메뉴로</button>','end');
 }
 $('overlay').addEventListener('click',e=>{
