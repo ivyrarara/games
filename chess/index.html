@@ -685,13 +685,7 @@ function showMenu(){
     h+='<div class="row"><b>내 말 색깔</b><div class="chips">'+chip('color',1,'흰색 (먼저 시작)')+chip('color',-1,'검정')+'</div></div>';
   }
   h+='<button class="go" data-act="start">시작하기</button>';
-  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🏠 처음 화면</a>';
-  h+='<a class="go alt" href="../algakki/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🪨 알까기 하러 가기</a>';
-  h+='<a class="go alt" href="../multiply/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">✖️ 곱셈 몬스터 하러 가기</a>';
-  h+='<a class="go alt" href="../connect4/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🔴 Connect 4</a>';
-  h+='<a class="go alt" href="../spot/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">👀 Spot It</a>';
-  h+='<a class="go alt" href="../uno/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🃏 UNO</a>';
-  h+='<a class="go alt" href="../memory/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🧠 Memory</a>';
+  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🏠 처음으로</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();

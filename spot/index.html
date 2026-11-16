@@ -260,7 +260,7 @@ function showMenu(){
   h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
   if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
-  h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ Chess</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 Connect 4</a><a class="go alt" href="../uno/">🃏 UNO</a><a class="go alt" href="../memory/">🧠 Memory</a></div>';
+  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu'); initLvBar();
 }
 function showEnd(k){
