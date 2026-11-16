@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>같은 그림 찾기</title>
+<meta name="theme-color" content="#f4ecd8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
+<style>
+:root{--bg:#f4ecd8;--ink:#2a2a33;--card:#fffdf6;--edge:#dccfae;--accent:#e4572e;--good:#2f8f4e;
+  --font:"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--vh:1vh}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);color:var(--ink);
+  font-family:var(--font);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:light}
+button,a{font-family:inherit;color:inherit}
+#app{height:calc(var(--vh)*100);display:flex;align-items:center;justify-content:center;gap:14px;padding:10px}
+#cards{--d:min(calc(var(--vh)*100 - 40px), calc((100vw - 300px - 24px)/2));display:flex;gap:14px;align-items:center;justify-content:center;flex:none}
+.pcard{position:relative;width:var(--d);height:var(--d);border-radius:50%;background:#fff;border:6px solid #6a4bc4;box-shadow:0 6px 0 #4b3590;flex:none}
+.pcard.lock{filter:saturate(.5)}
+.sym{position:absolute;border:0;background:none;padding:0;margin:0;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transform:translate(-50%,-50%) rotate(var(--rot,0deg));font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.sym:active{filter:brightness(.9)}
+.sym.hit::before{content:'';position:absolute;inset:-8%;border-radius:50%;background:rgba(255,210,63,.65);box-shadow:0 0 0 4px #ffb400;animation:pulse .5s ease-in-out infinite alternate;z-index:-1}
+.sym.bad{animation:shake .4s}
+@keyframes pulse{to{transform:scale(1.12)}}
+@keyframes shake{25%{transform:translate(calc(-50% - 8px),-50%) rotate(var(--rot,0deg))}75%{transform:translate(calc(-50% + 8px),-50%) rotate(var(--rot,0deg))}}
+#panel{width:260px;display:flex;flex-direction:column;gap:10px}
+.box{background:var(--card);border-radius:18px;border:2px solid var(--edge);padding:12px 14px}
+#status{font-size:22px;line-height:1.25;min-height:84px}
+#status small{display:block;font-size:14px;opacity:.7;margin-top:4px;line-height:1.3}
+#status.ok{background:#e3f5e7;border-color:var(--good)}
+#status.no{background:#ffe4dc;border-color:var(--accent)}
+#score{font-size:17px;text-align:center}
+#cpu{font-size:15px}
+#bar{height:14px;border-radius:8px;background:#e9e2cf;margin-top:6px;overflow:hidden}
+#bar i{display:block;height:100%;width:100%;background:linear-gradient(#ff9a5a,#e4572e)}
+.time{font-size:17px;padding:8px 14px;text-align:center}
+.time.low{background:#fff0c9;border-color:#e0a100}
+.info{display:flex;flex-direction:column;gap:10px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{min-height:56px;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 0 var(--edge);font-size:18px;cursor:pointer;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;text-decoration:none}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
+.btn small{font-size:12px;opacity:.6}
+.btn.wide{grid-column:1/3}
+.btn.holdable{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}
+.btn.hold{background-size:100% 100%;transition:background-size .9s linear}
+#overlay{position:fixed;inset:0;background:rgba(40,35,25,.55);display:none;align-items:center;justify-content:center;padding:12px;z-index:5}
+#overlay.on{display:flex}
+.card{background:var(--card);border-radius:24px;padding:18px 22px;width:min(560px,100%);max-height:100%;overflow:auto;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.18)}
+.card h1{margin:0 0 4px;font-size:34px}.card h2{margin:0 0 10px;font-size:28px}
+.sub{font-size:16px;opacity:.7;margin:0 0 6px}
+.row{margin:10px 0}.row>b{display:inline-block;font-size:17px;margin-bottom:6px;font-weight:400;opacity:.75}
+.row small{font-size:13px;opacity:.6}
+.go{width:100%;min-height:64px;margin-top:8px;border:0;border-radius:18px;background:var(--good);color:#fff;font-size:26px;box-shadow:0 5px 0 #20703a;cursor:pointer;display:block;text-align:center;text-decoration:none;line-height:64px;padding:0}
+.go:active{transform:translateY(4px);box-shadow:0 1px 0 #20703a}
+.go.alt{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--edge);margin-top:10px;font-size:21px;min-height:56px;line-height:56px}
+.links{display:flex;gap:8px;flex-wrap:wrap}.links .go{margin-top:10px;flex:1;min-width:110px}
+.big{font-size:56px;line-height:1.1}
+.lvbar{display:flex;align-items:center;gap:12px;margin:10px 4px 4px;font-size:17px}
+.lvbar span{white-space:nowrap}
+#lvtrack{position:relative;flex:1;height:52px;margin:0 22px;touch-action:none;cursor:pointer}
+#lvtrack::before{content:'';position:absolute;left:0;right:0;top:50%;height:8px;margin-top:-4px;border-radius:4px;background:#e4ddc9}
+#lvtrack .dt{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;border:3px solid #cbbf9f}
+#lvtrack .dt.on{border-color:#2d8f4e;background:#bfe8cc}
+#lvthumb{position:absolute;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;border:4px solid #2d8f4e;box-shadow:0 3px 0 rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:24px;transition:left .08s}
+@media (orientation:portrait){
+  #app{flex-direction:column;gap:8px}
+  #cards{--d:min(calc(100vw - 24px), calc((var(--vh)*100 - 330px)/2));flex-direction:column;gap:10px}
+  #panel{width:min(100%,640px);gap:8px}
+  #status{min-height:64px;font-size:20px}
+  .info{flex-direction:row;gap:8px}.info>.box{flex:1}
+  .btns{grid-template-columns:repeat(4,1fr)}.btn.wide{grid-column:auto}
+  .btn{font-size:15px;min-height:50px}
+}
+@media (max-height:520px) and (orientation:landscape){#status{min-height:70px;font-size:20px}#panel{gap:7px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="cards"><div class="pcard" id="cardA"></div><div class="pcard" id="cardB"></div></div>
+  <aside id="panel">
+    <div id="status" class="box"></div>
+    <div class="box" id="score"></div>
+    <div class="box" id="cpu"><span id="cpuLbl">컴퓨터</span><div id="bar"><i></i></div></div>
+    <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
+    <div class="btns">
+      <button class="btn" id="bAgain">🔄 다시하기</button>
+      <button class="btn" id="bMenu">☰ 메뉴</button>
+      <button class="btn" id="bSound">🔊 소리</button>
+      <button class="btn holdable" id="bParent">👪 부모님<small>꾹 누르기</small></button>
+    </div>
+  </aside>
+</div>
+<div id="overlay"></div>
+<script src="../algakki/guard.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const LS=Guard.LS;
+const LVE=['','🐣','🐥','🐰','🦊','🐯','🦁','🐲'];
+const EMO=['🐶','🐱','🐭','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🐔','🐧','🦉','🦄','🐝','🦋','🐢','🐙','🐬','🐘',
+ '🍎','🍌','🍇','🍓','🍒','🍉','🍍','🥕','🌽','🍄','🍩','🍪','🍕','🍦',
+ '🌻','🌵','🌈','⭐','🌙','☀️','❄️','🔥','⛄',
+ '⚽','🏀','🎈','🎁','🔑','🚗','🚀','⏰','🎸','👑'];
+const ROUNDS=10,WIN_AT=6;
+const CPU_MS=[0,9000,7500,6000,5000,4200,3500,2800];
+const orderOf=lv=>lv<=2?3:lv<=5?5:7;           // 카드 한 장에 그림 4/6/8개
+let muted=false,overlayMode='',cfg={level:1},gameId=0;
+let deck=[],symEmo=[],round=0,sa=0,sb=0,over=false,live=false,match=-1,cur=null,cpuTimer=null,lockUntil=0,lvNote='',nextT=null;
+
+/* ---------- 카드 만들기: 사영평면 (어느 두 장이든 그림이 딱 하나만 같음) ---------- */
+function buildDeck(n){
+  const cards=[]; const first=[]; for(let i=0;i<=n;i++) first.push(i); cards.push(first);
+  for(let j=0;j<n;j++){ const c=[0]; for(let k=0;k<n;k++) c.push(n+1+n*j+k); cards.push(c); }
+  for(let i=0;i<n;i++) for(let j=0;j<n;j++){ const c=[i+1]; for(let k=0;k<n;k++) c.push(n+1+n*k+((i*k+j)%n)); cards.push(c); }
+  return cards;
+}
+const shuffle=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const rnd=(a,b)=>a+Math.random()*(b-a);
+
+/* ---------- sound ---------- */
+let AC;
+function unlock(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){} }
+function tone(f0,f1,d,type,v,delay){
+  if(muted) return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const t0=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine'; o.frequency.setValueAtTime(f0,t0); if(f1!==f0) o.frequency.exponentialRampToValueAtTime(f1,t0+d);
+    g.gain.setValueAtTime(v||.08,t0); g.gain.exponentialRampToValueAtTime(.0001,t0+d);
+    o.connect(g); g.connect(AC.destination); o.start(t0); o.stop(t0+d);
+  }catch(e){}
+}
+const sfx={
+  ok:()=>{tone(660,660,.12,'triangle',.09);tone(880,880,.18,'triangle',.09,.1);tone(1175,1175,.22,'triangle',.08,.2)},
+  no:()=>tone(230,170,.22,'sawtooth',.045),
+  cpu:()=>{tone(400,300,.15,'square',.04);tone(300,220,.2,'square',.04,.14)},
+  deal:()=>tone(520,720,.08,'triangle',.05),
+  win:()=>[523,659,784,1046,1318].forEach((f,i)=>tone(f,f,.22,'triangle',.09,i*.12)),
+  lose:()=>[392,330,262].forEach((f,i)=>tone(f,f,.25,'sine',.09,i*.18))
+};
+
+/* ---------- 전적 ---------- */
+const SCK='score.spot';
+function getScore(){ const d={cpu:{a:0,b:0,d:0}}; const s=LS.get(SCK,d)||d; s.cpu=s.cpu||d.cpu; return s; }
+function renderRec(){ const r=getScore().cpu,d=r.d?' · 무 '+r.d:''; $('rec').textContent='🏆 나 '+r.a+' : '+r.b+' 컴퓨터'+d; }
+
+/* ---------- 라운드 ---------- */
+function layoutCard(el,card,side){
+  el.innerHTML='';
+  const k=card.length,rot0=rnd(0,360),ids=shuffle(card),items=[];
+  const ring=k>=5?k-1:k, big=k===4?.28:k===6?.26:.22, rad=k===4?.27:k===6?.34:.36;
+  let i=0;
+  if(k>=5) items.push({s:ids[i++],x:0,y:0,sz:k===6?.30:.24});
+  for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*rad,y:Math.sin(a)*rad,sz:big*rnd(.92,1.08)}); }
+  for(const it of items){
+    const b=document.createElement('button');
+    b.className='sym'; b.dataset.s=it.s; b.dataset.side=side; b.textContent=symEmo[it.s];
+    b.style.left=(50+it.x*100)+'%'; b.style.top=(50+it.y*100)+'%';
+    b.style.width=b.style.height='calc(var(--d)*'+(it.sz*1.12).toFixed(3)+')';
+    b.style.fontSize='calc(var(--d)*'+it.sz.toFixed(3)+')';
+    b.style.setProperty('--rot',Math.round(rnd(-40,40))+'deg');
+    el.appendChild(b);
+  }
+}
+function newGame(){
+  gameId++; clearTimeout(cpuTimer); clearTimeout(nextT);
+  const n=orderOf(cfg.level);
+  deck=buildDeck(n); symEmo=shuffle(EMO).slice(0,n*n+n+1);
+  round=0; sa=0; sb=0; over=false; live=false; lvNote='';
+  closeOverlay(); nextRound();
+}
+function nextRound(){
+  if(over) return;
+  round++; live=true; lockUntil=0;
+  let a,b2;
+  do{ a=Math.floor(Math.random()*deck.length); b2=Math.floor(Math.random()*deck.length); }while(a===b2||(cur&&cur.a===a&&cur.b===b2));
+  cur={a,b:b2};
+  match=deck[a].find(s=>deck[b2].includes(s));
+  layoutCard($('cardA'),deck[a],'a'); layoutCard($('cardB'),deck[b2],'b');
+  $('cardA').classList.remove('lock'); $('cardB').classList.remove('lock');
+  sfx.deal(); setStatus('같은 그림을 찾아 눌러요!','','왼쪽과 오른쪽 카드에 똑같은 그림이 딱 하나 있어요');
+  // 컴퓨터가 찾는 시간
+  const ms=CPU_MS[cfg.level]*rnd(.75,1.25), bar=$('bar').firstElementChild;
+  bar.style.transition='none'; bar.style.width='100%'; void bar.offsetWidth;
+  bar.style.transition='width '+ms+'ms linear'; bar.style.width='0%';
+  const id=gameId; clearTimeout(cpuTimer);
+  cpuTimer=setTimeout(()=>{ if(id===gameId&&live) endRound('cpu'); },ms);
+  updateScore();
+}
+function setStatus(t,cls,sub){ const s=$('status'); s.className='box'+(cls?' '+cls:''); s.innerHTML=t+(sub?'<small>'+sub+'</small>':''); }
+function updateScore(){ $('score').textContent='라운드 '+Math.min(round,ROUNDS)+'/'+ROUNDS+' · 나 '+sa+' : '+sb+' 컴퓨터'; $('bSound').innerHTML=(muted?'🔇':'🔊')+'<small>'+(muted?'소리 꺼짐':'소리')+'</small>'; renderRec(); }
+function endRound(who){
+  if(!live) return; live=false; clearTimeout(cpuTimer);
+  const bar=$('bar').firstElementChild; const w=getComputedStyle(bar).width; bar.style.transition='none'; bar.style.width=w;
+  document.querySelectorAll('.sym[data-s="'+match+'"]').forEach(e=>e.classList.add('hit'));
+  if(who==='me'){ sa++; sfx.ok(); setStatus('내가 먼저 찾았어요! 🎉','ok'); }
+  else{ sb++; sfx.cpu(); setStatus('컴퓨터가 먼저 찾았어요 🤖','no','노랗게 빛나는 그림이 정답이었어요'); }
+  updateScore();
+  const id=gameId;
+  if(sa>=WIN_AT||sb>=WIN_AT||round>=ROUNDS){ nextT=setTimeout(()=>{ if(id===gameId) finish(); },1500); }
+  else nextT=setTimeout(()=>{ if(id===gameId) nextRound(); },1500);
+}
+function finish(){
+  over=true;
+  const sc=getScore(),k=sa>sb?'a':sa<sb?'b':'d'; sc.cpu[k]++; LS.set(SCK,sc);
+  const prev=cfg.level; lvNote='';
+  if(k==='a'){ cfg.level=Math.min(7,cfg.level+1); lvNote=cfg.level>prev?'⬆ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 올라가요!':'🏅 가장 높은 단계예요!'; }
+  else if(k==='b'){ cfg.level=Math.max(1,cfg.level-1); if(cfg.level<prev) lvNote='⬇ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 내려가요'; }
+  LS.set('spot.level',cfg.level);
+  if(k==='b') sfx.lose(); else sfx.win();
+  renderRec(); showEnd(k);
+}
+
+/* ---------- 입력 ---------- */
+function onTap(e){
+  unlock();
+  const b=e.target.closest('.sym'); if(!b||!live||overlayMode) return;
+  if(Date.now()<lockUntil) return;
+  if(+b.dataset.s===match){ endRound('me'); return; }
+  // 틀림: 잠깐 쉬어요
+  sfx.no(); b.classList.remove('bad'); void b.offsetWidth; b.classList.add('bad');
+  lockUntil=Date.now()+1000; $('cardA').classList.add('lock'); $('cardB').classList.add('lock');
+  setStatus('앗, 달라요! 잠깐 쉬어요 😅','no');
+  const id=gameId; setTimeout(()=>{ if(id===gameId&&live){ $('cardA').classList.remove('lock'); $('cardB').classList.remove('lock'); setStatus('같은 그림을 찾아 눌러요!','','왼쪽과 오른쪽 카드에 똑같은 그림이 딱 하나 있어요'); } },1000);
+}
+$('cards').addEventListener('pointerdown',e=>{ if(e.target.closest('.sym')){ e.preventDefault(); onTap(e); } });
+
+/* ---------- 메뉴 ---------- */
+function openOverlay(h,m){ overlayMode=m; const o=$('overlay'); o.innerHTML='<div class="card">'+h+'</div>'; o.className='on'; }
+function closeOverlay(){ overlayMode=''; const o=$('overlay'); o.className=''; o.innerHTML=''; }
+function setLv(n){
+  cfg.level=n; LS.set('spot.level',n); const t=$('lvthumb'); if(!t) return;
+  t.style.left=((n-1)/6*100)+'%'; t.textContent=LVE[n];
+  document.querySelectorAll('#lvtrack .dt').forEach((d,i)=>d.classList.toggle('on',i<n));
+}
+function initLvBar(){
+  const tr=$('lvtrack'); if(!tr) return;
+  setLv(Math.max(1,Math.min(7,cfg.level)));
+  let drag=false;
+  const pick=e=>{ const r=tr.getBoundingClientRect(); setLv(Math.max(1,Math.min(7,Math.round((e.clientX-r.left)/r.width*6)+1))); };
+  tr.addEventListener('pointerdown',e=>{ drag=true; try{tr.setPointerCapture(e.pointerId);}catch(_){} pick(e); });
+  tr.addEventListener('pointermove',e=>{ if(drag) pick(e); });
+  ['pointerup','pointercancel'].forEach(ev=>tr.addEventListener(ev,()=>{ drag=false; }));
+}
+function showMenu(){
+  let h='<h1>👀 같은 그림 찾기</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 컴퓨터보다 먼저 찾아요</div>';
+  h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
+  h+='<button class="go" data-act="start">시작하기</button>';
+  if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
+  h+='<div class="links"><a class="go alt" href="../">♟ 체스</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 사목</a></div>';
+  openOverlay(h,'menu'); initLvBar();
+}
+function showEnd(k){
+  const big=k==='a'?'🏆':k==='b'?'🤖':'🤝',t=k==='a'?'내가 이겼어요! 🎉':k==='b'?'컴퓨터가 이겼어요':'무승부예요';
+  openOverlay('<div class="big">'+big+'</div><h2>'+t+'</h2><div class="sub">나 '+sa+' : '+sb+' 컴퓨터</div>'
+    +(lvNote?'<div style="font-size:22px;margin:6px 0">'+lvNote+'</div>':'')
+    +'<button class="go" data-act="again">한 판 더</button><button class="go alt" data-act="menu">메뉴</button>','end');
+}
+$('overlay').addEventListener('click',e=>{
+  unlock();
+  const t=e.target.closest('[data-act]'); if(!t) return;
+  const a=t.dataset.act;
+  if(a==='start'||a==='again') newGame();
+  else if(a==='menu') showMenu();
+  else if(a==='close') closeOverlay();
+});
+$('bAgain').addEventListener('click',newGame);
+$('bMenu').addEventListener('click',showMenu);
+$('bSound').addEventListener('click',()=>{ muted=!muted; updateScore(); if(!muted){unlock();sfx.deal();} });
+let holdT=null; const bP=$('bParent');
+bP.addEventListener('pointerdown',()=>{ bP.classList.add('hold'); holdT=setTimeout(()=>{ holdT=null; bP.classList.remove('hold'); Guard.parentFlow(); },900); });
+['pointerup','pointerleave','pointercancel'].forEach(ev=>bP.addEventListener(ev,()=>{ clearTimeout(holdT); bP.classList.remove('hold'); }));
+function vh(){ document.documentElement.style.setProperty('--vh',(window.innerHeight/100)+'px'); }
+window.addEventListener('resize',vh);
+
+/* boot */
+vh();
+cfg.level=Math.max(1,Math.min(7,LS.get('spot.level',1)));
+renderRec(); updateScore();
+setStatus('시작하기를 눌러요','');
+showMenu();
+Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s<=300?' low':''); },onReset:renderRec});
+window.__spot={buildDeck,get match(){return match;},get cfg(){return cfg;},get round(){return round;},get sa(){return sa;},get sb(){return sb;},get over(){return over;},get live(){return live;},newGame,get deck(){return deck;}};
+})();
+</script>
+</body>
+</html>
