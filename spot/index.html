@@ -105,7 +105,7 @@ const EMO=['🐶','🐱','🐭','🐰','🦊','🐻','🐼','🐨','🐯','🦁'
  '⚽','🏀','🎈','🎁','🔑','🚗','🚀','⏰','🎸','👑'];
 const ROUNDS=10,WIN_AT=6;
 const CPU_MS=[0,9000,7200,5800,4700,3900,3200,2600];
-const symsOf=lv=>7+lv;                            // 1단계 8개 → 7단계 14개 (단계마다 1개씩 늘어남)
+const symsOf=lv=>5+lv;                            // 1단계 6개 → 7단계 12개 (단계마다 1개씩 늘어남)
 let muted=false,overlayMode='',cfg={level:1},gameId=0;
 let deck=[],symEmo=[],round=0,sa=0,sb=0,over=false,live=false,match=-1,cur=null,cpuTimer=null,lockUntil=0,lvNote='',nextT=null;
 
