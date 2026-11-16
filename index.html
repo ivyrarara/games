@@ -58,7 +58,7 @@ function shape(kind,c1,c2,n){
 
 /* ---- 게임별 상징 그림 (스티커 가장자리에 붙음) ---- */
 const NV=C.navy;
-const T=(x,y,r,sc,inner)=>`<g transform="translate(${x} ${y}) rotate(${r||0}) scale(${sc||1})">${inner}</g>`;
+const T=(x,y,r,sc,inner)=>`<g transform="translate(${x} ${y}) rotate(${r||0}) scale(${(sc||1)*.7})">${inner}</g>`;
 const stk=(body,fill,out,w)=>`<g fill="${out}" stroke="${out}" stroke-width="${w||3.2}" stroke-linejoin="round" stroke-linecap="round">${body}</g><g fill="${fill}">${body}</g>`;
 const BODY={
  pawn:'<circle cx="0" cy="-8" r="5.5"/><path d="M-5.5 11Q-4.5 0 0 -3Q4.5 0 5.5 11Z"/><rect x="-8.5" y="10" width="17" height="5" rx="2.5"/>',
