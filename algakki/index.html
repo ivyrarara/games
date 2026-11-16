@@ -14,7 +14,11 @@ html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;backgrou
   font-family:var(--font);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:light}
 button,a{font-family:inherit;color:inherit}
 #app{height:calc(var(--vh)*100);display:flex;align-items:center;justify-content:center;gap:14px;padding:10px}
-#stage{--bs:min(calc(var(--vh)*100 - 20px), calc(100vw - 300px));width:var(--bs);height:var(--bs);flex:none;border-radius:14px;overflow:hidden;box-shadow:0 6px 0 #4b3a28}
+#stage{--bs:min(calc(var(--vh)*100 - 20px), calc(100vw - 300px));width:var(--bs);height:var(--bs);flex:none;border-radius:14px;overflow:hidden;box-shadow:0 6px 0 #4b3a28;position:relative}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:3;font-size:calc(var(--bs)*.2);letter-spacing:2px;color:#ffe14d;-webkit-text-stroke:calc(var(--bs)*.012) #4b3a28;paint-order:stroke fill;text-shadow:0 calc(var(--bs)*.012) 0 #4b3a28,0 calc(var(--bs)*.03) calc(var(--bs)*.04) rgba(0,0,0,.35);text-align:center;line-height:1}
+#win.on{display:flex;animation:winpop .5s cubic-bezier(.2,1.6,.4,1)}
+#win.lose{color:#cfd6e4;font-size:calc(var(--bs)*.13)}
+@keyframes winpop{from{transform:scale(.2) rotate(-12deg);opacity:0}}
 #cv{width:100%;height:100%;display:block;touch-action:none}
 #panel{width:260px;display:flex;flex-direction:column;gap:10px}
 .box{background:var(--card);border-radius:18px;border:2px solid var(--edge);padding:12px 14px}
@@ -57,15 +61,16 @@ button,a{font-family:inherit;color:inherit}
   #panel{width:min(100%,640px);gap:8px}
   #status{min-height:70px;font-size:20px}
   .info{flex-direction:row;gap:8px}.info>.box{flex:1}
+  .time{font-size:15px;padding:8px 6px;white-space:nowrap}
   .btns{grid-template-columns:repeat(5,1fr)}.btn.wide{grid-column:auto}
-  .btn{font-size:15px;min-height:52px}
+  .btn{font-size:13px;min-height:52px;padding:4px 2px;white-space:nowrap}.btn small{font-size:10px}
 }
 @media (max-height:520px) and (orientation:landscape){#status{min-height:70px;font-size:20px}#panel{gap:7px}}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="stage"><canvas id="cv"></canvas></div>
+  <div id="stage"><canvas id="cv"></canvas><div id="win"></div></div>
   <aside id="panel">
     <div id="status" class="box"></div>
     <div class="box" id="score"></div>
@@ -75,8 +80,7 @@ button,a{font-family:inherit;color:inherit}
       <a class="btn" href="../">🏠 처음</a>
       <button class="btn" id="bMenu">☰ 메뉴</button>
       <button class="btn" id="bSound">🔊 소리</button>
-      <button class="btn holdable" id="bParent">👪 부모님<small>꾹 누르기</small></button>
-      <a class="btn wide" href="../">🏠 처음으로</a>
+      <button class="btn wide holdable" id="bParent">👪 부모님<small>꾹 누르기</small></button>
     </div>
   </aside>
 </div>
@@ -148,7 +152,7 @@ const allStill=()=>st.every(s=>s.out!==undefined||(s.vx===0&&s.vy===0));
 
 /* ---------- game ---------- */
 function newGame(){
-  gameId++; st=[]; parts=[];
+  gameId++; st=[]; parts=[]; $('win').className='';
   const n=cfg.n;
   for(let i=0;i<n;i++){
     const x=S*(i+1)/(n+1);
@@ -164,8 +168,8 @@ function endTurn(){
   const b=cnt(1),w=cnt(-1);
   if(!b||!w){
     over=true; winner=(!b&&!w)?0:(!w?1:-1);
-    recordScore(); updateUI();
-    const id=gameId; setTimeout(()=>{ if(id===gameId&&over) showEnd(); },1000);
+    recordScore(); updateUI(); showWin();
+    const id=gameId; setTimeout(()=>{ if(id===gameId&&over) showEnd(); },2200);
     return;
   }
   turn=-turn; updateUI(); maybeCpu();
@@ -281,6 +285,13 @@ function updateUI(){
     '<div class="sc'+(!over&&turn===-1?' on':'')+'"><span class="st w"></span><span>'+nameW+' '+w+'</span><span class="dots">'+dots(-1,w)+'</span></div>';
   $('bSound').textContent=muted?'🔇 소리 꺼짐':'🔊 소리';
   renderRec();
+}
+function showWin(){
+  const w=$('win'); let t='WIN!',c='';
+  if(winner===0){t='DRAW';c='lose';}
+  else if(cfg.mode==='cpu'&&winner===-1){t='LOSE';c='lose';}
+  else if(cfg.mode!=='cpu'){t=(winner===1?'⚫':'⚪')+'<br>WIN!';}
+  w.className='on '+c; w.innerHTML=t;
 }
 function resultText(){
   if(winner===0) return '무승부예요';
