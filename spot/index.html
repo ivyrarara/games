@@ -88,7 +88,7 @@ button,a{font-family:inherit;color:inherit}
   <aside id="panel">
     <div id="status" class="box"></div>
     <div class="box" id="score"></div>
-    <div class="box" id="cpu"><span id="cpuLbl">컴퓨터</span><div id="bar"><i></i></div></div>
+    <div class="box" id="cpu"><span id="cpuLbl">⏳ 남은 시간</span><div id="bar"><i></i></div></div>
     <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bAgain">🔄 다시하기</button>
@@ -111,10 +111,10 @@ const EMO=['🐶','🐱','🐭','🐰','🦊','🐻','🐼','🐨','🐯','🦁'
  '🌻','🌵','🌈','⭐','🌙','☀️','❄️','🔥','⛄',
  '⚽','🏀','🎈','🎁','🔑','🚗','🚀','⏰','🎸','👑'];
 const ROUNDS=10,WIN_AT=6;
-const CPU_MS=[0,9000,7200,5800,4700,3900,3200,2600];
+const TIME_MS=[0,15000,13000,11000,9500,8000,7000,6000]; // 단계별 한 문제 제한 시간
 const symsOf=lv=>5+lv;                            // 1단계 6개 → 7단계 12개 (단계마다 1개씩 늘어남)
 let muted=false,overlayMode='',cfg={level:1},gameId=0;
-let deck=[],symEmo=[],round=0,sa=0,sb=0,over=false,live=false,match=-1,cur=null,cpuTimer=null,lockUntil=0,lvNote='',nextT=null;
+let deck=[],symEmo=[],round=0,sa=0,sb=0,over=false,live=false,match=-1,cur=null,roundTimer=null,lockUntil=0,lvNote='',nextT=null;
 
 /* ---------- 카드 만들기: 사영평면 (어느 두 장이든 그림이 딱 하나만 같음) ---------- */
 function buildDeck(n){
@@ -151,7 +151,7 @@ const sfx={
 /* ---------- 전적 ---------- */
 const SCK='score.spot';
 function getScore(){ const d={cpu:{a:0,b:0,d:0}}; const s=LS.get(SCK,d)||d; s.cpu=s.cpu||d.cpu; return s; }
-function renderRec(){ const r=getScore().cpu,d=r.d?' · 무 '+r.d:''; $('rec').textContent='🏆 나 '+r.a+' : '+r.b+' 컴퓨터'+d; }
+function renderRec(){ const r=getScore().cpu; $('rec').textContent='🏆 성공 '+r.a+'번 · 실패 '+r.b+'번'; }
 
 /* ---------- 라운드 ---------- */
 function layoutCard(el,card,side){
@@ -185,7 +185,7 @@ function layoutCard(el,card,side){
   }
 }
 function newGame(){
-  gameId++; clearTimeout(cpuTimer); clearTimeout(nextT);
+  gameId++; clearTimeout(roundTimer); clearTimeout(nextT);
   deck=[];
   round=0; sa=0; sb=0; over=false; live=false; lvNote='';
   closeOverlay(); nextRound();
@@ -199,33 +199,33 @@ function nextRound(){
   layoutCard($('cardA'),A,'a'); layoutCard($('cardB'),B,'b');
   $('cardA').classList.remove('lock'); $('cardB').classList.remove('lock');
   sfx.deal(); setStatus('같은 그림을 찾아 눌러요!','','왼쪽과 오른쪽 카드에 똑같은 그림이 딱 하나 있어요');
-  // 컴퓨터가 찾는 시간
-  const ms=CPU_MS[cfg.level]*rnd(.75,1.25), bar=$('bar').firstElementChild;
+  // 제한 시간
+  const ms=TIME_MS[cfg.level], bar=$('bar').firstElementChild;
   bar.style.transition='none'; bar.style.width='100%'; void bar.offsetWidth;
   bar.style.transition='width '+ms+'ms linear'; bar.style.width='0%';
-  const id=gameId; clearTimeout(cpuTimer);
-  cpuTimer=setTimeout(()=>{ if(id===gameId&&live) endRound('cpu'); },ms);
+  const id=gameId; clearTimeout(roundTimer);
+  roundTimer=setTimeout(()=>{ if(id===gameId&&live) endRound('time'); },ms);
   updateScore();
 }
 function setStatus(t,cls,sub){ const s=$('status'); s.className='box'+(cls?' '+cls:''); s.innerHTML=t+(sub?'<small>'+sub+'</small>':''); }
-function updateScore(){ $('score').textContent='라운드 '+Math.min(round,ROUNDS)+'/'+ROUNDS+' · 나 '+sa+' : '+sb+' 컴퓨터'; $('bSound').innerHTML=(muted?'🔇':'🔊')+'<small>'+(muted?'소리 꺼짐':'소리')+'</small>'; renderRec(); }
+function updateScore(){ $('score').textContent='문제 '+Math.min(round,ROUNDS)+'/'+ROUNDS+' · 성공 '+sa+' · 실패 '+sb; $('bSound').innerHTML=(muted?'🔇':'🔊')+'<small>'+(muted?'소리 꺼짐':'소리')+'</small>'; renderRec(); }
 function endRound(who){
-  if(!live) return; live=false; clearTimeout(cpuTimer);
+  if(!live) return; live=false; clearTimeout(roundTimer);
   const bar=$('bar').firstElementChild; const w=getComputedStyle(bar).width; bar.style.transition='none'; bar.style.width=w;
   document.querySelectorAll('.sym[data-s="'+match+'"]').forEach(e=>e.classList.add('hit'));
-  if(who==='me'){ sa++; sfx.ok(); setStatus('내가 먼저 찾았어요! 🎉','ok'); }
-  else{ sb++; sfx.cpu(); setStatus('컴퓨터가 먼저 찾았어요 🤖','no','노랗게 빛나는 그림이 정답이었어요'); }
+  if(who==='me'){ sa++; sfx.ok(); setStatus('찾았어요! 🎉','ok'); }
+  else{ sb++; sfx.no(); setStatus('시간이 끝났어요 ⏰','no','노랗게 빛나는 그림이 정답이었어요'); }
   updateScore();
   const id=gameId;
-  if(sa>=WIN_AT||sb>=WIN_AT||round>=ROUNDS){ nextT=setTimeout(()=>{ if(id===gameId) finish(); },1500); }
+  if(sa>=WIN_AT||sb>ROUNDS-WIN_AT||round>=ROUNDS){ nextT=setTimeout(()=>{ if(id===gameId) finish(); },1500); }
   else nextT=setTimeout(()=>{ if(id===gameId) nextRound(); },1500);
 }
 function finish(){
   over=true;
-  const sc=getScore(),k=sa>sb?'a':sa<sb?'b':'d'; sc.cpu[k]++; LS.set(SCK,sc);
+  const sc=getScore(),k=sa>=WIN_AT?'a':'b'; sc.cpu[k]++; LS.set(SCK,sc);
   const prev=cfg.level; lvNote='';
-  if(k==='a'){ cfg.level=Math.min(7,cfg.level+1); lvNote=cfg.level>prev?'⬆ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 올라가요!':'🏅 가장 높은 단계예요!'; }
-  else if(k==='b'){ cfg.level=Math.max(1,cfg.level-1); if(cfg.level<prev) lvNote='⬇ 컴퓨터가 '+LVE[cfg.level]+' '+cfg.level+'단계로 내려가요'; }
+  if(k==='a'){ cfg.level=Math.min(7,cfg.level+1); lvNote=cfg.level>prev?'⬆ '+LVE[cfg.level]+' '+cfg.level+'단계로 올라가요!':'🏅 가장 높은 단계예요!'; }
+  else if(k==='b'){ cfg.level=Math.max(1,cfg.level-1); if(cfg.level<prev) lvNote='⬇ '+LVE[cfg.level]+' '+cfg.level+'단계로 내려가요'; }
   LS.set('spot.level',cfg.level);
   if(k==='b') sfx.lose(); else sfx.win();
   renderRec(); showEnd(k);
@@ -263,8 +263,8 @@ function initLvBar(){
   ['pointerup','pointercancel'].forEach(ev=>tr.addEventListener(ev,()=>{ drag=false; }));
 }
 function showMenu(){
-  let h='<h1>👀 Spot It</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 컴퓨터보다 먼저 찾아요</div>';
-  h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
+  let h='<h1>👀 Spot It</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 제한 시간 안에 찾아요 · 10번 중 6번 성공하면 이겨요</div>';
+  h+='<div class="row"><b>난이도</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
   h+=Guard.extras();
   if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
@@ -272,8 +272,8 @@ function showMenu(){
   openOverlay(h,'menu'); initLvBar();
 }
 function showEnd(k){
-  const big=k==='a'?'🏆':k==='b'?'🤖':'🤝',t=k==='a'?'내가 이겼어요! 🎉':k==='b'?'컴퓨터가 이겼어요':'무승부예요';
-  openOverlay('<div class="big">'+big+'</div><h2>'+t+'</h2><div class="sub">나 '+sa+' : '+sb+' 컴퓨터</div>'
+  const big=k==='a'?'🏆':'⏰',t=k==='a'?'성공했어요! 🎉':'아쉬워요, 다음엔 꼭!';
+  openOverlay('<div class="big">'+big+'</div><h2>'+t+'</h2><div class="sub">성공 '+sa+'번 · 실패 '+sb+'번</div>'
     +(lvNote?'<div style="font-size:22px;margin:6px 0">'+lvNote+'</div>':'')
     +'<button class="go" data-act="again">한 판 더</button><button class="go alt" data-act="menu">메뉴</button>','end');
 }
