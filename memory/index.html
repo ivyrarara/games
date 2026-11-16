@@ -260,7 +260,7 @@ function initLvBar(){
 function showMenu(){
   let h='<h1>🧠 Matching Pairs</h1><div class="sub">처음에 카드를 잠깐 보여줘요. 잘 외웠다가 카드를 두 장씩 뒤집어서 같은 짝을 모두 찾아요. 틀린 횟수가 적을수록 좋아요</div>';
   h+='<div class="row"><b>카드 개수</b> <small id="lvcount"></small> <small>단계가 높을수록 카드가 많아져요</small><div class="lvbar"><span>적게</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>많이</span></div></div>';
-  h+='<button class="go" data-act="start">시작하기</button>';
+  h+='<button class="go" data-act="start"><svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   h+=Guard.extras();
   if(started&&!over)h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
@@ -279,7 +279,7 @@ window.addEventListener('resize',()=>{vh();layout();});
 
 vh();
 cfg.level=Math.max(1,Math.min(7,LS.get('memory.level',1)));
-renderRec();setStatus('시작하기를 눌러요','');updateScore();
+renderRec();setStatus('Play!를 눌러요','');updateScore();
 showMenu();
 Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className='box time'+(s<=300?' low':'');},onReset:renderRec});
 window.__mem={get cards(){return cards;},get over(){return over;},get fails(){return fails;},get previewing(){return previewing;},get cfg(){return cfg;},get lock(){return lock;},newGame,tap:onTap};

@@ -70,5 +70,6 @@ p = p.replace('function showMenu(){', _fn+'function showMenu(){')
 _a = "  h+='<button class=\"go\" data-act=\"start\">시작하기</button>';"
 assert p.count(_a)==1
 p = p.replace(_a,_a+"\n  h+=chessExtras();")
+p=p.replace('data-act="start">시작하기</button>','data-act="start">'+'<svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>'+'Play!</button>')
 _os.makedirs('chess',exist_ok=True)
 open('chess/index.html','w').write(p)

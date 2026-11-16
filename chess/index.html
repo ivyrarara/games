@@ -699,7 +699,7 @@ function showMenu(){
     h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
     h+='<div class="row"><b>내 말 색깔</b><div class="chips">'+chip('color',1,'흰색 (먼저 시작)')+chip('color',-1,'검정')+'</div></div>';
   }
-  h+='<button class="go" data-act="start">시작하기</button>';
+  h+='<button class="go" data-act="start"><svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   h+=chessExtras();
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🏠 처음으로</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';

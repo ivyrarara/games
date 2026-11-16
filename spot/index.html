@@ -265,7 +265,7 @@ function initLvBar(){
 function showMenu(){
   let h='<h1>👀 Spot It</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 제한 시간 안에 찾아요 · 10번 중 6번 성공하면 이겨요</div>';
   h+='<div class="row"><b>난이도</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
-  h+='<button class="go" data-act="start">시작하기</button>';
+  h+='<button class="go" data-act="start"><svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   h+=Guard.extras();
   if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
@@ -298,7 +298,7 @@ window.addEventListener('resize',vh);
 vh();
 cfg.level=Math.max(1,Math.min(7,LS.get('spot.level',1)));
 renderRec(); updateScore();
-setStatus('시작하기를 눌러요','');
+setStatus('Play!를 눌러요','');
 showMenu();
 Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s<=300?' low':''); },onReset:renderRec});
 window.__spot={buildDeck,get match(){return match;},get cfg(){return cfg;},get round(){return round;},get sa(){return sa;},get sb(){return sb;},get over(){return over;},get live(){return live;},newGame,get deck(){return deck;}};

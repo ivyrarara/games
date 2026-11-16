@@ -432,7 +432,7 @@ function showMenu(){
   let h='<h1>🃏 UNO</h1><div class="sub">같은 색·숫자·모양 카드를 내서 손에 든 카드를 먼저 다 내요 · 🏆 나 '+sc.a+' : '+sc.b+'</div>';
   h+='<div class="row"><b>종류</b><div class="seg" id="segMode"><button data-m="classic" class="'+(m==='classic'?'on':'')+'">기본</button><button data-m="flip" class="'+(m==='flip'?'on':'')+'">플립 (뒤집기)</button></div></div>';
   h+='<div class="row"><b>사람 수 (나 + 컴퓨터)</b><div class="seg" id="segNp">'+[2,3,4].map(x=>'<button data-n="'+x+'" class="'+(n===x?'on':'')+'">'+x+'명</button>').join('')+'</div></div>';
-  h+='<button class="go" data-act="start">시작하기</button>';
+  h+='<button class="go" data-act="start"><svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   h+=Guard.extras();
   if(!over&&hands.length&&phase!==''&&phase!=='over')h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<div class="hint">낼 카드가 없으면 왼쪽 더미를 눌러 1장 뽑아요. 카드가 1장 남으면 "우노!" 버튼을 꼭 눌러요.</div>';
