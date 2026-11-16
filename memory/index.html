@@ -70,6 +70,8 @@ button,a{font-family:inherit;color:inherit}
 #bAgain,#bSound,#bParent{display:none!important}
 .btns{grid-template-columns:1fr 1fr!important}.btn.wide{grid-column:auto!important}
 
+.btn{text-decoration:none}
+.info{display:flex!important;flex-direction:row!important;gap:8px;flex-basis:100%}.info>.box{flex:1 1 0!important;min-width:0;font-size:14px;padding:8px 6px;text-align:center}
 .box{background:rgba(255,255,255,.08)!important;border:0!important;box-shadow:none!important}
 </style>
 </head>
@@ -78,7 +80,6 @@ button,a{font-family:inherit;color:inherit}
   <div id="board"></div>
   <aside id="panel">
     <div class="box" id="elapsed"><div id="etime"></div><div id="estat"></div></div>
-    <div class="box" id="score"></div>
     <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bAgain">🔄 다시하기</button>
@@ -180,8 +181,8 @@ function build(){
   layout();
 }
 const el=i=>$('board').children[i];
-function setStatus(t,sub,cls){const e=$('estat');e.innerHTML=t+(sub?'<small>'+sub+'</small>':'');$('elapsed').classList.toggle('ok',cls==='ok');}
-function updateScore(){const left=cards.filter(c=>c.s!=='done').length/2;$('score').textContent='실패 '+fails+'번 · 남은 짝 '+left;$('bSound').textContent=muted?'🔇 꺼짐':'🔊 소리';renderRec();}
+function setStatus(t,sub,cls){const e=$('estat');let x=t;if(cards.length)x=previewing?'잘 보고 외워요!':'실패 '+fails+'번 · 남은 짝 '+cards.filter(c=>c.s!=='done').length/2;e.textContent=x;$('elapsed').classList.toggle('ok',cls==='ok');}
+function updateScore(){const left=cards.filter(c=>c.s!=='done').length/2;$('bSound').textContent=muted?'🔇 꺼짐':'🔊 소리';renderRec();}
 
 /* 진행 */
 function newGame(){
