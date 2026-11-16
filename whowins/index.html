@@ -147,7 +147,7 @@ button,a{font-family:inherit;color:inherit}
 .mi.done{border-color:#2f8f4e}.mi.done.bad{border-color:#e0a100}
 .mi .ck{position:absolute;right:6px;top:4px;font-size:18px}
 .icons{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
-@media (orientation:landscape){.cmp{display:grid;grid-template-columns:1.15fr 1fr;gap:6px 12px;align-items:start}.cmp .tagline{grid-column:1/-1}.cmp>svg{max-height:none}.cmp .bars{grid-template-columns:1fr;margin-top:0;gap:8px}.cc .ca{min-height:0}#nav{position:relative}.nb#nPrev{position:absolute;left:10px;top:50%;transform:translateY(-50%);min-height:60px}.nb#nPrev:active{transform:translateY(-50%)}}
+@media (orientation:landscape){.cmp>svg{max-height:none}.cmp .bars{margin-top:8px}.cc .ca{min-height:0}#nav{position:relative}.nb#nPrev{position:absolute;left:10px;top:50%;transform:translateY(-50%);min-height:60px}.nb#nPrev:active{transform:translateY(-50%)}}
 @media (orientation:portrait){
   #app{flex-direction:column;gap:8px}
   .nb.go{flex:0 0 56%;font-size:22px;padding:0 8px}.nb#nPrev{font-size:22px;padding:0 6px}
@@ -219,10 +219,11 @@ function cmpPage(m){
   const R=refsFor(mx);
   const items=R.map(r=>({art:r.k,box:r.len,n:r.n,v:r.txt,ref:true})).concat([{art:a.art,box:a.len,n:a.n,v:fmtLen(a.len),c:'#4aa8ff'},{art:b.art,box:b.len,n:b.n,v:fmtLen(b.len),c:'#ff7a5a'}]);
   const big=Math.max.apply(null,items.map(i=>i.box));
-  const S_=mx>=.6?40:150/big, gap=50;
+  const S_=mx>=.6?40:150/big; let gap=50;
   const ws=items.map(i=>Math.max(i.box*S_,i.ref?0:18));
-  const W=Math.round(ws.reduce((s,v)=>s+v,0)+gap*(items.length+1));
-  const H=Math.max.apply(null,ws)/2+76; let x=gap;
+  const H=Math.max.apply(null,ws)/2+76, sw=ws.reduce((s,v)=>s+v,0);
+  if(window.innerWidth>window.innerHeight) gap=Math.max(gap,(5.6*H-sw)/(items.length+1));
+  const W=Math.round(sw+gap*(items.length+1)); let x=gap;
   let sv='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMax meet"><line x1="0" y1="'+(H-56)+'" x2="'+W+'" y2="'+(H-56)+'" stroke="#6d92b8" stroke-width="2"/>';
   items.forEach((i,ix)=>{ const w=ws[ix], h=w/2; const col=i.c||'#b7c8dc';
     sv+='<svg x="'+x+'" y="'+(H-56-h)+'" width="'+w+'" height="'+h+'" viewBox="0 0 200 100">'+ART[i.art]+'</svg><text x="'+(x+w/2)+'" y="'+(H-38)+'" text-anchor="middle" font-size="14" fill="'+col+'" font-family="sans-serif">'+i.n+'</text><text x="'+(x+w/2)+'" y="'+(H-20)+'" text-anchor="middle" font-size="14" fill="'+col+'" font-family="sans-serif">'+i.v+'</text>'; x+=w+gap; });
