@@ -150,11 +150,11 @@ function layoutCard(el,card,side){
   el.innerHTML='';
   const k=card.length,rot0=rnd(0,360),ids=shuffle(card),items=[];
   const base=.165*Math.sqrt(8/k);
-  const mulF=n=>shuffle(Array.from({length:n},(_,q)=>.68+.62*q/Math.max(1,n-1)));
+  const mulF=n=>shuffle(Array.from({length:n},(_,q)=>.45+1.15*q/Math.max(1,n-1)));
   let i=0;
   if(k<=9){
     const ring=k-1,mul=mulF(ring);
-    items.push({s:ids[i++],x:0,y:0,sz:.2*Math.sqrt(8/k)*rnd(.8,1.2)});
+    items.push({s:ids[i++],x:0,y:0,sz:.2*Math.sqrt(8/k)*rnd(.6,1.5)});
     for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*.32,y:Math.sin(a)*.32,sz:base*mul[q]}); }
   }else{
     const no=Math.ceil(k*.58),ni=k-no,mo=mulF(no),mi=mulF(ni);
