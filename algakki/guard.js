@@ -69,7 +69,7 @@ async function confirmParent(){
   }
 }
 function limChips(cur){ return [15,30,45,60,90,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
-function showLock(){ open('<div class="big">🌙</div><h2>오늘 놀이 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button>','lock'); }
+function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button>','lock'); }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
   let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
@@ -111,6 +111,7 @@ window.addEventListener('pagehide',flush);
 window.Guard={
   start(o){
     opts=o||{};
+    if(opts.hub){ started=false; if(LS.get('parent',null)&&timeLeft()<=0) showLock(); return; }
     if(!LS.get('parent',null)){ location.replace('../'); return; }
     started=true; tickLast=Date.now();
     if(!opts.noLimit&&timeLeft()<=0) showLock();

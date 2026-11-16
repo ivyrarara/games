@@ -33,8 +33,8 @@ html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;backgrou
   75%{translate:calc(var(--ax)*-1) calc(var(--ay)*.5);rotate:calc(var(--ar)*.8);scale:1.015}
   100%{translate:0 0;rotate:0deg;scale:1}
 }
-.st,.fl{animation:bob var(--d,6s) ease-in-out var(--dl,0s) infinite}
-@media (prefers-reduced-motion:reduce){.st,.fl{animation:none}}
+.st{animation:bob var(--d,6s) ease-in-out var(--dl,0s) infinite}
+@media (prefers-reduced-motion:reduce){.st{animation:none}}
 @media (orientation:portrait){
   .st,.fl{left:var(--px,var(--lx));top:var(--py,var(--ly));width:var(--ps,var(--ls));height:var(--ps,var(--ls))}
   .st .tx{font-size:calc(var(--ps,var(--ls))*var(--fs,.2))}
@@ -43,6 +43,7 @@ html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;backgrou
 </head>
 <body>
 <div id="cluster"></div>
+<script src="algakki/guard.js"></script>
 <script>
 const C={pink:'#ff8fd0',yellow:'#ffc400',green:'#2f9b55',blue:'#1f5fd8',lav:'#cdbaf0',orange:'#ff5a14',red:'#ff3d2e',navy:'#14143a'};
 const P=(r,n,i)=>[(50+Math.cos(2*Math.PI*i/n-Math.PI/2)*r).toFixed(2),(50+Math.sin(2*Math.PI*i/n-Math.PI/2)*r).toFixed(2)];
@@ -107,6 +108,8 @@ F.forEach(f=>{const d=document.createElement('div');d.className='fl';d.style.css
 G.forEach(g=>{const a=document.createElement('a');a.className='st';a.href=g.h;
   a.style.cssText=`--lx:${g.lx};--ly:${g.ly};--ls:${g.ls};--px:${g.px};--py:${g.py};--ps:${g.ps};--r:${g.r}deg;--tr:${g.tr}deg;--tc:${g.tc};--fs:${g.fs};--z:${g.z};--halo:${g.halo||g.c2||g.c1}`;
   a.innerHTML=shape(g.k,g.c1,g.c2)+`<svg class="deco" viewBox="0 0 100 100">${g.d()}</svg>`+`<span class="tx${g.han?' han':''}">${g.t}</span>`;wob(a);box.appendChild(a);});
+Guard.start({hub:true});
+addEventListener('pageshow',e=>{ if(e.persisted) Guard.start({hub:true}); });
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
