@@ -50,8 +50,9 @@ button,a{font-family:inherit;color:inherit}
 @keyframes bob{to{transform:translateY(-6px)}}
 #disc .card.fresh{animation:drop .25s ease-out}
 @keyframes drop{from{transform:scale(1.3) rotate(-8deg);opacity:.4}}
-#colorBox{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:calc(var(--vh)*3.2)}
-#colorDot{width:calc(var(--vh)*10);height:calc(var(--vh)*10);border-radius:50%;border:5px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+#colorBox{display:none;flex-direction:column;align-items:center;gap:2px;font-size:calc(var(--vh)*2.4)}
+#colorBox.on{display:flex}
+#colorDot{width:calc(var(--vh)*5.5);height:calc(var(--vh)*5.5);border-radius:50%;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.3)}
 #dirI{font-size:calc(var(--vh)*5);line-height:1}
 #status{font-size:calc(var(--vh)*5);text-align:center;line-height:1.1;min-height:calc(var(--vh)*5.5)}
 #status.me{color:#ffe14d}
@@ -129,7 +130,7 @@ button,a{font-family:inherit;color:inherit}
     <div id="piles">
       <div class="pile" id="draw"></div>
       <div class="pile" id="disc"></div>
-      <div id="colorBox"><div id="dirI"></div><div id="colorDot"></div><div id="colorName"></div></div>
+      <div id="colorBox"><div id="colorDot"></div><div id="colorName"></div></div>
     </div>
     <div id="status"></div><div id="note"></div>
     <div id="act"><button class="abtn" id="bUno">우노!</button><button class="abtn" id="bPass">넘기기 ➜</button></div>
@@ -250,7 +251,7 @@ function render(){
   const dc=$('disc');dc.innerHTML='';if(discard.length){const top=discard[discard.length-1],ce=cardEl(top);if(top!==lastTop)ce.classList.add('fresh');lastTop=top;dc.appendChild(ce);}
   const P=pal();
   $('colorDot').style.background=P.c[curColor];$('colorName').textContent=P.n[curColor];
-  $('dirI').textContent=dir===1?'↻':'↺';
+  $('colorBox').classList.toggle('on',!!discard.length&&face(discard[discard.length-1]).c===4);
   // hand
   const h=$('hand');h.innerHTML='';
   const mine=hands[0].slice().sort((a,b)=>{const fa=face(a),fb=face(b);return fa.c-fb.c||(fa.v<fb.v?-1:fa.v>fb.v?1:0);});
