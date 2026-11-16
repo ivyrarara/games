@@ -37,7 +37,7 @@ button,a{font-family:inherit;color:inherit}
 #timeBox{background:rgba(0,0,0,.25);border-radius:12px;padding:3px 8px;text-align:center;font-size:calc(var(--vh)*3)}
 #timeBox.low{background:#a8760a}
 .trow{display:flex;gap:4px}
-.tb{flex:1;height:calc(var(--vh)*6.5);min-height:36px;border:0;border-radius:12px;background:#fff;color:var(--ink);font-size:calc(var(--vh)*3.4);cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25);padding:0}
+.tb{text-decoration:none;display:flex;align-items:center;justify-content:center;flex:1;height:calc(var(--vh)*6.5);min-height:36px;border:0;border-radius:12px;background:#fff;color:var(--ink);font-size:calc(var(--vh)*3.4);cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25);padding:0}
 .tb:active{transform:translateY(2px)}
 .tb.holdable{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}
 .tb.hold{background-size:100% 100%;transition:background-size .9s linear}
@@ -109,7 +109,7 @@ button,a{font-family:inherit;color:inherit}
   <header id="top">
     <div id="opps"></div>
     <div id="tools"><div id="timeBox"></div>
-      <div class="trow"><button class="tb" id="bMenu">☰</button><button class="tb" id="bSound">🔊</button><button class="tb holdable" id="bParent">👪</button></div></div>
+      <div class="trow"><a class="tb" href="../">🏠</a><button class="tb" id="bMenu">☰</button><button class="tb" id="bSound">🔊</button><button class="tb holdable" id="bParent">👪</button></div></div>
   </header>
   <main id="mid">
     <div id="piles">

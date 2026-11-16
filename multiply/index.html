@@ -93,7 +93,7 @@ button,a{font-family:inherit;color:inherit}
 #bPad.on{background:#fff6cc}
 #pad .hint.hl{animation:pulse 1s ease-in-out infinite;background:#ffe27a}
 #mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.mini{min-height:54px;border:0;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--edge);font-size:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;padding:2px}
+.mini{text-decoration:none;color:inherit;min-height:54px;border:0;border-radius:14px;background:#fff;box-shadow:0 4px 0 var(--edge);font-size:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;padding:2px}
 .mini:active{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
 .mini.hl{background:#fff1b8;animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.07)}}
@@ -156,6 +156,7 @@ button,a{font-family:inherit;color:inherit}
   <div id="right">
     <div id="pad"></div>
     <div id="mini">
+      <a class="mini" href="../">🏠<span>처음</span></a>
       <button class="mini" id="bMenu">☰<span>메뉴</span></button>
       <button class="mini" id="bPad">⌨<span>숫자판</span></button>
       <button class="mini" id="bSound">🔊<span>소리</span></button>

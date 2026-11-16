@@ -25,6 +25,15 @@ html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;backgrou
 .st .tx.han{font-family:Han,var(--f);line-height:1.04;letter-spacing:-.03em}
 .fl{position:absolute;left:var(--lx);top:var(--ly);width:var(--ls);height:var(--ls);transform:translate(-50%,-50%) rotate(var(--r,0deg));z-index:var(--z,0);pointer-events:none}
 .fl svg{width:100%;height:100%;overflow:visible}
+@keyframes bob{
+  0%{translate:0 0;rotate:0deg;scale:1}
+  25%{translate:var(--ax) var(--ay);rotate:var(--ar);scale:1.02}
+  50%{translate:calc(var(--ax)*-.4) calc(var(--ay)*-1);rotate:calc(var(--ar)*-.6);scale:.99}
+  75%{translate:calc(var(--ax)*-1) calc(var(--ay)*.5);rotate:calc(var(--ar)*.8);scale:1.015}
+  100%{translate:0 0;rotate:0deg;scale:1}
+}
+.st,.fl{animation:bob var(--d,6s) ease-in-out var(--dl,0s) infinite}
+@media (prefers-reduced-motion:reduce){.st,.fl{animation:none}}
 @media (orientation:portrait){
   .st,.fl{left:var(--px,var(--lx));top:var(--py,var(--ly));width:var(--ps,var(--ls));height:var(--ps,var(--ls))}
   .st .tx{font-size:calc(var(--ps,var(--ls))*var(--fs,.2))}
@@ -52,23 +61,28 @@ const G=[
  {h:'multiply/',t:'곱셈<br>몬스터', k:'flower', c1:C.lav,   c2:C.blue,tc:'#fff',fs:.17,r:-3,tr:-6,han:1,lx:'66%',ly:'30%',ls:'44vmin',px:'30%',py:'35%',ps:'46vmin',z:2},
  {h:'connect4/',t:'Connect<br>4', k:'circle', c1:C.yellow,tc:C.navy,fs:.2,  r:8,  tr:10, lx:'88%',ly:'26%',ls:'36vmin',px:'74%',py:'45%',ps:'38vmin',z:3},
  {h:'spot/',    t:'Spot<br>it!',  k:'star',   c1:C.orange,c2:C.yellow,tc:C.navy,fs:.2,r:-8,tr:-10,lx:'16%',ly:'76%',ls:'40vmin',px:'24%',py:'60%',ps:'40vmin',z:2},
- {h:'uno/',     t:'UNO',          k:'scallop',c1:C.pink,  c2:C.blue,tc:'#fff',  fs:.28, r:-5, tr:-7, lx:'40%',ly:'76%',ls:'44vmin',px:'68%',py:'66%',ps:'44vmin',z:3},
+ {h:'uno/',     t:'UNO',          k:'scallop',c1:C.blue,  c2:C.yellow,tc:C.navy,  fs:.28, r:-5, tr:-7, lx:'40%',ly:'76%',ls:'44vmin',px:'68%',py:'66%',ps:'44vmin',z:3},
  {h:'memory/',  t:'Memory',       k:'flower', c1:C.pink,  c2:C.green,tc:'#fff', fs:.15, r:6,  tr:8,  lx:'66%',ly:'76%',ls:'42vmin',px:'30%',py:'84%',ps:'42vmin',z:2}
 ];
 /* 장식 (눌러도 아무 일 없음) */
 const F=[
- {k:'flower',c1:C.pink,  c2:C.green, n:8, lx:'29%',ly:'55%',ls:'15vmin',r:12, z:1,px:'8%', py:'34%',ps:'16vmin'},
+ {k:'flower',c1:C.yellow,c2:C.blue,  n:8, lx:'29%',ly:'55%',ls:'15vmin',r:12, z:1,px:'8%', py:'34%',ps:'16vmin'},
  {k:'star',  c1:C.yellow,c2:C.orange,n:8, lx:'54%',ly:'50%',ls:'14vmin',r:0,  z:1,px:'52%',py:'30%',ps:'14vmin'},
  {k:'flower',c1:C.lav,   c2:C.blue,  n:6, lx:'89%',ly:'58%',ls:'18vmin',r:-8, z:1,px:'90%',py:'66%',ps:'18vmin'},
  {k:'flower',c1:C.green, c2:C.pink,  n:7, lx:'6%', ly:'55%',ls:'16vmin',r:20, z:1,px:'12%',py:'92%',ps:'16vmin'},
  {k:'circle',c1:C.orange,c2:C.yellow,        lx:'90%',ly:'92%',ls:'11vmin',r:0,  z:1,px:'92%',py:'8%', ps:'11vmin'},
- {k:'star',  c1:C.blue,  c2:C.yellow,n:10,lx:'52%',ly:'96%',ls:'13vmin',r:0,  z:1,px:'56%',py:'96%',ps:'13vmin'}
+ {k:'star',  c1:C.green, c2:C.pink,  n:10,lx:'52%',ly:'96%',ls:'13vmin',r:0,  z:1,px:'56%',py:'96%',ps:'13vmin'}
 ];
 const box=document.getElementById('cluster');
-F.forEach(f=>{const d=document.createElement('div');d.className='fl';d.style.cssText=`--lx:${f.lx};--ly:${f.ly};--ls:${f.ls};--px:${f.px};--py:${f.py};--ps:${f.ps};--r:${f.r}deg;--z:${f.z}`;d.innerHTML=shape(f.k,f.c1,f.c2,f.n);box.appendChild(d);});
+let _i=0;const rnd=(a,b)=>a+Math.random()*(b-a);
+function wob(el){_i++;const sg=_i%2?1:-1;
+  el.style.setProperty('--d',rnd(5,8.5).toFixed(2)+'s');el.style.setProperty('--dl',(-rnd(0,8)).toFixed(2)+'s');
+  el.style.setProperty('--ax',(sg*rnd(.5,1.1)).toFixed(2)+'vmin');el.style.setProperty('--ay',(-sg*rnd(.5,1.2)).toFixed(2)+'vmin');
+  el.style.setProperty('--ar',(sg*rnd(1.8,3.6)).toFixed(2)+'deg');}
+F.forEach(f=>{const d=document.createElement('div');d.className='fl';d.style.cssText=`--lx:${f.lx};--ly:${f.ly};--ls:${f.ls};--px:${f.px};--py:${f.py};--ps:${f.ps};--r:${f.r}deg;--z:${f.z}`;d.innerHTML=shape(f.k,f.c1,f.c2,f.n);wob(d);box.appendChild(d);});
 G.forEach(g=>{const a=document.createElement('a');a.className='st';a.href=g.h;
   a.style.cssText=`--lx:${g.lx};--ly:${g.ly};--ls:${g.ls};--px:${g.px};--py:${g.py};--ps:${g.ps};--r:${g.r}deg;--tr:${g.tr}deg;--tc:${g.tc};--fs:${g.fs};--z:${g.z}`;
-  a.innerHTML=shape(g.k,g.c1,g.c2)+`<span class="tx${g.han?' han':''}">${g.t}</span>`;box.appendChild(a);});
+  a.innerHTML=shape(g.k,g.c1,g.c2)+`<span class="tx${g.han?' han':''}">${g.t}</span>`;wob(a);box.appendChild(a);});
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
