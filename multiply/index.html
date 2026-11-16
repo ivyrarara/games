@@ -618,7 +618,7 @@ $('bPad').addEventListener('click',()=>{ padOn=!padOn; LS.set('mult.pad',padOn);
 
 /* boot */
 renderPad(); renderHead(); setMood('idle'); sizePen(); applyPad(); showMenu();
-Guard.start({noLimit:true,lockOnly:true,onReset:renderHead});
+Guard.start({free:true,noLimit:true,onReset:renderHead});
 window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
 })();
 </script>

@@ -24,6 +24,7 @@ st.textContent=`#gov{position:fixed;inset:0;background:rgba(40,35,25,.6);display
 .gcard .go{width:100%;min-height:64px;margin-top:8px;border:0;border-radius:18px;background:#2f8f4e;color:#fff;font-size:26px;box-shadow:0 5px 0 #20703a;cursor:pointer;font-family:inherit}
 .gcard .go.alt{background:#fff;color:#2a2a33;box-shadow:0 5px 0 #dccfae;font-size:21px;min-height:56px}
 .gcard .big{font-size:56px;line-height:1.1}
+.gcard h2,.gcard .sub{word-break:keep-all}
 .gcard .pins{display:flex;gap:14px;justify-content:center;margin:10px 0 14px}
 .gcard .pin{width:20px;height:20px;border-radius:50%;border:3px solid #2a2a33}.gcard .pin.on{background:#2a2a33}
 .gcard .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:0 auto}
@@ -69,7 +70,7 @@ async function confirmParent(){
   }
 }
 function limChips(cur){ return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
-function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button>','lock'); }
+function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
   let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
@@ -141,8 +142,9 @@ window.Guard={
   start(o){
     opts=o||{};
     if(opts.hub){ started=false;
-      if(!LS.get('parent',null)){ open('<div class="big">👪</div><h2>처음 한 번, 부모님 설정이 필요해요</h2><div class="sub">시간 제한과 확인 방법(지문/PIN)을 정해요. 체스 화면에서 설정할 수 있어요.</div><a class="go" href="chess/" style="display:block;line-height:64px;text-decoration:none;text-align:center">부모님 설정하러 가기</a>','setup'); return; }
+      if(!LS.get('parent',null)){ open('<div class="big">⏱️</div><h2>부모님이 시간을 먼저 설정해주세요</h2><div class="sub">시간 제한과 확인 방법(지문/PIN)을 정하면 게임을 할 수 있어요.</div><a class="go" href="chess/" style="display:block;line-height:64px;text-decoration:none;text-align:center">부모님 설정하러 가기</a><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','setup'); return; }
       if(timeLeft()<=0) showLock(); return; }
+    if(opts.free){ started=false; tick(true); return; }
     if(!LS.get('parent',null)){ location.replace('../'); return; }
     started=true; tickLast=Date.now();
     if((!opts.noLimit||opts.lockOnly)&&timeLeft()<=0) showLock();
