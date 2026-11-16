@@ -5,125 +5,116 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>놀이터</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2b2250">
+<meta name="theme-color" content="#d9d9ff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Lilita+One&family=Fredoka:wght@700&family=Bangers&family=Playfair+Display:wght@900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Black+Han+Sans&display=swap">
 <style>
-:root{--vh:1vh;--jua:"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+:root{--vh:1vh;--ink:#111;--serif:"Abril Fatface","Playfair Display",Georgia,serif;--han:"Black Han Sans","Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#2b2250;color:#fff;font-family:var(--jua);
-  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:dark}
-body{background:radial-gradient(circle at 20% 0%,#4a3a8c 0,#2b2250 55%,#1d1740 100%)}
-#app{height:calc(var(--vh)*100);display:flex;flex-direction:column;padding:calc(var(--vh)*2.5) 16px calc(var(--vh)*3);gap:calc(var(--vh)*2)}
-h1{margin:0;text-align:center;font-weight:400;font-size:calc(var(--vh)*6);line-height:1.1;letter-spacing:1px;text-shadow:0 3px 0 rgba(0,0,0,.35)}
-#grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:calc(var(--vh)*2.5) 14px}
-.tile{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:24px;text-decoration:none;color:#fff;
-  border:4px solid rgba(255,255,255,.9);box-shadow:0 7px 0 rgba(0,0,0,.35);min-height:0;transition:transform .08s}
-.tile:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
-.tile>*{position:relative;z-index:1}
-.logo{line-height:.95;text-align:center}
-.tag{position:absolute!important;left:50%;bottom:calc(var(--vh)*1.6);transform:translateX(-50%);white-space:nowrap;font-size:calc(var(--vh)*2.9);background:rgba(0,0,0,.45);border-radius:999px;padding:2px 14px;z-index:2}
-.deco{position:absolute!important;z-index:0!important;pointer-events:none}
-.fs{font-size:calc(var(--vh)*10)}
-
-/* ---- CHESS ---- */
-.t-chess{background:conic-gradient(#5b3a1e 25%,#e8d0a0 0 50%,#5b3a1e 0 75%,#e8d0a0 0) 0 0/calc(var(--vh)*9) calc(var(--vh)*9)}
-.t-chess::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,12,5,.1) 0,rgba(20,12,5,.7) 85%)}
-.t-chess .logo{font-family:"Playfair Display",Georgia,serif;font-weight:900;font-size:calc(var(--vh)*10.5);letter-spacing:.06em;
-  background:linear-gradient(#fff3b0,#f0b429 55%,#a8700f);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 3px 0 #2a1708) drop-shadow(0 0 8px rgba(0,0,0,.6))}
-.t-chess .pc{font-size:calc(var(--vh)*13);line-height:1;color:#ffe08a;text-shadow:0 3px 0 #2a1708,0 0 10px rgba(0,0,0,.7);margin-bottom:calc(var(--vh)*.5)}
-
-/* ---- CONNECT 4 ---- */
-.t-c4{background:#1f4fd6}
-.t-c4::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,#0e2e8f 0 38%,transparent 40%) 0 0/calc(var(--vh)*6.4) calc(var(--vh)*6.4);opacity:.9}
-.t-c4 .logo{font-family:Fredoka,"Jua",sans-serif;font-weight:700;font-size:calc(var(--vh)*6.6);letter-spacing:.02em;color:#fff;-webkit-text-stroke:calc(var(--vh)*.9) #0a2275;paint-order:stroke fill;text-shadow:0 5px 0 #0a2275}
-.t-c4 .four{display:inline-flex;align-items:center;justify-content:center;width:calc(var(--vh)*11);height:calc(var(--vh)*11);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffec6a,#f5b800);
-  color:#d3262b;font-family:Fredoka,sans-serif;font-weight:700;font-size:calc(var(--vh)*8.5);-webkit-text-stroke:0;text-shadow:none;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 4px 0 #0a2275;margin-top:calc(var(--vh)*.8);border:3px solid #fff}
-.t-c4 .d{position:absolute;width:calc(var(--vh)*6);height:calc(var(--vh)*6);border-radius:50%;box-shadow:inset 0 -4px 0 rgba(0,0,0,.22);border:2px solid rgba(255,255,255,.7)}
-.t-c4 .r{background:radial-gradient(circle at 35% 30%,#ff7b7b,#d3262b)}.t-c4 .y{background:radial-gradient(circle at 35% 30%,#ffec6a,#f5b800)}
-
-/* ---- SPOT IT ---- */
-.t-spot{background:radial-gradient(circle at 50% 40%,#ff7ac6 0,#a24bd8 55%,#5a2bb0 100%)}
-.t-spot .logo{font-family:Bangers,"Jua",cursive;font-size:calc(var(--vh)*11);letter-spacing:.04em;color:#fff35c;-webkit-text-stroke:calc(var(--vh)*.9) #4a1796;paint-order:stroke fill;text-shadow:0 5px 0 #4a1796;transform:rotate(-4deg)}
-.t-spot .ring{position:absolute;inset:7% 8%;border:calc(var(--vh)*.8) dashed rgba(255,255,255,.55);border-radius:50%}
-.t-spot .e{position:absolute;font-size:calc(var(--vh)*6.4);filter:drop-shadow(0 3px 0 rgba(0,0,0,.25))}
-
-/* ---- UNO ---- */
-.t-uno{background:radial-gradient(circle at 50% 45%,#ff5a4f 0,#d6211c 70%,#a31510 100%)}
-.t-uno .logo{font-family:"Lilita One","Jua",sans-serif;font-size:calc(var(--vh)*17);letter-spacing:.03em;color:#fff;-webkit-text-stroke:calc(var(--vh)*1.1) #14141a;paint-order:stroke fill;text-shadow:calc(var(--vh)*.7) calc(var(--vh)*.9) 0 #14141a;transform:rotate(-7deg) skewX(-6deg)}
-.t-uno .oval{position:absolute;width:78%;height:60%;left:11%;top:12%;background:#ffd400;border-radius:50%;transform:rotate(-14deg);box-shadow:0 0 0 calc(var(--vh)*.9) #14141a inset}
-.t-uno .cd{position:absolute;width:calc(var(--vh)*7);height:calc(var(--vh)*10.5);border-radius:9px;border:3px solid #fff;box-shadow:0 3px 6px rgba(0,0,0,.4)}
-
-/* ---- 알까기 ---- */
-.t-alg{background:repeating-linear-gradient(0deg,transparent 0 calc(var(--vh)*5.5),rgba(80,45,10,.35) calc(var(--vh)*5.5) calc(var(--vh)*5.7)),repeating-linear-gradient(90deg,transparent 0 calc(var(--vh)*5.5),rgba(80,45,10,.35) calc(var(--vh)*5.5) calc(var(--vh)*5.7)),#e3b868}
-.t-alg .logo{font-family:var(--jua);font-size:calc(var(--vh)*10);color:#fff;-webkit-text-stroke:calc(var(--vh)*1.1) #3b2209;paint-order:stroke fill;text-shadow:0 5px 0 #3b2209;transform:rotate(3deg)}
-.t-alg .st{position:absolute;border-radius:50%;box-shadow:inset 0 -5px 0 rgba(0,0,0,.25),0 4px 0 rgba(0,0,0,.3)}
-.t-alg .b{background:radial-gradient(circle at 35% 30%,#5a5a62,#111)}.t-alg .w{background:radial-gradient(circle at 35% 30%,#fff,#cfcfd6)}
-.t-alg .pow{position:absolute;font-size:calc(var(--vh)*7)}
-
-/* ---- 곱셈 몬스터 ---- */
-.t-mul{background:radial-gradient(circle at 50% 35%,#8be04e 0,#3bb54a 60%,#1f7d37 100%)}
-.t-mul .x{position:absolute;font-family:"Lilita One",sans-serif;font-size:calc(var(--vh)*30);color:rgba(255,255,255,.18);line-height:1}
-.t-mul .logo{font-family:var(--jua);font-size:calc(var(--vh)*7);color:#ffef5e;-webkit-text-stroke:calc(var(--vh)*.9) #0f4a1e;paint-order:stroke fill;text-shadow:0 5px 0 #0f4a1e}
-.t-mul .eyes{display:flex;gap:calc(var(--vh)*1.2);margin-bottom:calc(var(--vh)*.8)}
-.t-mul .eye{width:calc(var(--vh)*8);height:calc(var(--vh)*8);border-radius:50%;background:#fff;border:3px solid #0f4a1e;position:relative;box-shadow:0 4px 0 rgba(0,0,0,.25)}
-.t-mul .eye::after{content:'';position:absolute;width:42%;height:42%;border-radius:50%;background:#1a1a22;left:36%;top:32%}
-.t-mul .eye:nth-child(2){transform:scale(.8) translateY(calc(var(--vh)*1))}
-.t-mul .horn{position:absolute;width:0;height:0;border-left:calc(var(--vh)*2) solid transparent;border-right:calc(var(--vh)*2) solid transparent;border-bottom:calc(var(--vh)*6) solid #ffef5e}
-
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#d9d9ff;color:var(--ink);font-family:var(--han);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:light}
+#app{height:calc(var(--vh)*100);display:flex;flex-direction:column;padding:calc(var(--vh)*3) 16px calc(var(--vh)*3.5);gap:0}
+h1{margin:0;text-align:center;font-weight:400;font-size:calc(var(--vh)*6.4);line-height:1.05;display:flex;justify-content:center;align-items:center;gap:14px}
+h1 .sp{width:calc(var(--vh)*5.5);height:calc(var(--vh)*5.5);display:inline-block}
+#grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:calc(var(--vh)*3) 16px}
+.tile{position:relative;display:block;border-radius:26px;text-decoration:none;color:var(--ink);background:var(--c);border:5px solid var(--ink);box-shadow:0 7px 0 var(--ink);min-height:0;transition:transform .08s}
+.tile:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ink)}
+.logo{position:absolute;left:0;right:0;top:calc(var(--vh)*2.6);text-align:center;font-family:var(--serif);font-weight:400;line-height:.88;letter-spacing:-.02em;color:var(--ink);white-space:nowrap;-webkit-text-stroke:calc(var(--vh)*.55) var(--ink);paint-order:stroke fill}
+.logo.han{font-family:var(--han);letter-spacing:-.04em;line-height:1}
+.logo b{display:inline-block;font-weight:400;transform:scaleX(.84)}
+.ic{position:absolute;left:6%;right:6%;bottom:calc(var(--vh)*1.4);height:46%;display:flex;align-items:flex-end;justify-content:center}
+.ic svg{height:100%;width:100%;overflow:visible}
+.sb{position:absolute;right:-12px;top:-14px;width:calc(var(--vh)*14.5);height:calc(var(--vh)*14.5);display:flex;align-items:center;justify-content:center;text-align:center;
+  background:var(--sc);color:var(--ink);font-size:calc(var(--vh)*2.7);line-height:1.05;transform:rotate(12deg);filter:drop-shadow(0 3px 0 var(--ink));z-index:3}
+.sbw{position:absolute;right:-12px;top:-14px;width:calc(var(--vh)*14.5);height:calc(var(--vh)*14.5);filter:drop-shadow(0 0 0 var(--ink));z-index:3;transform:rotate(12deg)}
+.sbw::before,.sbw::after{content:'';position:absolute;inset:0;background:var(--ink)}
+svg text{font-family:var(--han)}
 @media (orientation:portrait){
   #grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}
-  h1{font-size:calc(var(--vh)*4.4)}
-  .tag{font-size:calc(var(--vh)*2)}
-  .t-chess .logo{font-size:calc(var(--vh)*6.5)}.t-chess .pc{font-size:calc(var(--vh)*8)}
-  .t-c4 .logo{font-size:calc(var(--vh)*4)}.t-c4 .four{width:calc(var(--vh)*7);height:calc(var(--vh)*7);font-size:calc(var(--vh)*5.5)}
-  .t-spot .logo{font-size:calc(var(--vh)*7)}.t-uno .logo{font-size:calc(var(--vh)*10.5)}
-  .t-alg .logo{font-size:calc(var(--vh)*6.5)}.t-mul .logo{font-size:calc(var(--vh)*4.4)}
-  .t-mul .eye{width:calc(var(--vh)*5);height:calc(var(--vh)*5)}
+  h1{font-size:calc(var(--vh)*4.4)}h1 .sp{width:calc(var(--vh)*4);height:calc(var(--vh)*4)}
+  .sb,.sbw{width:calc(var(--vh)*9.5);height:calc(var(--vh)*9.5)}.sb{font-size:calc(var(--vh)*1.7)}
 }
 </style>
 </head>
 <body>
 <div id="app">
-  <h1>🎮 뭐 하고 놀까?</h1>
   <nav id="grid">
-    <a class="tile t-chess" href="chess/">
-      <span class="pc">♞ ♛ ♞</span><span class="logo">CHESS</span><span class="tag">컴퓨터와 대결</span>
+
+    <a class="tile" href="chess/" style="--c:#ffb627">
+      <div class="logo" style="font-size:calc(var(--vh)*15)"><b>CHESS</b></div>
+      <div class="ic"><svg viewBox="0 0 300 120">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
+          <rect x="20" y="40" width="50" height="50" fill="#fff4d6"/><rect x="70" y="40" width="50" height="50" fill="#111"/><rect x="120" y="40" width="50" height="50" fill="#fff4d6"/>
+          <rect x="20" y="90" width="50" height="50" fill="#111"/><rect x="70" y="90" width="50" height="50" fill="#fff4d6"/><rect x="120" y="90" width="50" height="50" fill="#111"/>
+          <circle cx="250" cy="44" r="20" fill="#fff4d6"/><path d="M232 132 Q236 78 250 66 Q264 78 268 132 Z" fill="#fff4d6"/><rect x="222" y="118" width="56" height="16" rx="6" fill="#fff4d6"/>
+        </g></svg></div>
     </a>
-    <a class="tile t-alg" href="algakki/">
-      <i class="st b deco" style="width:calc(var(--vh)*9);height:calc(var(--vh)*9);left:6%;top:12%"></i>
-      <i class="st w deco" style="width:calc(var(--vh)*9);height:calc(var(--vh)*9);right:6%;top:8%"></i>
-      <i class="st b deco" style="width:calc(var(--vh)*7);height:calc(var(--vh)*7);right:14%;bottom:24%"></i>
-      <span class="pow deco" style="left:30%;top:6%">💥</span>
-      <span class="logo">알까기</span><span class="tag">튕겨서 밀어내기</span>
+
+    <a class="tile" href="algakki/" style="--c:#ff8cc6">
+      <div class="logo han" style="font-size:calc(var(--vh)*11.5)">알까기</div>
+      <div class="ic"><svg viewBox="0 0 300 120">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+          <circle cx="70" cy="70" r="42" fill="#111"/><circle cx="56" cy="54" r="9" fill="#fff" stroke="none"/>
+          <circle cx="205" cy="62" r="40" fill="#fff"/><circle cx="192" cy="48" r="8" fill="#e3e3ee" stroke="none"/>
+          <path d="M122 70 H156" fill="none"/><path d="M146 58 L160 70 L146 82" fill="none"/>
+          <path d="M255 28 l6 14 l15 2 l-11 10 l4 15 l-14 -8 l-14 8 l4 -15 l-11 -10 l15 -2 z" fill="#ffd23f" transform="translate(-6 -8) scale(.9)"/>
+        </g></svg></div>
     </a>
-    <a class="tile t-mul" href="multiply/">
-      <span class="x deco" style="right:-4%;top:-6%">×</span>
-      <span class="eyes"><i class="eye"></i><i class="eye"></i></span>
-      <span class="logo">곱셈 몬스터</span><span class="tag">숙제 · 연습</span>
+
+    <a class="tile" href="multiply/" style="--c:#59d96b">
+      <div class="logo han" style="font-size:calc(var(--vh)*8.8)">곱셈 몬스터</div>
+      <div class="ic"><svg viewBox="0 0 300 140">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M60 130 Q40 40 150 30 Q260 40 240 130 Z" fill="#ff5a4a"/>
+          <ellipse cx="112" cy="70" rx="24" ry="20" fill="#fff"/><ellipse cx="188" cy="70" rx="24" ry="20" fill="#fff"/>
+          <circle cx="118" cy="72" r="9" fill="#111"/><circle cx="182" cy="72" r="9" fill="#111"/>
+          <path d="M90 52 q22 -18 44 0 M166 52 q22 -18 44 0" fill="none" stroke="#7a56d8"/>
+          <path d="M92 102 Q150 150 208 102 Q150 112 92 102 Z" fill="#fff"/>
+          <path d="M112 106 v10 M130 110 v12 M150 112 v12 M170 110 v12 M188 106 v10" fill="none" stroke-width="3"/>
+          <path d="M80 36 l-16 -22 l30 10 M220 36 l16 -22 l-30 10" fill="#ffd23f"/>
+        </g></svg></div>
     </a>
-    <a class="tile t-c4" href="connect4/">
-      <i class="d r" style="left:7%;top:10%"></i><i class="d y" style="right:8%;top:14%"></i><i class="d y" style="left:12%;bottom:22%"></i><i class="d r" style="right:10%;bottom:20%"></i>
-      <span class="logo">CONNECT<br><span class="four">4</span></span><span class="tag">네 개 먼저 잇기</span>
+
+    <a class="tile" href="connect4/" style="--c:#5ab0ff">
+      <div class="logo" style="font-size:calc(var(--vh)*9.2)"><b>CONNECT 4</b></div>
+      <div class="ic"><svg viewBox="0 0 300 130">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
+          <rect x="45" y="10" width="210" height="116" rx="14" fill="#2f5de8"/>
+          <circle cx="85" cy="40" r="17" fill="#fff"/><circle cx="125" cy="40" r="17" fill="#fff"/><circle cx="165" cy="40" r="17" fill="#fff"/><circle cx="205" cy="40" r="17" fill="#fff"/>
+          <circle cx="85" cy="78" r="17" fill="#fff"/><circle cx="125" cy="78" r="17" fill="#ff4b3e"/><circle cx="165" cy="78" r="17" fill="#ffd23f"/><circle cx="205" cy="78" r="17" fill="#fff"/>
+          <circle cx="85" cy="112" r="0"/>
+          <circle cx="125" cy="108" r="0"/>
+        </g>
+        <g stroke="#111" stroke-width="5">
+          <circle cx="85" cy="104" r="14" fill="#ffd23f"/><circle cx="125" cy="104" r="14" fill="#ff4b3e"/><circle cx="165" cy="104" r="14" fill="#ff4b3e"/><circle cx="205" cy="104" r="14" fill="#ffd23f"/>
+        </g></svg></div>
     </a>
-    <a class="tile t-spot" href="spot/">
-      <i class="ring deco"></i>
-      <span class="e deco" style="left:8%;top:10%">🐶</span><span class="e deco" style="right:9%;top:8%">🍕</span>
-      <span class="e deco" style="left:12%;bottom:20%">🚀</span><span class="e deco" style="right:10%;bottom:22%">🍩</span>
-      <span class="logo">SPOT<br>IT!</span><span class="tag">컴퓨터보다 먼저</span>
+
+    <a class="tile" href="spot/" style="--c:#b79cff">
+      <div class="logo" style="font-size:calc(var(--vh)*11.5)"><b>SPOT IT!</b></div>
+      <div class="ic"><svg viewBox="0 0 300 130">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
+          <circle cx="95" cy="68" r="56" fill="#fff"/><circle cx="205" cy="68" r="56" fill="#fff"/>
+          <circle cx="72" cy="50" r="12" fill="#ff4b3e"/><circle cx="108" cy="86" r="16" fill="#59d96b"/><circle cx="78" cy="92" r="8" fill="#5ab0ff"/><circle cx="112" cy="46" r="7" fill="#ffd23f"/>
+          <circle cx="232" cy="52" r="14" fill="#ff8cc6"/><circle cx="196" cy="90" r="10" fill="#ffb627"/><circle cx="228" cy="92" r="7" fill="#5ab0ff"/>
+          <path d="M150 62 l5 11 l12 2 l-9 8 l3 12 l-11 -6 l-11 6 l3 -12 l-9 -8 l12 -2 z" fill="#ffd23f" transform="translate(0 -10) scale(1.05) translate(-6 0)"/>
+        </g></svg></div>
     </a>
-    <a class="tile t-uno" href="uno/">
-      <i class="oval deco"></i>
-      <i class="cd deco" style="background:#1e6fd9;left:7%;bottom:14%;transform:rotate(-24deg)"></i>
-      <i class="cd deco" style="background:#3d9c4a;left:15%;bottom:11%;transform:rotate(-10deg)"></i>
-      <i class="cd deco" style="background:#f6c90e;right:15%;bottom:11%;transform:rotate(10deg)"></i>
-      <i class="cd deco" style="background:#14141a;right:7%;bottom:14%;transform:rotate(24deg)"></i>
-      <span class="logo" style="margin-bottom:calc(var(--vh)*3)">UNO</span><span class="tag">기본 · 플립</span>
+
+    <a class="tile" href="uno/" style="--c:#ff5a4a">
+      <div class="logo" style="font-size:calc(var(--vh)*17)"><b>UNO</b></div>
+      <div class="ic"><svg viewBox="0 0 300 130">
+        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
+          <g transform="rotate(-26 90 120)"><rect x="55" y="12" width="70" height="106" rx="10" fill="#5ab0ff"/><ellipse cx="90" cy="65" rx="22" ry="34" fill="#fff" transform="rotate(20 90 65)"/></g>
+          <g transform="rotate(-9 130 120)"><rect x="100" y="8" width="70" height="106" rx="10" fill="#59d96b"/><ellipse cx="135" cy="61" rx="22" ry="34" fill="#fff" transform="rotate(20 135 61)"/></g>
+          <g transform="rotate(9 170 120)"><rect x="135" y="8" width="70" height="106" rx="10" fill="#ffd23f"/><ellipse cx="170" cy="61" rx="22" ry="34" fill="#fff" transform="rotate(20 170 61)"/></g>
+          <g transform="rotate(26 210 120)"><rect x="175" y="12" width="70" height="106" rx="10" fill="#b79cff"/><ellipse cx="210" cy="65" rx="22" ry="34" fill="#fff" transform="rotate(20 210 65)"/></g>
+        </g></svg></div>
     </a>
+
   </nav>
 </div>
 <script>
