@@ -124,6 +124,7 @@ button,a{font-family:inherit;color:inherit}
   #mid{gap:14px}
 }
 #bSound,#bParent{display:none!important}
+#timeBox.lim{color:#ff6b6b!important;font-weight:700;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -463,7 +464,7 @@ window.addEventListener('resize',()=>{vh();if(hands.length)render();});
 vh();
 hands=[[]];PL=[{n:'나',e:'🙂'}];
 showMenu();
-Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className=s<=300?'low':'';},onReset:()=>{}});
+Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className=s===Infinity?'':'lim';},onReset:()=>{}});
 window.__uno={get phase(){return phase;},get over(){return over;},get turn(){return turn;},get np(){return np;},get mode(){return mode;},get side(){return side;},
   total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},forceUno(){unoPrompt();render();},flip(){doFlip();render();},newGame};
 })();

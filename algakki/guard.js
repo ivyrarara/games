@@ -151,7 +151,7 @@ window.Guard={
     tick(true);
   },
   parentFlow,
-  label(sec){ return sec===Infinity?'⏱ 시간 제한 없음':'⏱ 남은 시간 '+Math.max(0,Math.ceil(sec/60))+'분'+(sec<=300&&sec>0?' · 곧 끝나요':''); },
+  label(sec){ return sec===Infinity?'⏱ 시간 제한 없음':'⏱ 남은 시간 '+(()=>{const t=Math.max(0,Math.ceil(sec));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');})(); },
   LS
 };
 })();

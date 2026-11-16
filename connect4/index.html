@@ -70,6 +70,7 @@ button,a{font-family:inherit;color:inherit}
 
 .box{background:rgba(75,58,40,.09)!important;border:0!important;box-shadow:none!important}
 .info{display:flex!important;flex-direction:column!important;gap:2px!important;justify-content:flex-end}.info>.box{flex:none!important;min-width:0;font-size:15px!important;padding:0 4px!important;text-align:left!important;background:none!important;white-space:normal!important}.info>.box.low{color:#c0392b}
+#timeBox.lim{color:#e03131!important;font-weight:700;font-variant-numeric:tabular-nums;background:none!important}
 </style>
 </head>
 <body>
@@ -403,7 +404,7 @@ const resumed=loadSaved();
 if(!resumed){ rebuild(0); moves=[]; }
 updateUI();
 if(resumed){ maybeCpu(); } else showMenu();
-Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s<=300?' low':''); },onReset:renderRec});
+Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s===Infinity?'':' lim'); },onReset:renderRec});
 requestAnimationFrame(frame);
 window.__c4={get b(){return b;},get cfg(){return cfg;},get moves(){return moves;},get over(){return over;},get winner(){return winner;},get busy(){return busy;},get turn(){return turn;},chooseCol,newGame,play,lineAt,legalCols,dropRow};
 })();

@@ -73,6 +73,7 @@ button,a{font-family:inherit;color:inherit}
 .btn{text-decoration:none}
 .info{display:flex!important;flex-direction:column!important;gap:2px;flex-basis:100%;justify-content:flex-end}.info>.box{flex:none!important;min-width:0;font-size:15px;padding:0 4px!important;text-align:left;background:none!important}.info>.box.time.low{color:#ffd23f}
 .box{background:rgba(255,255,255,.08)!important;border:0!important;box-shadow:none!important}
+#timeBox.lim{color:#ff6b6b!important;font-weight:700;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -280,7 +281,7 @@ vh();
 cfg.level=Math.max(1,Math.min(7,LS.get('memory.level',1)));
 renderRec();setStatus('Play!를 눌러요','');updateScore();
 showMenu();
-Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className='box time'+(s<=300?' low':'');},onReset:renderRec});
+Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className='box time'+(s===Infinity?'':' lim');},onReset:renderRec});
 window.__mem={get cards(){return cards;},get over(){return over;},get fails(){return fails;},get previewing(){return previewing;},get cfg(){return cfg;},get lock(){return lock;},newGame,tap:onTap};
 })();
 </script>
