@@ -124,6 +124,7 @@ button,a{font-family:inherit;color:inherit}
 .lv.prac{width:100%;margin-top:10px;font-size:26px;padding:16px 0}
 .lv.hw{background:#ffe27a;border-color:#e0a100}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
+.lv.hw .stars{color:#7a4f00;font-size:17px}
 .lv.hw.done .stars{color:#9a9aa8;font-size:17px}
 .lv{border:3px solid var(--edge);border-radius:18px;background:#fff;padding:10px 8px;cursor:pointer;font-size:19px;line-height:1.3}
 .sec{font-size:22px;margin:14px 0 6px;text-align:left;padding-left:4px}
@@ -455,13 +456,26 @@ function startRound(lv){
 }
 function startHw(s){
   { const d=LS.get('mult.hwdone',null)||{}; if(s!==[1,2,3].find(k=>!d[k])) return; }
-  qs=HW[s].map(([a,b],i)=>({a,b,t:Math.floor(a/10),o:a%10,ans:a*b,app:0,n:i+1}));
-  R={hw:s,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
+  const sv=LS.get('mult.hwprog',null);
+  if(sv&&sv.hw===s&&Array.isArray(sv.qs)&&sv.qs.length){
+    qs=sv.qs.map(q=>({...q}));
+    R={hw:s,cleared:sv.cleared||0,first:sv.first||0,streak:0,best:sv.best||0,total:sv.total||24,missed:sv.missed||[],seen:new Set(sv.seen||[])};
+  }else{
+    qs=HW[s].map(([a,b],i)=>({a,b,t:Math.floor(a/10),o:a%10,ans:a*b,app:0,n:i+1}));
+    R={hw:s,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
+  }
   closeOverlay(); phase='ask'; renderDragons(); setMood('idle'); nextQ();
+}
+function saveHw(){
+  if(!R||!R.hw) return;
+  const q=x=>({a:x.a,b:x.b,t:x.t,o:x.o,ans:x.ans,app:x.app,n:x.n});
+  const arr=[{...q(cur),app:Math.max(0,cur.app-1)},...qs.map(q)];
+  LS.set('mult.hwprog',{hw:R.hw,qs:arr,cleared:R.cleared,first:R.first,best:R.best,total:R.total,missed:R.missed,seen:[...R.seen]});
 }
 function nextQ(){
   if(!qs.length){ endRound(); return; }
   cur=qs.shift(); cur.app++; cur.cells=buildCells(cur); cur.vals={}; cur.res={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.flash=false; cur.wa={};
+  saveHw();
   phase='ask'; clearPen(); say(cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪':'',''); render();
 }
 function hint(){
@@ -538,7 +552,7 @@ function endRound(){
   setMood('win'); renderDragons();
   const fr=R.first/R.total,stars=fr>=.9?3:fr>=.7?2:fr>=.4?1:0,sk=R.hw?'hw'+R.hw:level;
   const all=getStars(); if(stars>(all[sk]||0)){ all[sk]=stars; LS.set('mult.stars',all); }
-  if(R.hw){ const d=LS.get('mult.hwdone',null)||{}; d[R.hw]=true; LS.set('mult.hwdone',d); }
+  if(R.hw){ const d=LS.get('mult.hwdone',null)||{}; d[R.hw]=true; LS.set('mult.hwdone',d); LS.set('mult.hwprog',null); }
   setTimeout(()=>{ sfx.win(); flyShow(R.hw?R.hw:level,()=>{ burst(14); showEnd(stars); }); },900);
 }
 
@@ -551,8 +565,8 @@ function showMenu(){
   const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=true;
   let h='<h1>✖️ 곱셈 몬스터</h1>';
   h+='<div class="hws">';
-  const nxt=[1,2,3].find(k=>!done[k]);
-  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
+  const nxt=[1,2,3].find(k=>!done[k]),prog=LS.get('mult.hwprog',null);
+  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회'+(prog&&prog.hw===k&&prog.cleared?'<div class="stars">이어서 '+prog.cleared+'/'+prog.total+'</div>':'')+'</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
     h+='<button class="lv prac" data-lv="4">✏️ 연습문제</button>';
