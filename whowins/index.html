@@ -14,10 +14,10 @@ button,a{font-family:inherit;color:inherit}
 #app{height:calc(var(--vh)*100);display:flex;gap:12px;padding:10px}
 #stage{flex:1;min-width:0;position:relative;background:#132740;border-radius:26px;display:flex;flex-direction:column;overflow:hidden}
 #page{flex:1;min-height:0;overflow:auto;padding:14px 18px;-webkit-overflow-scrolling:touch}
-#nav{display:flex;gap:10px;padding:10px 14px;border-top:3px solid #27476b;background:#102238}
+#nav{display:flex;justify-content:center;gap:10px;padding:10px 14px;border-top:3px solid #27476b;background:#102238}
 .nb{min-height:52px;border:0;border-radius:16px;background:#fff;color:#14212b;box-shadow:0 4px 0 #9fb4cc;font-size:20px;cursor:pointer;padding:0 20px}
 .nb:active{transform:translateY(3px);box-shadow:0 1px 0 #9fb4cc}
-.nb.go{flex:1;background:var(--amber);box-shadow:0 4px 0 #c99410;font-size:23px}
+.nb.go{flex:0 0 50%;min-height:104px;background:var(--amber);color:#14212b;box-shadow:0 4px 0 #c99410;font-size:26px}
 .nb[disabled]{opacity:.35;pointer-events:none}
 .nb.hide{display:none}
 #panel{width:250px;display:flex;flex-direction:column;gap:10px;flex:none}
