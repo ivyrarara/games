@@ -42,7 +42,7 @@ button,a{font-family:inherit;color:inherit}
 .tb.holdable{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}
 .tb.hold{background-size:100% 100%;transition:background-size .9s linear}
 #mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--vh)*2.5);position:relative}
-#piles{display:flex;align-items:center;gap:calc(var(--vh)*3)}
+#row{display:flex;align-items:center;justify-content:center;gap:calc(var(--vh)*4);max-width:100%}#msg{display:flex;flex-direction:column;gap:calc(var(--vh)*1.5);text-align:left;max-width:calc(var(--vh)*60)}#status,#note{text-align:left!important}#piles{display:flex;align-items:center;gap:calc(var(--vh)*3)}
 .pile{position:relative;--cw:var(--pw)}
 #draw{cursor:pointer}
 #draw .badge{position:absolute;right:-10px;bottom:-8px;background:#fff;color:var(--ink);border-radius:12px;padding:1px 8px;font-size:calc(var(--vh)*3);box-shadow:0 2px 0 rgba(0,0,0,.3)}
@@ -109,6 +109,7 @@ button,a{font-family:inherit;color:inherit}
 .cbtn{min-height:84px;border:4px solid #fff;border-radius:18px;font-size:26px;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.5)}
 .hint{font-size:14px;opacity:.65;margin-top:6px;line-height:1.35}
 @media (orientation:portrait){
+  #row{flex-direction:column;gap:calc(var(--vh)*2)}#msg{align-items:center;max-width:100%}#status,#note{text-align:center!important}
   #top{flex-direction:column;gap:6px}
   #tools{width:auto;flex-direction:row;align-items:stretch;gap:6px}
   #timeBox{flex:1;white-space:nowrap;font-size:15px;padding:0 8px;display:flex;align-items:center;justify-content:center;min-height:40px}
@@ -135,12 +136,14 @@ button,a{font-family:inherit;color:inherit}
       <div class="trow"><a class="tb" href="../">🏠</a><button class="tb" id="bMenu">☰</button><button class="tb" id="bSound">🔊</button><button class="tb holdable" id="bParent">🙅🏻‍♀️</button></div></div>
   </header>
   <main id="mid">
+    <div id="row">
     <div id="piles">
       <div class="pile" id="draw"></div>
       <div class="pile" id="disc"></div>
       <div id="colorBox"><div id="colorDot"></div><div id="colorName"></div></div>
     </div>
-    <div id="status"></div><div id="note"></div>
+    <div id="msg"><div id="status"></div><div id="note"></div></div>
+    </div>
     <div id="act"><button class="abtn" id="bUno">우노!</button><button class="abtn" id="bPass">넘기기 ➜</button></div>
   </main>
   <section id="hand"></section>
