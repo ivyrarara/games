@@ -49,6 +49,10 @@ button,a{font-family:inherit;color:inherit}
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:100%;text-align:center}
 .cover .vs{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
 .cover .side{flex:1;min-width:0;text-align:center;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit}
+.cover .side{position:relative}
+.qm{position:absolute;top:2%;width:clamp(48px,7vw,64px);height:clamp(48px,7vw,64px);border-radius:50%;border:4px solid var(--amber);background:#0e1c2f;color:var(--amber);font-family:var(--font);font-size:clamp(28px,4.4vw,40px);line-height:1;display:flex;align-items:center;justify-content:center;animation:glow 1.4s ease-in-out infinite}
+.side[data-prof="1"] .qm{left:2%}.side[data-prof="2"] .qm{right:2%}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(255,196,0,.7),0 0 6px 2px rgba(255,196,0,.5);transform:scale(1)}50%{box-shadow:0 0 0 14px rgba(255,196,0,0),0 0 22px 8px rgba(255,196,0,.9);transform:scale(1.1)}}
 .cover .tap{display:inline-block;margin-top:6px;font-family:var(--body);font-size:15px;padding:5px 14px;border-radius:999px;background:#1d3a5c}
 .cover .side svg{width:100%;max-height:calc(var(--vh)*34);display:block}
 .cover .nm{font-family:var(--font);font-size:clamp(22px,4vw,36px)}
@@ -267,7 +271,7 @@ function render(){
   const m=S.m; if(!m){ return; }
   let h='';
   switch(S.page){
-   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><button class="side" data-prof="1">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div><div class="tap">특징 보기 ▸</div></button><div class="x">VS</div><button class="side" data-prof="2">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div><div class="tap">특징 보기 ▸</div></button></div></div>'; break;
+   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><button class="side" data-prof="1">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div><span class="qm">?</span></button><div class="x">VS</div><button class="side" data-prof="2">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div><span class="qm">?</span></button></div></div>'; break;
    case 1: h=profile(m.a,'a'); break;
    case 2: h=profile(m.b,'b'); break;
    case 3: h=cmpPage(m); break;
