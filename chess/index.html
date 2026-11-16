@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>체스 놀이</title>
+<title>Chess</title>
 <link rel="manifest" href="../manifest.webmanifest">
 <meta name="theme-color" content="#f4ecd8">
 <meta name="mobile-web-app-capable" content="yes">
@@ -677,7 +677,7 @@ function closeOverlay(){ overlayMode=''; const o=$('overlay'); o.className=''; o
 
 function chip(key,val,label){ return '<button class="chip'+(cfg[key]===val?' on':'')+'" data-cfg="'+key+'" data-v="'+val+'">'+label+'</button>'; }
 function showMenu(){
-  let h='<h1>♟ 체스 놀이</h1>';
+  let h='<h1>♟ Chess</h1>';
   h+='<div class="row"><b>누구랑 할까요?</b><div class="chips">'+chip('mode','cpu','컴퓨터랑')+chip('mode','two','둘이서 같이')+'</div></div>';
   if(cfg.mode==='cpu'){
     h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
@@ -687,9 +687,9 @@ function showMenu(){
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🏠 처음 화면</a>';
   h+='<a class="go alt" href="../algakki/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🪨 알까기 하러 가기</a>';
   h+='<a class="go alt" href="../multiply/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">✖️ 곱셈 몬스터 하러 가기</a>';
-  h+='<a class="go alt" href="../connect4/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🔴 사목 놀이 하러 가기</a>';
-  h+='<a class="go alt" href="../spot/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">👀 같은 그림 찾기 하러 가기</a>';
-  h+='<a class="go alt" href="../uno/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🃏 우노 하러 가기</a>';
+  h+='<a class="go alt" href="../connect4/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🔴 Connect 4</a>';
+  h+='<a class="go alt" href="../spot/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">👀 Spot It</a>';
+  h+='<a class="go alt" href="../uno/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🃏 UNO</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();

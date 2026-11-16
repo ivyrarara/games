@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>우노 카드놀이</title>
+<title>UNO</title>
 <meta name="theme-color" content="#1f6b4a">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 <style>
@@ -403,13 +403,13 @@ function openOverlay(h,m){overlayMode=m;const o=$('overlay');o.innerHTML='<div c
 function closeOverlay(){overlayMode='';const o=$('overlay');o.className='';o.innerHTML='';}
 function showMenu(){
   const m=LS.get('uno.mode','classic'),n=LS.get('uno.np',3),sc=getScore();
-  let h='<h1>🃏 우노 카드놀이</h1><div class="sub">같은 색·숫자·모양 카드를 내서 손에 든 카드를 먼저 다 내요 · 🏆 나 '+sc.a+' : '+sc.b+'</div>';
+  let h='<h1>🃏 UNO</h1><div class="sub">같은 색·숫자·모양 카드를 내서 손에 든 카드를 먼저 다 내요 · 🏆 나 '+sc.a+' : '+sc.b+'</div>';
   h+='<div class="row"><b>종류</b><div class="seg" id="segMode"><button data-m="classic" class="'+(m==='classic'?'on':'')+'">기본</button><button data-m="flip" class="'+(m==='flip'?'on':'')+'">플립 (뒤집기)</button></div></div>';
   h+='<div class="row"><b>사람 수 (나 + 컴퓨터)</b><div class="seg" id="segNp">'+[2,3,4].map(x=>'<button data-n="'+x+'" class="'+(n===x?'on':'')+'">'+x+'명</button>').join('')+'</div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
   if(!over&&hands.length&&phase!==''&&phase!=='over')h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<div class="hint">낼 카드가 없으면 왼쪽 더미를 눌러 1장 뽑아요. 카드가 1장 남으면 "우노!" 버튼을 꼭 눌러요.</div>';
-  h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ 체스</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 사목</a><a class="go alt" href="../spot/">👀 그림</a></div>';
+  h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ Chess</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 Connect 4</a><a class="go alt" href="../spot/">👀 Spot It</a></div>';
   openOverlay(h,'menu');
 }
 function ovClick(e){
