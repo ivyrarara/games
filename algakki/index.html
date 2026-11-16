@@ -84,7 +84,7 @@ button,a{font-family:inherit;color:inherit}
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const S=1000,PAD=70,L=S+PAD*2,R=36,K=1.7,E=0.92,VMAX=1250,POWER=5.4,MAXPULL=230;
+const S=1000,PAD=70,L=S+PAD*2,R=36,K=1.7,E=0.92,MAXPULL=230,POWER=8.2,VMAX=POWER*MAXPULL;
 let st=[],parts=[],turn=1,shooting=false,over=false,thinking=false,drag=null,aimFx=null,winner=0,gameId=0,muted=false,overlayMode='';
 let cfg={mode:'cpu',level:1,n:7};
 const cv=$('cv'),ctx=cv.getContext('2d');
