@@ -87,6 +87,11 @@ button,a{font-family:inherit;color:inherit}
 /* overlay */
 #overlay{position:fixed;inset:0;background:rgba(20,30,25,.65);display:none;align-items:center;justify-content:center;padding:12px;z-index:5}
 #overlay.on{display:flex}
+#overlay.color{background:transparent;pointer-events:none;bottom:calc(var(--hw)*1.5 + var(--hw)*.22 + 24px)}
+#overlay.color .pop{pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,.45);padding:14px}
+#overlay.color .pop h2{font-size:22px;margin:0 0 10px}
+#overlay.color .cbtn{min-height:56px;font-size:22px}
+@media (orientation:landscape){#overlay.color .cols{grid-template-columns:repeat(4,1fr)}#overlay.color .pop{padding:10px 14px}#overlay.color .pop h2{font-size:18px;margin-bottom:8px}#overlay.color .cbtn{min-height:44px;font-size:18px}}
 .pop{background:var(--card);color:var(--ink);border-radius:24px;padding:16px 22px;width:min(600px,100%);max-height:100%;overflow:auto;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.25)}
 .pop h1{margin:0 0 2px;font-size:32px}.pop h2{margin:0 0 8px;font-size:28px}
 .sub{font-size:15px;opacity:.7;margin:0 0 4px}
@@ -417,7 +422,7 @@ function finish(p){
 }
 
 /* ---------- 메뉴 ---------- */
-function openOverlay(h,m){overlayMode=m;const o=$('overlay');o.innerHTML='<div class="pop">'+h+'</div>';o.className='on';}
+function openOverlay(h,m){overlayMode=m;const o=$('overlay');o.innerHTML='<div class="pop">'+h+'</div>';o.className='on'+(m==='color'?' color':'');}
 function closeOverlay(){overlayMode='';const o=$('overlay');o.className='';o.innerHTML='';}
 function showMenu(){
   const m=LS.get('uno.mode','classic'),n=LS.get('uno.np',3),sc=getScore();
