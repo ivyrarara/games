@@ -91,7 +91,7 @@ button,a{font-family:inherit;color:inherit}
     <div id="status" class="box"></div>
     <div class="box" id="score"></div>
     <div class="box" id="cpu"><span id="cpuLbl">⏳ 남은 시간</span><div id="bar"><i></i></div></div>
-    <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
+    <div class="info"><div id="lvBox" class="box time"></div><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bAgain">🔄 다시하기</button>
       <a class="btn" href="../">🏠 처음</a>
@@ -303,7 +303,9 @@ setStatus('Play!를 눌러요','');
 showMenu();
 Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s===Infinity?'':' lim'); },onReset:renderRec});
 window.__spot={buildDeck,get match(){return match;},get cfg(){return cfg;},get round(){return round;},get sa(){return sa;},get sb(){return sb;},get over(){return over;},get live(){return live;},newGame,get deck(){return deck;}};
+(function(){const el=document.getElementById('lvBox');function u(){const on=true;const t=on?(LVE[cfg.level]||'')+' Lv '+cfg.level:'';if(el.textContent!==t)el.textContent=t;el.style.display=on?'':'none';}u();setInterval(u,400);})();
 })();
+
 </script>
 </body>
 </html>

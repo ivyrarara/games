@@ -78,7 +78,7 @@ button,a{font-family:inherit;color:inherit}
   <div id="stage"><canvas id="cv"></canvas></div>
   <aside id="panel">
     <div id="status" class="box"></div>
-    <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
+    <div class="info"><div id="lvBox" class="box time"></div><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bUndo">↩ 무르기</button>
       <button class="btn" id="bAgain">🔄 다시하기</button>
@@ -407,7 +407,9 @@ if(resumed){ maybeCpu(); } else showMenu();
 Guard.start({onTick:s=>{ const b2=$('timeBox'); b2.textContent=Guard.label(s); b2.className='box time'+(s===Infinity?'':' lim'); },onReset:renderRec});
 requestAnimationFrame(frame);
 window.__c4={get b(){return b;},get cfg(){return cfg;},get moves(){return moves;},get over(){return over;},get winner(){return winner;},get busy(){return busy;},get turn(){return turn;},chooseCol,newGame,play,lineAt,legalCols,dropRow};
+(function(){const el=document.getElementById('lvBox');function u(){const on=cfg.mode==='cpu';const t=on?(LVE[cfg.level]||'')+' Lv '+cfg.level:'';if(el.textContent!==t)el.textContent=t;el.style.display=on?'':'none';}u();setInterval(u,400);})();
 })();
+
 </script>
 </body>
 </html>

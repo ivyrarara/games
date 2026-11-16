@@ -31,15 +31,13 @@ st.textContent=`#gov{position:fixed;inset:0;background:rgba(40,35,25,.6);display
 .gcard .pad button{min-height:56px;font-size:26px;border:0;border-radius:16px;background:#fff;box-shadow:0 4px 0 #dccfae;cursor:pointer;font-family:inherit;color:inherit}`;
 document.head.appendChild(st);
 const ov=document.createElement('div'); ov.id='gov'; document.body.appendChild(ov);
-let mode='', DAY=null, tickLast=Date.now(), saveAt=0, opts={}, started=false, resetAsk=false;
+let mode='', DAY=null, lockPick=false, tickLast=Date.now(), saveAt=0, opts={}, started=false, resetAsk=false;
 function open(html,m){ mode=m; ov.innerHTML='<div class="gcard">'+html+'</div>'; ov.className='on'; }
 function close(){ mode=''; ov.className=''; ov.innerHTML=''; }
-function today(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-function dayState(){
-  if(!DAY||DAY.d!==today()){ const sv=LS.get('day',null); DAY=(sv&&sv.d===today())?sv:{d:today(),used:0,extra:0}; }
-  return DAY;
-}
-function timeLeft(){ const lim=LS.get('limit',30); if(!lim) return Infinity; const s=dayState(); return (lim+s.extra)*60-s.used; }
+function sess(){ if(DAY===null) DAY=LS.get('sess',false)||false; return DAY; }
+function setSess(min){ DAY=min?{left:min*60}:{unl:1}; LS.set('sess',DAY); }
+function timeLeft(){ const x=sess(); if(!x) return 0; if(x.unl) return Infinity; return x.left; }
+function fmtLeft(){ const t=timeLeft(); return t===Infinity?'제한 없음':(t<=0?'끝났어요':'남은 시간 '+Math.floor(Math.ceil(t)/60)+':'+String(Math.ceil(t)%60).padStart(2,'0')); }
 function pinPad(title,sub){
   return new Promise(res=>{
     let v='';
@@ -70,23 +68,22 @@ async function confirmParent(){
   }
 }
 function limChips(cur){ return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
-function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">🙅🏻‍♀️ 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
+function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>게임 시간이 끝났어요</h2><div class="sub">부모님이 확인하면 새로 시간을 정할 수 있어요.</div><button class="go alt" data-ga="parent">🙅🏻‍♀️ 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
 function showParent(){
-  const s=dayState(), lim=LS.get('limit',30);
-  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
-  h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
+  const x=sess(), cur=!x?-1:(x.unl?0:-1);
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">'+(timeLeft()<=0?'이번엔 몇 분 놀까요?':'지금 '+fmtLeft()+' · 새로 고르면 다시 시작돼요')+'</div>';
+  h+='<div class="row"><b>이번 놀이 시간</b><div class="chips">'+limChips(cur)+'</div></div>'
     +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-ga="score-yes">지우기</button><button class="chip" data-ga="score-no">취소</button></div>':'<button class="chip" data-ga="score">전적 초기화</button>')+'</div>'
     +'<button class="go" data-ga="close">닫기</button>';
   open(h,'parent');
 }
 function back(){ tickLast=Date.now(); if(timeLeft()<=0) showLock(); else close(); tick(true); }
-async function parentFlow(){ resetAsk=false; if(await confirmParent()) showParent(); else back(); }
+async function parentFlow(){ resetAsk=false; if(await confirmParent()){ lockPick=timeLeft()<=0; showParent(); } else back(); }
 ov.addEventListener('click',e=>{
   const t=e.target.closest('[data-gl],[data-ga]'); if(!t) return;
-  if(t.dataset.gl!==undefined){ if(mode==='parent'){ LS.set('limit',+t.dataset.gl); showParent(); tick(true); } return; }
+  if(t.dataset.gl!==undefined){ if(mode==='parent'){ setSess(+t.dataset.gl); tickLast=Date.now(); if(lockPick){ lockPick=false; back(); } else showParent(); tick(true); } return; }
   const a=t.dataset.ga;
   if(a==='parent') parentFlow();
-  else if(a==='extra'){ const s=dayState(); s.extra+=+t.dataset.v; LS.set('day',s); showParent(); tick(true); }
   else if(a==='score'){ resetAsk=true; showParent(); }
   else if(a==='score-no'){ resetAsk=false; showParent(); }
   else if(a==='score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); LS.set('score.mult',null); LS.set('score.connect4',null); LS.set('score.spot',null); LS.set('score.uno',null); LS.set('score.memory',null); LS.set('mult.hwdone',null); resetAsk=false; if(opts.onReset) opts.onReset(); showParent(); }
@@ -97,15 +94,15 @@ function tick(noCount){
   if(!noCount){
     tickLast=now;
     if(started&&!opts.noLimit&&document.visibilityState==='visible'&&mode===''){
-      const s=dayState(); s.used+=dt;
-      if(now-saveAt>4000){ LS.set('day',s); saveAt=now; }
+      const x=sess(); if(x&&!x.unl) x.left-=dt;
+      if(now-saveAt>4000){ LS.set('sess',x||false); saveAt=now; }
       if(timeLeft()<=0) showLock();
     }
   }
   if(opts.onTick) opts.onTick(timeLeft());
 }
 setInterval(()=>tick(),1000);
-function flush(){ if(DAY) LS.set('day',DAY); }
+function flush(){ if(DAY) LS.set('sess',DAY); }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flush(); tickLast=Date.now(); });
 window.addEventListener('pagehide',flush);
 

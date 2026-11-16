@@ -89,7 +89,7 @@ button,a{font-family:inherit;color:inherit}
   <aside id="panel">
     <div id="status" class="box"></div>
     <div class="box" id="score"></div>
-    <div class="info"><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
+    <div class="info"><div id="lvBox" class="box time"></div><div id="rec" class="box time"></div><div id="timeBox" class="box time"></div></div>
     <div class="btns">
       <button class="btn" id="bAgain">🔄 다시하기</button>
       <a class="btn" href="../">🏠 처음</a>
@@ -450,7 +450,9 @@ newGame(); showMenu();
 Guard.start({onTick:s=>{ const b=$('timeBox'); b.textContent=Guard.label(s); b.className='box time'+(s===Infinity?'':' lim'); },onReset:renderRec});
 requestAnimationFrame(frame);
 window.__alg={get st(){return st;},get turn(){return turn;},cfg,newGame,stepWorld,simulate,get over(){return over;}};
+(function(){const el=document.getElementById('lvBox');function u(){const on=cfg.mode==='cpu';const t=on?(LVE[cfg.level]||'')+' Lv '+cfg.level:'';if(el.textContent!==t)el.textContent=t;el.style.display=on?'':'none';}u();setInterval(u,400);})();
 })();
+
 </script>
 </body>
 </html>
