@@ -259,7 +259,9 @@ function resPage(m){
    +'</div>';
 }
 const TITLES=['대결 소개','도전자 특징','도전자 특징','크기 비교','내 예상','대결!','결과'];
+let autoT=null;
 function render(){
+  clearTimeout(autoT); if(S.page===5&&S.fs<3) autoT=setTimeout(step,3000);
   const m=S.m; if(!m){ return; }
   let h='';
   switch(S.page){
@@ -295,7 +297,7 @@ $('nNext').addEventListener('click',()=>{
 });
 function step(){
   if(S.page!==5||S.fs>=3) return;
-  S.fs++; const ar=$('arena'); if(!ar) return;
+  clearTimeout(autoT); S.fs++; if(S.fs<3) autoT=setTimeout(step,3000); const ar=$('arena'); if(!ar) return;
   ar.className='arena '+S.m.env+' s'+Math.min(S.fs,3)+(S.fs>=3?(S.m.win==='a'?' winA':' winB'):'');
   if(S.fs<3){ $('beat').textContent=S.m.beats[S.fs]; const d=$('page').querySelectorAll('.dots i'); d.forEach((x,i)=>x.classList.toggle('on',i<=S.fs)); if(S.fs===2) sfx.hit(); }
   else { $('beat').textContent=S.m.beats[2]; sfx.hit(); setTimeout(()=>{ const ok=S.pick===S.m.win; ok?sfx.win():sfx.no(); },700); }
