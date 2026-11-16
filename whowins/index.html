@@ -276,7 +276,7 @@ function render(){
   const prev=$('nPrev'), next=$('nNext');
   prev.classList.toggle('hide',S.page===0||S.page>=5); prev.disabled=false;
   next.disabled=false; next.classList.remove('hide');
-  next.textContent=['누가 이길까? ▶','돌아가기','돌아가기','내 예상 고르기 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
+  next.textContent=['누가 이길까? ▶','돌아가기','돌아가기','다음 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
   if(S.page===4&&!S.pick) next.disabled=true;
   saveCur(); updInfo();
 }
