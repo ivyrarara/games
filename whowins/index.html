@@ -14,7 +14,7 @@ button,a{font-family:inherit;color:inherit}
 #app{height:calc(var(--vh)*100);display:flex;gap:12px;padding:10px}
 #stage{flex:1;min-width:0;position:relative;background:#132740;border-radius:26px;display:flex;flex-direction:column;overflow:hidden}
 #page{flex:1;min-height:0;overflow:auto;padding:14px 18px;-webkit-overflow-scrolling:touch}
-#nav{display:flex;justify-content:center;gap:10px;padding:10px 14px;border-top:3px solid #27476b;background:#102238}
+#nav{display:flex;justify-content:center;gap:10px;padding:10px 14px;background:#102238}
 .nb{min-height:52px;border:0;border-radius:999px;background:#fff;color:#14212b;box-shadow:0 4px 0 #9fb4cc;font-size:20px;cursor:pointer;padding:0 20px}
 .nb:active{transform:translateY(3px);box-shadow:0 1px 0 #9fb4cc}
 .nb#nPrev{background:#5b6b7e;color:#fff;box-shadow:0 4px 0 #3a4757;font-size:24px}
@@ -48,7 +48,8 @@ button,a{font-family:inherit;color:inherit}
 .tagline{font-size:13px;opacity:.65;letter-spacing:.04em;margin:0 0 6px}
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:100%;text-align:center}
 .cover .vs{display:flex;align-items:center;justify-content:center;gap:10px;width:100%}
-.cover .side{flex:1;min-width:0;text-align:center}
+.cover .side{flex:1;min-width:0;text-align:center;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:inherit}
+.cover .tap{display:inline-block;margin-top:6px;font-family:var(--body);font-size:15px;padding:5px 14px;border-radius:999px;background:#1d3a5c}
 .cover .side svg{width:100%;max-height:calc(var(--vh)*34);display:block}
 .cover .nm{font-family:var(--font);font-size:clamp(22px,4vw,36px)}
 .cover .nm.a{color:var(--ca)}.cover .nm.b{color:var(--cb)}
@@ -236,12 +237,12 @@ function resPage(m){
    +(m.note?'<div class="note">🧐 '+m.note+'</div>':'')
    +'</div>';
 }
-const TITLES=['대결 소개','도전자 1','도전자 2','크기 비교','내 예상','대결!','결과'];
+const TITLES=['대결 소개','도전자 특징','도전자 특징','크기 비교','내 예상','대결!','결과'];
 function render(){
   const m=S.m; if(!m){ return; }
   let h='';
   switch(S.page){
-   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><div class="side">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div></div><div class="x">VS</div><div class="side">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div></div></div></div>'; break;
+   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><button class="side" data-prof="1">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div><div class="tap">특징 보기 ▸</div></button><div class="x">VS</div><button class="side" data-prof="2">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div><div class="tap">특징 보기 ▸</div></button></div></div>'; break;
    case 1: h=profile(m.a,'a'); break;
    case 2: h=profile(m.b,'b'); break;
    case 3: h=cmpPage(m); break;
@@ -250,11 +251,11 @@ function render(){
    case 6: h=resPage(m); break;
   }
   $('page').innerHTML=h; $('page').scrollTop=0;
-  $('head').innerHTML=(S.page+1)+' / '+PAGES+'<small>'+TITLES[S.page]+'</small>';
+  const DI={0:1,3:2,4:3,5:4,6:5}; $('head').innerHTML=(DI[S.page]?DI[S.page]+' / 5':'')+'<small>'+TITLES[S.page]+'</small>';
   const prev=$('nPrev'), next=$('nNext');
   prev.classList.toggle('hide',S.page===0||S.page>=5); prev.disabled=false;
   next.disabled=false; next.classList.remove('hide');
-  next.textContent=['누가 이길까? ▶','다음 ▶','다음 ▶','내 예상 고르기 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
+  next.textContent=['누가 이길까? ▶','돌아가기','돌아가기','내 예상 고르기 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
   if(S.page===4&&!S.pick) next.disabled=true;
   saveCur(); updInfo();
 }
@@ -263,10 +264,10 @@ function nextLabel(){ return '다음 대결 ▶'; }
 function updInfo(){}
 function go(p){ S.page=p; render(); }
 function start(id){ S.m=MS.find(x=>x.id===id); if(!seen.includes(id)){ seen.push(id); LS.set('ww.seen',seen); } S.page=0; S.pick=null; S.fs=0; close(); render(); }
-$('nPrev').addEventListener('click',()=>{ sfx.tap(); if(S.page>0&&S.page<5) go(S.page-1); });
+$('nPrev').addEventListener('click',()=>{ sfx.tap(); if(S.page>0&&S.page<5) go(({1:0,2:0,3:0,4:3})[S.page]); });
 $('nNext').addEventListener('click',()=>{
   sfx.tap();
-  if(S.page<4){ go(S.page+1); return; }
+  if(S.page<4){ go(({0:3,1:0,2:0,3:4})[S.page]); return; }
   if(S.page===4){ if(!S.pick) return; S.fs=0; go(5); return; }
   if(S.page===5){ if(S.fs<3){ step(); } else { finish(); } return; }
   if(S.page===6){ start(randMatch(S.m).id); }
