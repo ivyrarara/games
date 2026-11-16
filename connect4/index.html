@@ -300,7 +300,7 @@ function showMenu(){
   }
   h+='<button class="go" data-act="start">시작하기</button>';
   if(moves.length&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
-  h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ Chess</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../spot/">👀 Spot It</a><a class="go alt" href="../uno/">🃏 UNO</a></div>';
+  h+='<div class="links"><a class="go alt" href="../">🏠 처음</a><a class="go alt" href="../chess/">♟ Chess</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../spot/">👀 Spot It</a><a class="go alt" href="../uno/">🃏 UNO</a><a class="go alt" href="../memory/">🧠 Memory</a></div>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();
 }

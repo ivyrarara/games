@@ -5,121 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>놀이터</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#d9d9ff">
+<meta name="theme-color" content="#121212">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Black+Han+Sans&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
-:root{--vh:1vh;--ink:#111;--serif:"Abril Fatface","Playfair Display",Georgia,serif;--han:"Black Han Sans","Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+:root{--f:Lilita,Han,"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#d9d9ff;color:var(--ink);font-family:var(--han);
-  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:light}
-#app{height:calc(var(--vh)*100);display:flex;flex-direction:column;padding:calc(var(--vh)*3) 16px calc(var(--vh)*3.5);gap:0}
-h1{margin:0;text-align:center;font-weight:400;font-size:calc(var(--vh)*6.4);line-height:1.05;display:flex;justify-content:center;align-items:center;gap:14px}
-h1 .sp{width:calc(var(--vh)*5.5);height:calc(var(--vh)*5.5);display:inline-block}
-#grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:calc(var(--vh)*3) 16px}
-.tile{position:relative;display:block;border-radius:26px;text-decoration:none;color:var(--ink);background:var(--c);border:5px solid var(--ink);box-shadow:0 7px 0 var(--ink);min-height:0;transition:transform .08s}
-.tile:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ink)}
-.logo{position:absolute;left:0;right:0;top:calc(var(--vh)*2.6);text-align:center;font-family:var(--serif);font-weight:400;line-height:.88;letter-spacing:-.02em;color:var(--ink);white-space:nowrap;-webkit-text-stroke:calc(var(--vh)*.55) var(--ink);paint-order:stroke fill}
-.logo.han{font-family:var(--han);letter-spacing:-.04em;line-height:1}
-.logo b{display:inline-block;font-weight:400;transform:scaleX(.84)}
-.ic{position:absolute;left:6%;right:6%;bottom:calc(var(--vh)*1.4);height:46%;display:flex;align-items:flex-end;justify-content:center}
-.ic svg{height:100%;width:100%;overflow:visible}
-.sb{position:absolute;right:-12px;top:-14px;width:calc(var(--vh)*14.5);height:calc(var(--vh)*14.5);display:flex;align-items:center;justify-content:center;text-align:center;
-  background:var(--sc);color:var(--ink);font-size:calc(var(--vh)*2.7);line-height:1.05;transform:rotate(12deg);filter:drop-shadow(0 3px 0 var(--ink));z-index:3}
-.sbw{position:absolute;right:-12px;top:-14px;width:calc(var(--vh)*14.5);height:calc(var(--vh)*14.5);filter:drop-shadow(0 0 0 var(--ink));z-index:3;transform:rotate(12deg)}
-.sbw::before,.sbw::after{content:'';position:absolute;inset:0;background:var(--ink)}
-svg text{font-family:var(--han)}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#121212;color:#fff;font-family:var(--f);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:dark}
+#cluster{position:fixed;inset:5vmin 6vmin;}
+.st{position:absolute;left:var(--lx);top:var(--ly);width:var(--ls);height:var(--ls);transform:translate(-50%,-50%) rotate(var(--r,0deg));border-radius:50%;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--tc,#fff);z-index:var(--z,1);transition:transform .12s}
+.st:active{transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(.93)}
+.st svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.st .tx{position:relative;text-align:center;line-height:.92;font-size:calc(var(--ls)*var(--fs,.2));letter-spacing:.01em;transform:rotate(var(--tr,0deg))}
+.st .tx.han{font-family:Han,var(--f);line-height:1.04;letter-spacing:-.03em}
+.fl{position:absolute;left:var(--lx);top:var(--ly);width:var(--ls);height:var(--ls);transform:translate(-50%,-50%) rotate(var(--r,0deg));z-index:var(--z,0);pointer-events:none}
+.fl svg{width:100%;height:100%;overflow:visible}
 @media (orientation:portrait){
-  #grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}
-  h1{font-size:calc(var(--vh)*4.4)}h1 .sp{width:calc(var(--vh)*4);height:calc(var(--vh)*4)}
-  .sb,.sbw{width:calc(var(--vh)*9.5);height:calc(var(--vh)*9.5)}.sb{font-size:calc(var(--vh)*1.7)}
+  .st,.fl{left:var(--px,var(--lx));top:var(--py,var(--ly));width:var(--ps,var(--ls));height:var(--ps,var(--ls))}
+  .st .tx{font-size:calc(var(--ps,var(--ls))*var(--fs,.2))}
 }
 </style>
 </head>
 <body>
-<div id="app">
-  <nav id="grid">
-
-    <a class="tile" href="chess/" style="--c:#ffb627">
-      <div class="logo" style="font-size:calc(var(--vh)*15)"><b>CHESS</b></div>
-      <div class="ic"><svg viewBox="0 0 300 120">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
-          <rect x="20" y="40" width="50" height="50" fill="#fff4d6"/><rect x="70" y="40" width="50" height="50" fill="#111"/><rect x="120" y="40" width="50" height="50" fill="#fff4d6"/>
-          <rect x="20" y="90" width="50" height="50" fill="#111"/><rect x="70" y="90" width="50" height="50" fill="#fff4d6"/><rect x="120" y="90" width="50" height="50" fill="#111"/>
-          <circle cx="250" cy="44" r="20" fill="#fff4d6"/><path d="M232 132 Q236 78 250 66 Q264 78 268 132 Z" fill="#fff4d6"/><rect x="222" y="118" width="56" height="16" rx="6" fill="#fff4d6"/>
-        </g></svg></div>
-    </a>
-
-    <a class="tile" href="algakki/" style="--c:#ff8cc6">
-      <div class="logo han" style="font-size:calc(var(--vh)*11.5)">알까기</div>
-      <div class="ic"><svg viewBox="0 0 300 120">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-          <circle cx="70" cy="70" r="42" fill="#111"/><circle cx="56" cy="54" r="9" fill="#fff" stroke="none"/>
-          <circle cx="205" cy="62" r="40" fill="#fff"/><circle cx="192" cy="48" r="8" fill="#e3e3ee" stroke="none"/>
-          <path d="M122 70 H156" fill="none"/><path d="M146 58 L160 70 L146 82" fill="none"/>
-          <path d="M255 28 l6 14 l15 2 l-11 10 l4 15 l-14 -8 l-14 8 l4 -15 l-11 -10 l15 -2 z" fill="#ffd23f" transform="translate(-6 -8) scale(.9)"/>
-        </g></svg></div>
-    </a>
-
-    <a class="tile" href="multiply/" style="--c:#59d96b">
-      <div class="logo han" style="font-size:calc(var(--vh)*8.8)">곱셈 몬스터</div>
-      <div class="ic"><svg viewBox="0 0 300 140">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
-          <path d="M60 130 Q40 40 150 30 Q260 40 240 130 Z" fill="#ff5a4a"/>
-          <ellipse cx="112" cy="70" rx="24" ry="20" fill="#fff"/><ellipse cx="188" cy="70" rx="24" ry="20" fill="#fff"/>
-          <circle cx="118" cy="72" r="9" fill="#111"/><circle cx="182" cy="72" r="9" fill="#111"/>
-          <path d="M90 52 q22 -18 44 0 M166 52 q22 -18 44 0" fill="none" stroke="#7a56d8"/>
-          <path d="M92 102 Q150 150 208 102 Q150 112 92 102 Z" fill="#fff"/>
-          <path d="M112 106 v10 M130 110 v12 M150 112 v12 M170 110 v12 M188 106 v10" fill="none" stroke-width="3"/>
-          <path d="M80 36 l-16 -22 l30 10 M220 36 l16 -22 l-30 10" fill="#ffd23f"/>
-        </g></svg></div>
-    </a>
-
-    <a class="tile" href="connect4/" style="--c:#5ab0ff">
-      <div class="logo" style="font-size:calc(var(--vh)*9.2)"><b>CONNECT 4</b></div>
-      <div class="ic"><svg viewBox="0 0 300 130">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
-          <rect x="45" y="10" width="210" height="116" rx="14" fill="#2f5de8"/>
-          <circle cx="85" cy="40" r="17" fill="#fff"/><circle cx="125" cy="40" r="17" fill="#fff"/><circle cx="165" cy="40" r="17" fill="#fff"/><circle cx="205" cy="40" r="17" fill="#fff"/>
-          <circle cx="85" cy="78" r="17" fill="#fff"/><circle cx="125" cy="78" r="17" fill="#ff4b3e"/><circle cx="165" cy="78" r="17" fill="#ffd23f"/><circle cx="205" cy="78" r="17" fill="#fff"/>
-          <circle cx="85" cy="112" r="0"/>
-          <circle cx="125" cy="108" r="0"/>
-        </g>
-        <g stroke="#111" stroke-width="5">
-          <circle cx="85" cy="104" r="14" fill="#ffd23f"/><circle cx="125" cy="104" r="14" fill="#ff4b3e"/><circle cx="165" cy="104" r="14" fill="#ff4b3e"/><circle cx="205" cy="104" r="14" fill="#ffd23f"/>
-        </g></svg></div>
-    </a>
-
-    <a class="tile" href="spot/" style="--c:#b79cff">
-      <div class="logo" style="font-size:calc(var(--vh)*11.5)"><b>SPOT IT!</b></div>
-      <div class="ic"><svg viewBox="0 0 300 130">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
-          <circle cx="95" cy="68" r="56" fill="#fff"/><circle cx="205" cy="68" r="56" fill="#fff"/>
-          <circle cx="72" cy="50" r="12" fill="#ff4b3e"/><circle cx="108" cy="86" r="16" fill="#59d96b"/><circle cx="78" cy="92" r="8" fill="#5ab0ff"/><circle cx="112" cy="46" r="7" fill="#ffd23f"/>
-          <circle cx="232" cy="52" r="14" fill="#ff8cc6"/><circle cx="196" cy="90" r="10" fill="#ffb627"/><circle cx="228" cy="92" r="7" fill="#5ab0ff"/>
-          <path d="M150 62 l5 11 l12 2 l-9 8 l3 12 l-11 -6 l-11 6 l3 -12 l-9 -8 l12 -2 z" fill="#ffd23f" transform="translate(0 -10) scale(1.05) translate(-6 0)"/>
-        </g></svg></div>
-    </a>
-
-    <a class="tile" href="uno/" style="--c:#ff5a4a">
-      <div class="logo" style="font-size:calc(var(--vh)*17)"><b>UNO</b></div>
-      <div class="ic"><svg viewBox="0 0 300 130">
-        <g stroke="#111" stroke-width="5" stroke-linejoin="round">
-          <g transform="rotate(-26 90 120)"><rect x="55" y="12" width="70" height="106" rx="10" fill="#5ab0ff"/><ellipse cx="90" cy="65" rx="22" ry="34" fill="#fff" transform="rotate(20 90 65)"/></g>
-          <g transform="rotate(-9 130 120)"><rect x="100" y="8" width="70" height="106" rx="10" fill="#59d96b"/><ellipse cx="135" cy="61" rx="22" ry="34" fill="#fff" transform="rotate(20 135 61)"/></g>
-          <g transform="rotate(9 170 120)"><rect x="135" y="8" width="70" height="106" rx="10" fill="#ffd23f"/><ellipse cx="170" cy="61" rx="22" ry="34" fill="#fff" transform="rotate(20 170 61)"/></g>
-          <g transform="rotate(26 210 120)"><rect x="175" y="12" width="70" height="106" rx="10" fill="#b79cff"/><ellipse cx="210" cy="65" rx="22" ry="34" fill="#fff" transform="rotate(20 210 65)"/></g>
-        </g></svg></div>
-    </a>
-
-  </nav>
-</div>
+<div id="cluster"></div>
 <script>
-function vh(){document.documentElement.style.setProperty('--vh',(window.innerHeight/100)+'px');}
-vh();window.addEventListener('resize',vh);
+const C={pink:'#ff8fd0',yellow:'#ffc400',green:'#2f9b55',blue:'#1f5fd8',lav:'#cdbaf0',orange:'#ff5a14',red:'#ff3d2e',navy:'#14143a'};
+const P=(r,n,i)=>[(50+Math.cos(2*Math.PI*i/n-Math.PI/2)*r).toFixed(2),(50+Math.sin(2*Math.PI*i/n-Math.PI/2)*r).toFixed(2)];
+function shape(kind,c1,c2,n){
+  let s='';
+  if(kind==='circle') s=`<circle cx="50" cy="50" r="50" fill="${c1}"/>`;
+  if(kind==='flower'){ n=n||8; for(let i=0;i<n;i++){const [x,y]=P(31,n,i);s+=`<circle cx="${x}" cy="${y}" r="19.5" fill="${c1}"/>`;} s+=`<circle cx="50" cy="50" r="33" fill="${c1}"/>`; }
+  if(kind==='scallop'){ n=n||14; for(let i=0;i<n;i++){const [x,y]=P(44,n,i);s+=`<circle cx="${x}" cy="${y}" r="7.5" fill="${c1}"/>`;} s+=`<circle cx="50" cy="50" r="44" fill="${c1}"/>`; }
+  if(kind==='star'){ n=n||9; const pts=[];for(let i=0;i<n*2;i++){const [x,y]=P(i%2?33:50,n*2,i);pts.push(x+','+y);} s+=`<polygon points="${pts.join(' ')}" fill="${c1}" stroke="${c1}" stroke-width="5" stroke-linejoin="round"/>`; }
+  if(c2) s+=`<circle cx="50" cy="50" r="${kind==='star'?25:kind==='scallop'?34:kind==='flower'?27:40}" fill="${c2}"/>`;
+  return `<svg class="shape" viewBox="0 0 100 100">${s}</svg>`;
+}
+/* 게임 하나 = 스티커 하나. lx/ly: 가로 화면 위치, px/py: 세로 화면 위치 */
+const G=[
+ {h:'chess/',   t:'Chess',        k:'circle', c1:C.pink,  tc:'#fff',  fs:.27, r:-6, tr:-8, lx:'18%',ly:'28%',ls:'44vmin',px:'30%',py:'14%',ps:'44vmin',z:2},
+ {h:'algakki/', t:'알까기',        k:'scallop',c1:C.green, tc:'#fff',  fs:.27, r:4,  tr:6,  han:1,lx:'42%',ly:'22%',ls:'36vmin',px:'72%',py:'20%',ps:'38vmin',z:3},
+ {h:'multiply/',t:'곱셈<br>몬스터', k:'flower', c1:C.lav,   c2:C.blue,tc:'#fff',fs:.17,r:-3,tr:-6,han:1,lx:'66%',ly:'30%',ls:'44vmin',px:'30%',py:'35%',ps:'46vmin',z:2},
+ {h:'connect4/',t:'Connect<br>4', k:'circle', c1:C.yellow,tc:C.navy,fs:.2,  r:8,  tr:10, lx:'88%',ly:'26%',ls:'36vmin',px:'74%',py:'45%',ps:'38vmin',z:3},
+ {h:'spot/',    t:'Spot<br>it!',  k:'star',   c1:C.orange,c2:C.yellow,tc:C.navy,fs:.2,r:-8,tr:-10,lx:'16%',ly:'76%',ls:'40vmin',px:'24%',py:'60%',ps:'40vmin',z:2},
+ {h:'uno/',     t:'UNO',          k:'scallop',c1:C.pink,  c2:C.blue,tc:'#fff',  fs:.28, r:-5, tr:-7, lx:'40%',ly:'76%',ls:'44vmin',px:'68%',py:'66%',ps:'44vmin',z:3},
+ {h:'memory/',  t:'Memory',       k:'flower', c1:C.pink,  c2:C.green,tc:'#fff', fs:.15, r:6,  tr:8,  lx:'66%',ly:'76%',ls:'42vmin',px:'30%',py:'84%',ps:'42vmin',z:2}
+];
+/* 장식 (눌러도 아무 일 없음) */
+const F=[
+ {k:'flower',c1:C.pink,  c2:C.green, n:8, lx:'29%',ly:'55%',ls:'15vmin',r:12, z:1,px:'8%', py:'34%',ps:'16vmin'},
+ {k:'star',  c1:C.yellow,c2:C.orange,n:8, lx:'54%',ly:'50%',ls:'14vmin',r:0,  z:1,px:'52%',py:'30%',ps:'14vmin'},
+ {k:'flower',c1:C.lav,   c2:C.blue,  n:6, lx:'89%',ly:'58%',ls:'18vmin',r:-8, z:1,px:'90%',py:'66%',ps:'18vmin'},
+ {k:'flower',c1:C.green, c2:C.pink,  n:7, lx:'6%', ly:'55%',ls:'16vmin',r:20, z:1,px:'12%',py:'92%',ps:'16vmin'},
+ {k:'circle',c1:C.orange,c2:C.yellow,        lx:'90%',ly:'92%',ls:'11vmin',r:0,  z:1,px:'92%',py:'8%', ps:'11vmin'},
+ {k:'star',  c1:C.blue,  c2:C.yellow,n:10,lx:'52%',ly:'96%',ls:'13vmin',r:0,  z:1,px:'56%',py:'96%',ps:'13vmin'}
+];
+const box=document.getElementById('cluster');
+F.forEach(f=>{const d=document.createElement('div');d.className='fl';d.style.cssText=`--lx:${f.lx};--ly:${f.ly};--ls:${f.ls};--px:${f.px};--py:${f.py};--ps:${f.ps};--r:${f.r}deg;--z:${f.z}`;d.innerHTML=shape(f.k,f.c1,f.c2,f.n);box.appendChild(d);});
+G.forEach(g=>{const a=document.createElement('a');a.className='st';a.href=g.h;
+  a.style.cssText=`--lx:${g.lx};--ly:${g.ly};--ls:${g.ls};--px:${g.px};--py:${g.py};--ps:${g.ps};--r:${g.r}deg;--tr:${g.tr}deg;--tc:${g.tc};--fs:${g.fs};--z:${g.z}`;
+  a.innerHTML=shape(g.k,g.c1,g.c2)+`<span class="tx${g.han?' han':''}">${g.t}</span>`;box.appendChild(a);});
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>

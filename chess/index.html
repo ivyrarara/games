@@ -690,6 +690,7 @@ function showMenu(){
   h+='<a class="go alt" href="../connect4/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🔴 Connect 4</a>';
   h+='<a class="go alt" href="../spot/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">👀 Spot It</a>';
   h+='<a class="go alt" href="../uno/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🃏 UNO</a>';
+  h+='<a class="go alt" href="../memory/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🧠 Memory</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();
