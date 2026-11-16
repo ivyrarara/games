@@ -377,7 +377,7 @@ function showMenu(){
     h+='<div class="row"><b>내 말 색깔</b><div class="chips">'+chip('color',1,'흰색 (먼저 시작)')+chip('color',-1,'검정')+'</div></div>';
   }
   h+='<button class="go" data-act="start">시작하기</button>';
-  if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
+  if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close" style="margin-top:10px">계속하던 게임으로</button>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();
 }

@@ -266,8 +266,8 @@ function showMenu(){
   let h='<h1>👀 Spot It</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 제한 시간 안에 찾아요 · 10번 중 6번 성공하면 이겨요</div>';
   h+='<div class="row"><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
   h+='<button class="go" data-act="start" style="display:flex;align-items:center;justify-content:center;line-height:1;padding:6px 0 0;font-size:34px;min-height:86px"><svg viewBox="0 0 24 24" width="30" height="30" style="vertical-align:-3px;margin-right:12px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
+  if(live&&!over) h+='<button class="go alt" data-act="close" style="margin-top:10px">계속하던 게임으로</button>';
   h+=Guard.extras();
-  if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu'); initLvBar();
 }
