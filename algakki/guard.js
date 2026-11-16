@@ -68,7 +68,7 @@ async function confirmParent(){
   }
 }
 function limChips(cur){ return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
-function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>게임 시간이 끝났어요</h2><div class="sub">부모님이 확인하면 새로 시간을 정할 수 있어요.</div><button class="go alt" data-ga="parent">🙅🏻‍♀️ 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
+function showLock(){ flush(); const pre=opts.hub?'':'../'; open('<div class="big">🌙</div><h2>게임 시간이 끝났어요</h2><div class="sub">부모님이 확인하면 새로 시간을 정할 수 있어요.</div><button class="go alt" data-ga="parent">🙅🏻‍♀️ 부모님 확인</button><a class="go alt" href="'+pre+'multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>'+(opts.hub?'':'<a class="go alt" href="../" style="display:block;line-height:56px;text-decoration:none;text-align:center">🏠 처음으로</a>'),'lock'); }
 function showParent(){
   const x=sess(), cur=!x?-1:(x.unl?0:-1);
   let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">'+(timeLeft()<=0?'이번엔 몇 분 놀까요?':'지금 '+fmtLeft()+' · 새로 고르면 다시 시작돼요')+'</div>';
@@ -105,6 +105,7 @@ setInterval(()=>tick(),1000);
 function flush(){ if(DAY) LS.set('sess',DAY); }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flush(); tickLast=Date.now(); });
 window.addEventListener('pagehide',flush);
+window.addEventListener('pageshow',e=>{ if(e.persisted){ DAY=null; tickLast=Date.now(); if(started&&!opts.noLimit&&timeLeft()<=0) showLock(); } });
 
 let xInit=false;
 function xInstall(){
