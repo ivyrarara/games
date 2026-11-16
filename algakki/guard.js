@@ -111,7 +111,9 @@ window.addEventListener('pagehide',flush);
 window.Guard={
   start(o){
     opts=o||{};
-    if(opts.hub){ started=false; if(LS.get('parent',null)&&timeLeft()<=0) showLock(); return; }
+    if(opts.hub){ started=false;
+      if(!LS.get('parent',null)){ open('<div class="big">👪</div><h2>처음 한 번, 부모님 설정이 필요해요</h2><div class="sub">시간 제한과 확인 방법(지문/PIN)을 정해요. 체스 화면에서 설정할 수 있어요.</div><a class="go" href="chess/" style="display:block;line-height:64px;text-decoration:none;text-align:center">부모님 설정하러 가기</a>','setup'); return; }
+      if(timeLeft()<=0) showLock(); return; }
     if(!LS.get('parent',null)){ location.replace('../'); return; }
     started=true; tickLast=Date.now();
     if(!opts.noLimit&&timeLeft()<=0) showLock();
