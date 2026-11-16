@@ -19,7 +19,8 @@ button,a{font-family:inherit;color:inherit}
 #app{height:calc(var(--vh)*100);display:flex;flex-direction:column;padding:6px 10px 10px;gap:4px}
 #top{display:flex;gap:8px;align-items:stretch;flex:none}
 #opps{flex:1;display:flex;gap:8px;min-width:0}
-.opp{flex:1;min-width:0;background:rgba(0,0,0,.25);border-radius:16px;padding:6px 10px;display:flex;align-items:center;gap:8px;border:3px solid transparent;min-height:calc(var(--vh)*13)}
+.opp .tx{flex:none}
+.opp{flex:1;min-width:0;background:rgba(0,0,0,.25);border-radius:16px;padding:6px 10px;display:flex;align-items:center;gap:8px;border:3px solid transparent;min-height:calc(var(--vh)*15)}
 .opp.on{border-color:#ffe14d;background:rgba(255,225,77,.18)}
 .opp .em{font-size:calc(var(--vh)*6)}
 .opp .tx{display:flex;flex-direction:column;min-width:0}
@@ -28,6 +29,9 @@ button,a{font-family:inherit;color:inherit}
 .opp .ct small{font-size:.6em;opacity:.8}
 .opp .bk{display:flex;margin-left:auto;padding-right:6px}
 .opp .bk i{width:calc(var(--vh)*3.2);height:calc(var(--vh)*4.8);border-radius:4px;background:#1d1d24;border:2px solid #fff;margin-right:calc(var(--vh)*-1.8);flex:none}
+.opp .bk.mini{margin-left:auto;padding-right:0;min-width:0;overflow:hidden;align-items:center}
+.opp .bk.mini .card{--cw:calc(var(--vh)*8.2);border-width:2px;box-shadow:0 1px 3px rgba(0,0,0,.4);margin-right:0}
+.opp .bk.mini .cn{display:none}
 .opp .ub{background:#ffe14d;color:#c00;border-radius:10px;padding:2px 8px;font-size:calc(var(--vh)*3.2);margin-left:4px}
 #tools{flex:none;display:flex;flex-direction:column;gap:4px;width:calc(var(--vh)*26)}
 #timeBox{background:rgba(0,0,0,.25);border-radius:12px;padding:3px 8px;text-align:center;font-size:calc(var(--vh)*3)}
@@ -97,7 +101,7 @@ button,a{font-family:inherit;color:inherit}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cbtn{min-height:84px;border:4px solid #fff;border-radius:18px;font-size:26px;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.5)}
 .hint{font-size:14px;opacity:.65;margin-top:6px;line-height:1.35}
-@media (orientation:portrait){#tools{width:calc(var(--vh)*13)}#opps{flex-direction:column}.opp .bk{display:none}}
+@media (orientation:portrait){#tools{width:calc(var(--vh)*13)}#opps{flex-direction:column}.opp .bk{display:none}.opp .bk.mini{display:flex}}
 </style>
 </head>
 <body>
@@ -215,8 +219,15 @@ function render(){
   for(let i=1;i<np;i++){
     const n=hands[i].length,d=document.createElement('div');
     d.className='opp'+(turn===i&&!over?' on':'');
-    d.innerHTML='<span class="em">'+PL[i].e+'</span><span class="tx"><span class="nm">'+PL[i].n+'</span><span class="ct">'+n+'<small>장</small></span></span><span class="bk">'+'<i></i>'.repeat(Math.min(n,8))+'</span>'+(n===1?'<span class="ub">우노!</span>':'');
+    const nm='<span class="em">'+PL[i].e+'</span><span class="tx"><span class="nm">'+PL[i].n+'</span><span class="ct">'+n+'<small>장</small></span></span>';
+    const ub=(n===1?'<span class="ub">우노!</span>':'');
+    if(mode==='flip'){
+      d.innerHTML=nm+'<span class="bk mini"></span>'+ub;
+      const bk=d.querySelector('.bk'),other=side==='l'?'d':'l';
+      hands[i].forEach(c=>{bk.appendChild(cardEl(c,other));});
+    }else d.innerHTML=nm+'<span class="bk">'+'<i></i>'.repeat(Math.min(n,8))+'</span>'+ub;
     o.appendChild(d);
+    if(mode==='flip'){const bk=d.querySelector('.bk'),kids=[...bk.children];requestAnimationFrame(()=>{const cw=kids[0]?kids[0].getBoundingClientRect().width:30,avail=bk.getBoundingClientRect().width||200;if(kids.length>1){const step=Math.max(5,Math.min(cw*.62,(avail-cw)/(kids.length-1)));kids.forEach((k,j)=>{k.style.marginLeft=j?(-(cw-step))+'px':'0';});}});}
   }
   // piles
   const dr=$('draw');dr.innerHTML='';dr.appendChild(backEl());
@@ -420,7 +431,7 @@ let holdT=null;const bP=$('bParent');
 bP.addEventListener('pointerdown',()=>{bP.classList.add('hold');holdT=setTimeout(()=>{holdT=null;bP.classList.remove('hold');Guard.parentFlow();},900);});
 ['pointerup','pointerleave','pointercancel'].forEach(ev=>bP.addEventListener(ev,()=>{clearTimeout(holdT);bP.classList.remove('hold');}));
 function vh(){document.documentElement.style.setProperty('--vh',(window.innerHeight/100)+'px');}
-window.addEventListener('resize',vh);
+window.addEventListener('resize',()=>{vh();if(hands.length)render();});
 
 /* boot */
 vh();
@@ -428,7 +439,7 @@ hands=[[]];PL=[{n:'나',e:'🙂'}];
 showMenu();
 Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className=s<=300?'low':'';},onReset:()=>{}});
 window.__uno={get phase(){return phase;},get over(){return over;},get turn(){return turn;},get np(){return np;},get mode(){return mode;},get side(){return side;},
-  total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},forceUno(){unoPrompt();render();},newGame};
+  total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},forceUno(){unoPrompt();render();},flip(){doFlip();render();},newGame};
 })();
 </script>
 </body>
