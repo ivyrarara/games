@@ -32,7 +32,7 @@ button,a{font-family:inherit;color:inherit}
 .opp .bk.mini{margin-left:auto;padding-right:0;min-width:0;overflow:hidden;align-items:center}
 .opp .bk.mini .card{--cw:calc(var(--vh)*8.2);border-width:2px;box-shadow:0 1px 3px rgba(0,0,0,.4);margin-right:0}
 .opp .bk.mini .cn{display:none}
-.opp .ub{background:#ffe14d;color:#c00;border-radius:10px;padding:2px 8px;font-size:calc(var(--vh)*3.2);margin-left:4px}
+.opp .ub{opacity:.45;background:#ffe14d;color:#c00;border-radius:10px;padding:2px 8px;font-size:calc(var(--vh)*3.2);margin-left:4px}
 #tools{flex:none;display:flex;flex-direction:column;gap:4px;width:calc(var(--vh)*26)}
 #timeBox{background:rgba(0,0,0,.25);border-radius:12px;padding:3px 8px;text-align:center;font-size:calc(var(--vh)*3)}
 #timeBox.low{background:#a8760a}
@@ -64,6 +64,7 @@ button,a{font-family:inherit;color:inherit}
 #bUno{background:#ffe14d;color:#c00}
 #bPass{background:#fff;color:var(--ink)}
 @keyframes pulse{to{transform:scale(1.12)}}
+.opp .ub.hot{opacity:1;animation:pulse .35s ease-in-out infinite alternate}
 #hand{flex:none;display:flex;justify-content:safe center;overflow-x:auto;overflow-y:hidden;padding:calc(var(--hw)*.22) 10px 6px;-webkit-overflow-scrolling:touch;min-height:calc(var(--hw)*1.5 + var(--hw)*.22 + 14px)}
 #hand .card{--cw:var(--hw);margin-left:calc(var(--hw)*-.3);cursor:pointer;transition:transform .12s}
 #hand .card:first-child{margin-left:0}
@@ -240,7 +241,7 @@ function render(){
     const n=hands[i].length,d=document.createElement('div');
     d.className='opp'+(turn===i&&!over?' on':'');
     const nm='<span class="em">'+PL[i].e+'</span><span class="tx"><span class="nm">'+PL[i].n+'</span><span class="ct">'+n+'<small>장</small></span></span>';
-    const ub=(n===1?'<span class="ub">우노!</span>':'');
+    const ub=(n===1?'<span class="ub'+(exposed[i]?' hot':'')+'">우노!</span>':'');
     if(mode==='flip'){
       d.innerHTML=nm+'<span class="bk mini"></span>'+ub;
       const bk=d.querySelector('.bk'),other=side==='l'?'d':'l';
@@ -302,7 +303,7 @@ function doFlip(){
 function playCard(p,card,chosen){
   const h=hands[p];h.splice(h.indexOf(card),1);discard.push(card);
   const f=face(card);curColor=f.c===4?chosen:f.c;sfx.play();
-  if(p!==0){if(h.length===1){const tk=exposed[p]=Date.now(),gi=gid;setTimeout(()=>{if(gi===gid&&exposed[p]===tk)delete exposed[p];},3000);}else delete exposed[p];}
+  if(p!==0){if(h.length===1){const tk=exposed[p]=Date.now(),gi=gid;setTimeout(()=>{if(gi===gid&&exposed[p]===tk){delete exposed[p];if(!over)render();}},3000);}else delete exposed[p];}
   if(h.length===0){render();finish(p);return;}
   const P=pal();
   let msg='';
@@ -346,6 +347,7 @@ $('bUno').addEventListener('click',()=>{
   if(unoPending){unoPending=false;clearTimeout(unoT);sfx.uno();$('note').textContent='우노! 👍';return;}
   const ex=Object.keys(exposed).map(Number).find(i=>hands[i]&&hands[i].length===1);
   if(ex!==undefined){delete exposed[ex];const got=drawTo(ex,2);sfx.uno();sfx.deal();$('note').textContent='우노! '+PL[ex].n+' 카드 2장 먹었어요 😆';render();return;}
+  if(hands.slice(1).some(h=>h.length===1)){sfx.no();$('note').textContent='늦었어요! 상대가 먼저 우노를 외쳤어요';return;}
   if(hands[0].length<=2){unoCalled=true;sfx.uno();$('note').textContent='우노! 👍';}
   else{sfx.no();$('note').textContent='아직 카드가 많아요';}
 });
