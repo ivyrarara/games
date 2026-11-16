@@ -48,7 +48,7 @@ button,a{font-family:inherit;color:inherit}
 #draw .badge{position:absolute;right:-10px;bottom:-8px;background:#fff;color:var(--ink);border-radius:12px;padding:1px 8px;font-size:calc(var(--vh)*3);box-shadow:0 2px 0 rgba(0,0,0,.3)}
 #draw.can{animation:bob .8s ease-in-out infinite alternate}
 @keyframes bob{to{transform:translateY(-6px)}}
-#disc .card{animation:drop .25s ease-out}
+#disc .card.fresh{animation:drop .25s ease-out}
 @keyframes drop{from{transform:scale(1.3) rotate(-8deg);opacity:.4}}
 #colorBox{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:calc(var(--vh)*3.2)}
 #colorDot{width:calc(var(--vh)*10);height:calc(var(--vh)*10);border-radius:50%;border:5px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.3)}
@@ -110,7 +110,10 @@ button,a{font-family:inherit;color:inherit}
   .opp{padding:6px 8px;gap:6px;min-height:0;flex-wrap:wrap}.opp .em{font-size:26px}.opp .nm{font-size:14px}.opp .ct{font-size:20px}
   .opp .bk{display:none}.opp .bk.mini{display:flex;flex-basis:100%;margin-left:0;justify-content:center}.opp .bk.mini .card{--cw:24px}
   #status{font-size:20px;min-height:26px}
-  #bUno{font-size:24px;min-height:52px;padding:0 28px;margin-bottom:6px}
+  #act{position:static;pointer-events:auto;gap:10px;width:100%;padding:0 10px;box-sizing:border-box}
+  .abtn{flex:1;white-space:nowrap;font-size:22px;min-height:52px;padding:0 8px;border-radius:16px}
+  #bUno{flex:1}
+  #note{font-size:14px;min-height:18px}
   #mid{gap:14px}
 }
 </style>
@@ -146,7 +149,7 @@ const SYM={skip:'⊘',rev:'⇄',p2:'+2',p1:'+1',p5:'+5',w4:'+4',w2:'+2',sall:'�
 const CP=[{n:'여우',e:'🦊'},{n:'판다',e:'🐼'},{n:'호랑이',e:'🐯'}];
 const pal=sd=>(sd||side)==='l'?{c:LC,i:LI,n:LN}:{c:DC,i:DI,n:DN};
 let side='l',mode='classic',np=3,deck=[],discard=[],hands=[],PL=[],dir=1,turn=0,curColor=0,phase='',over=false,gid=0,drawnCard=null,note='',muted=false,overlayMode='';
-let unoPending=false,unoT=null,unoCalled=false;
+let unoPending=false,unoT=null,unoCalled=false,exposed={};
 const mod=x=>((x%np)+np)%np;
 const face=c=>c[side];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -200,7 +203,7 @@ function drawOne(){
   if(!deck.length&&discard.length>1){const top=discard.pop();deck=shuffle(discard);discard=[top];}
   return deck.pop()||null;
 }
-function drawTo(p,n){if(p===0)unoCalled=false;const out=[];for(let i=0;i<n;i++){const c=drawOne();if(!c)break;hands[p].push(c);out.push(c);}return out;}
+function drawTo(p,n){if(p===0)unoCalled=false;else if(n>0)delete exposed[p];const out=[];for(let i=0;i<n;i++){const c=drawOne();if(!c)break;hands[p].push(c);out.push(c);}return out;}
 function playable(card){
   const f=face(card),t=face(discard[discard.length-1]);
   return f.c===4||f.c===curColor||(t.c!==4&&f.v===t.v);
@@ -222,7 +225,7 @@ function cardEl(card,sd){
   e._c=card;return e;
 }
 function backEl(){const e=document.createElement('div');e.className='card back';e.innerHTML='<b class="oval"></b><span class="sy">?</span>';return e;}
-let newCards=[];
+let newCards=[],lastTop=null;
 function render(){
   document.body.classList.toggle('dark',side==='d');
   // opponents
@@ -244,7 +247,7 @@ function render(){
   const dr=$('draw');dr.innerHTML='';dr.appendChild(backEl());
   const bd=document.createElement('span');bd.className='badge';bd.textContent=deck.length;dr.appendChild(bd);
   dr.classList.toggle('can',phase==='human');
-  const dc=$('disc');dc.innerHTML='';if(discard.length)dc.appendChild(cardEl(discard[discard.length-1]));
+  const dc=$('disc');dc.innerHTML='';if(discard.length){const top=discard[discard.length-1],ce=cardEl(top);if(top!==lastTop)ce.classList.add('fresh');lastTop=top;dc.appendChild(ce);}
   const P=pal();
   $('colorDot').style.background=P.c[curColor];$('colorName').textContent=P.n[curColor];
   $('dirI').textContent=dir===1?'↻':'↺';
@@ -268,7 +271,7 @@ function setStatus(t,n,cls){const s=$('status');s.textContent=t;s.className=cls|
 
 /* ---------- 게임 진행 ---------- */
 function newGame(){
-  gid++;clearTimeout(unoT);unoPending=false;unoCalled=false;
+  gid++;clearTimeout(unoT);unoPending=false;unoCalled=false;exposed={};
   mode=LS.get('uno.mode','classic');np=Math.max(2,Math.min(4,LS.get('uno.np',3)));
   PL=[{n:'나',e:'🙂'}].concat(CP.slice(0,np-1));
   deck=shuffle(mode==='flip'?mkFlip():mkClassic());side='l';dir=1;turn=0;over=false;drawnCard=null;note='';
@@ -293,6 +296,7 @@ function doFlip(){
 function playCard(p,card,chosen){
   const h=hands[p];h.splice(h.indexOf(card),1);discard.push(card);
   const f=face(card);curColor=f.c===4?chosen:f.c;sfx.play();
+  if(p!==0){if(h.length===1)exposed[p]=true;else delete exposed[p];}
   if(h.length===0){render();finish(p);return;}
   const P=pal();
   let msg='';
@@ -334,6 +338,8 @@ function unoPrompt(){
 $('bUno').addEventListener('click',()=>{
   unlock();if(over||phase==='')return;
   if(unoPending){unoPending=false;clearTimeout(unoT);sfx.uno();$('note').textContent='우노! 👍';return;}
+  const ex=Object.keys(exposed).map(Number).find(i=>hands[i]&&hands[i].length===1);
+  if(ex!==undefined){delete exposed[ex];const got=drawTo(ex,2);sfx.uno();sfx.deal();$('note').textContent='우노! '+PL[ex].n+' 카드 2장 먹었어요 😆';render();return;}
   if(hands[0].length<=2){unoCalled=true;sfx.uno();$('note').textContent='우노! 👍';}
   else{sfx.no();$('note').textContent='아직 카드가 많아요';}
 });
