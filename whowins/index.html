@@ -240,7 +240,7 @@ function render(){
   const m=S.m; if(!m){ return; }
   let h='';
   switch(S.page){
-   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><div class="side">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div></div><div class="x">VS</div><div class="side">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div></div></div><div class="chips"><span class="chip">누가 더 강할까요?</span></div></div>'; break;
+   case 0: h='<div class="pg cover"><p class="tagline">'+ENV[m.env]+' · '+m.place+'</p><div class="vs"><div class="side">'+svgOf(AN[m.a].art)+'<div class="nm a">'+AN[m.a].n+'</div></div><div class="x">VS</div><div class="side">'+'<svg viewBox="0 0 200 100" style="transform:scaleX(-1)">'+ART[AN[m.b].art]+'</svg><div class="nm b">'+AN[m.b].n+'</div></div></div></div>'; break;
    case 1: h=profile(m.a,'a'); break;
    case 2: h=profile(m.b,'b'); break;
    case 3: h=cmpPage(m); break;
@@ -253,7 +253,7 @@ function render(){
   const prev=$('nPrev'), next=$('nNext');
   prev.classList.toggle('hide',S.page===0||S.page>=5); prev.disabled=false;
   next.disabled=false; next.classList.remove('hide');
-  next.textContent=['다음 ▶','다음 ▶','다음 ▶','내 예상 고르기 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
+  next.textContent=['누가 이길까? ▶','다음 ▶','다음 ▶','내 예상 고르기 ▶','결과 보기 ▶',S.fs<3?'다음 ▶':'결과 ▶',nextLabel()][S.page];
   if(S.page===4&&!S.pick) next.disabled=true;
   saveCur(); updInfo();
 }
