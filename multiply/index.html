@@ -59,8 +59,9 @@ button,a{font-family:inherit;color:inherit}
 #pen,#ans{position:absolute;inset:0;width:100%;height:100%}
 #pen{touch-action:none;cursor:crosshair;z-index:1}
 #ans{pointer-events:none}
-#pentools{position:absolute;right:10px;top:10px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 10px;z-index:2;max-width:calc(100% - 20px)}
-#szrow{display:flex;flex-direction:column;align-items:flex-end;gap:6px;width:100%}
+#pentools{position:absolute;right:10px;top:10px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 10px;z-index:2;max-width:calc(100% - 20px);pointer-events:none}
+#pentools .pt,#pentools .sz{pointer-events:auto}
+#szrow{pointer-events:none;display:flex;flex-direction:column;align-items:flex-end;gap:6px;width:100%}
 .sz{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--edge);background:#fff;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
 .sz i{display:block;border-radius:50%;background:#2b2b35}
 .sz.on{box-shadow:0 0 0 4px #ffc400;background:#fff8d6}
@@ -146,7 +147,7 @@ button,a{font-family:inherit;color:inherit}
   #right.nopad #mini{grid-template-columns:repeat(4,1fr);flex:3;margin-top:0}
   #hpwrap{width:180px}
   #prob{padding-top:76px}
-  .vf{--cs:min(100px,24vw,calc((var(--vh)*100 - 340px)/3.75))}
+  .vf{--cs:min(100px,24vw,var(--csh,999px))}
   .vf .cc{height:calc(var(--cs)*.75)} .cc .cell.carry{height:calc(var(--cs)*.7)}
   .pt{width:80px;height:64px;font-size:28px}
   .sz{width:34px;height:34px}
@@ -443,7 +444,7 @@ function render(){
   $('prob').innerHTML=f+'<div class="side"><div id="msg" class="'+msgC+'">'+msgT+'</div></div>';
   const hb=$('pad').querySelector('.hint'); if(hb) hb.classList.toggle('hl',phase==='ask'&&cur.wrong>0&&!cur.hinted);
   $('bSound').innerHTML=(muted?'🔇':'🔊')+'<span>'+(muted?'소리 꺼짐':'소리')+'</span>';
-  layoutAct();
+  fitCs(); layoutAct();
 }
 
 /* ---------- flow ---------- */
@@ -603,7 +604,14 @@ const pen=$('pen'),pctx=pen.getContext('2d'),anv=$('ans'),actx=anv.getContext('2
 const PEN=[3,5,8,12,18],ERA=[16,28,44,64,88];
 let penSz=Math.max(1,Math.min(5,+LS.get('mult.pensz',2)||2)),eraSz=Math.max(1,Math.min(5,+LS.get('mult.erasz',3)||3));
 const ink='#2b2b35';let erase=false,pdraw=null,zones={},ansS={};
+function fitCs(){
+  const root=document.documentElement,w=$('probwrap');
+  if(!matchMedia('(orientation:portrait)').matches||!w){ root.style.removeProperty('--csh'); return; }
+  const H=w.clientHeight; if(!H) return;
+  root.style.setProperty('--csh',Math.max(50,(H-76-24)/3.75).toFixed(1)+'px');
+}
 function sizePen(){
+  fitCs();
   const dpr=Math.min(window.devicePixelRatio||1,2),w=pen.clientWidth,h=pen.clientHeight;
   if(!w||!h) return;
   const W=Math.round(w*dpr),H=Math.round(h*dpr);
