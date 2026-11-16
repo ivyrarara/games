@@ -149,12 +149,13 @@ function renderRec(){ const r=getScore().cpu,d=r.d?' · 무 '+r.d:''; $('rec').t
 function layoutCard(el,card,side){
   el.innerHTML='';
   const k=card.length,rot0=rnd(0,360),ids=shuffle(card),items=[];
-  const ring=k>=5?k-1:k, big=k===4?.28:k===6?.26:.22, rad=k===4?.27:k===6?.34:.36;
+  const ring=k>=5?k-1:k, big=k===4?.27:k===6?.22:.165, rad=k===4?.25:k===6?.3:.32;
   let i=0;
   const mul=shuffle(Array.from({length:ring},(_,q)=>.68+.62*q/Math.max(1,ring-1)));
-  if(k>=5) items.push({s:ids[i++],x:0,y:0,sz:(k===6?.30:.24)*rnd(.8,1.25)});
+  if(k>=5) items.push({s:ids[i++],x:0,y:0,sz:(k===6?.27:.2)*rnd(.8,1.2)});
   for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*rad,y:Math.sin(a)*rad,sz:big*mul[q]}); }
   for(const it of items){
+    const rr=Math.hypot(it.x,it.y),lim=.44-it.sz*.6; if(rr>lim&&rr>0){ it.x*=lim/rr; it.y*=lim/rr; }
     const b=document.createElement('button');
     b.className='sym'; b.dataset.s=it.s; b.dataset.side=side; b.textContent=symEmo[it.s];
     b.style.left=(50+it.x*100)+'%'; b.style.top=(50+it.y*100)+'%';
