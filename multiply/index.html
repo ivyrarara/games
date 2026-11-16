@@ -263,7 +263,7 @@ function monsterSVG(ci,m,st){
     +'<radialGradient id="'+eid+'" cx="38%" cy="30%" r="85%"><stop offset="0" stop-color="#fffdf0"/><stop offset="1" stop-color="'+P.a+'"/></radialGradient></defs>';
   const shadow='<ellipse cx="100" cy="168" rx="'+f(40+30*t(0,10))+'" ry="8" fill="rgba(0,0,0,.18)"/>';
   const spots='<g fill="'+P.b+'" opacity=".55"><circle cx="76" cy="104" r="8"/><circle cx="124" cy="118" r="10"/><circle cx="90" cy="144" r="7"/><circle cx="126" cy="148" r="6"/><circle cx="68" cy="132" r="5"/><circle cx="110" cy="84" r="5"/></g>';
-  const eggP='M100 52C142 52 158 100 158 128C158 156 132 168 100 168C68 168 42 156 42 128C42 100 58 52 100 52Z';
+  const eggP='M100 46C132 46 153 92 153 124C153 150 131 168 100 168C69 168 47 150 47 124C47 92 68 46 100 46Z';
   const shine='<ellipse cx="76" cy="84" rx="9" ry="16" fill="rgba(255,255,255,.55)" transform="rotate(-20 76 84)"/>';
   const eye=(cx,cy,r)=>'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#fff" stroke="'+K+'" stroke-width="2.4"/><circle cx="'+(cx+r*.15)+'" cy="'+(cy+r*.15)+'" r="'+f(r*.5)+'" fill="'+K+'"/><circle cx="'+(cx+r*.4)+'" cy="'+(cy-r*.2)+'" r="'+f(r*.18)+'" fill="#fff"/>';
   const wob=m==='laugh';
@@ -283,7 +283,7 @@ function monsterSVG(ci,m,st){
     g+=eye(86,hy-4,9)+eye(114,hy-4,9)+(wob?mouthO(100,hy+16):'<path d="M92 '+(hy+14)+'Q100 '+(hy+22)+' 108 '+(hy+14)+'" fill="none" stroke="'+K+'" stroke-width="3.4" stroke-linecap="round"/>');
     g+='<circle cx="72" cy="'+(hy+10)+'" r="6" fill="rgba(255,120,140,.5)"/><circle cx="128" cy="'+(hy+10)+'" r="6" fill="rgba(255,120,140,.5)"/>';
     if(st>=6) g+='<ellipse cx="62" cy="128" rx="9" ry="7" fill="url(#'+gid+')" stroke="'+K+'" stroke-width="3"/><ellipse cx="138" cy="128" rx="9" ry="7" fill="url(#'+gid+')" stroke="'+K+'" stroke-width="3"/>';
-    g+='<path d="M42 132L54 120L66 134L80 120L96 134L112 120L128 134L142 120L158 134C158 156 132 168 100 168C68 168 42 156 42 132Z" fill="url(#'+eid+')" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/>';
+    g+='<path d="M47 132L58 120L66 134L80 120L96 134L112 120L128 134L142 120L153 134C153 152 131 168 100 168C69 168 47 152 47 132Z" fill="url(#'+eid+')" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/>';
     g+='<g clip-path="inset(0)">'+spots.replace(/<circle cx="76" cy="104" r="8"\/>|<circle cx="110" cy="84" r="5"\/>/g,'')+'</g>';
     if(st===4) g+='<g transform="translate(12 -34) rotate(20 100 100)"><path d="M52 120C52 82 70 56 100 56C130 56 148 82 148 120L138 108L126 122L112 108L100 122L88 108L74 122L62 108Z" fill="url(#'+eid+')" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/><circle cx="84" cy="86" r="6" fill="'+P.b+'" opacity=".55"/><circle cx="118" cy="82" r="5" fill="'+P.b+'" opacity=".55"/></g>';
     g+='</g>';
