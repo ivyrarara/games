@@ -621,7 +621,7 @@ const pp=e=>{ const r=pen.getBoundingClientRect(); return {x:e.clientX-r.left,y:
 function stroke(x,a,b,col){
   const er=(x===pctx&&erase);
   x.globalCompositeOperation=er?'destination-out':'source-over';
-  x.strokeStyle=col||ink; x.lineWidth=er?ERA[eraSz-1]:(x===pctx?PEN[penSz-1]:5);
+  x.strokeStyle=col||ink; x.lineWidth=er?ERA[eraSz-1]:(5);
   x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke();
 }
 /* 인식 영역: 보이는 칸보다 사방으로 50% 넓게. 겹치는 곳은 가장 가까운 칸으로 */
@@ -726,13 +726,13 @@ $('pentools').addEventListener('click',e=>{
   renderSz();
 });
 function renderSz(){
-  const cur=erase?eraSz:penSz; let h='';
+  $('szrow').style.visibility=erase?'visible':'hidden'; const cur=eraSz; let h='';
   for(let i=1;i<=5;i++){ const d=erase?8+i*4:4+i*2.6; h+='<button class="sz'+(i===cur?' on':'')+'" data-s="'+i+'" aria-label="크기 '+i+'"><i style="width:'+d.toFixed(1)+'px;height:'+d.toFixed(1)+'px'+(erase?';background:#f0a8b8;border:2px solid #b86b80;box-sizing:border-box':'')+'"></i></button>'; }
   $('szrow').innerHTML=h;
 }
 $('szrow').addEventListener('click',e=>{
   const b=e.target.closest('.sz'); if(!b) return; const n=+b.dataset.s;
-  if(erase){ eraSz=n; LS.set('mult.erasz',n); } else { penSz=n; LS.set('mult.pensz',n); }
+  if(!erase) return; eraSz=n; LS.set('mult.erasz',n);
   renderSz();
 });
 renderSz();
