@@ -56,7 +56,7 @@ button,a{font-family:inherit;color:inherit}
 #act .abtn{pointer-events:auto}
 .abtn{border:0;border-radius:22px;min-height:calc(var(--vh)*12);padding:0 34px;font-size:calc(var(--vh)*6.5);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3);display:none}
 .abtn:active{transform:translateY(3px)}
-#bUno{background:#ffe14d;color:#c00;animation:pulse .4s ease-in-out infinite alternate}
+#bUno{background:#ffe14d;color:#c00}
 #bPass{background:#fff;color:var(--ink)}
 @keyframes pulse{to{transform:scale(1.12)}}
 #hand{flex:none;display:flex;justify-content:safe center;overflow-x:auto;overflow-y:hidden;padding:calc(var(--hw)*.22) 10px 6px;-webkit-overflow-scrolling:touch;min-height:calc(var(--hw)*1.5 + var(--hw)*.22 + 14px)}
@@ -131,7 +131,7 @@ const SYM={skip:'⊘',rev:'⇄',p2:'+2',p1:'+1',p5:'+5',w4:'+4',w2:'+2',sall:'�
 const CP=[{n:'여우',e:'🦊'},{n:'판다',e:'🐼'},{n:'호랑이',e:'🐯'}];
 const pal=sd=>(sd||side)==='l'?{c:LC,i:LI,n:LN}:{c:DC,i:DI,n:DN};
 let side='l',mode='classic',np=3,deck=[],discard=[],hands=[],PL=[],dir=1,turn=0,curColor=0,phase='',over=false,gid=0,drawnCard=null,note='',muted=false,overlayMode='';
-let unoPending=false,unoT=null;
+let unoPending=false,unoT=null,unoCalled=false;
 const mod=x=>((x%np)+np)%np;
 const face=c=>c[side];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -185,7 +185,7 @@ function drawOne(){
   if(!deck.length&&discard.length>1){const top=discard.pop();deck=shuffle(discard);discard=[top];}
   return deck.pop()||null;
 }
-function drawTo(p,n){const out=[];for(let i=0;i<n;i++){const c=drawOne();if(!c)break;hands[p].push(c);out.push(c);}return out;}
+function drawTo(p,n){if(p===0)unoCalled=false;const out=[];for(let i=0;i<n;i++){const c=drawOne();if(!c)break;hands[p].push(c);out.push(c);}return out;}
 function playable(card){
   const f=face(card),t=face(discard[discard.length-1]);
   return f.c===4||f.c===curColor||(t.c!==4&&f.v===t.v);
@@ -239,14 +239,14 @@ function render(){
   }
   newCards=[];
   $('bPass').style.display=phase==='drawn'?'block':'none';
-  $('bUno').style.display=unoPending?'block':'none';
+  $('bUno').style.display=(phase===''||over)?'none':'block';
   $('bSound').textContent=muted?'🔇':'🔊';
 }
 function setStatus(t,n,cls){const s=$('status');s.textContent=t;s.className=cls||'';$('note').textContent=n||'';}
 
 /* ---------- 게임 진행 ---------- */
 function newGame(){
-  gid++;clearTimeout(unoT);unoPending=false;
+  gid++;clearTimeout(unoT);unoPending=false;unoCalled=false;
   mode=LS.get('uno.mode','classic');np=Math.max(2,Math.min(4,LS.get('uno.np',3)));
   PL=[{n:'나',e:'🙂'}].concat(CP.slice(0,np-1));
   deck=shuffle(mode==='flip'?mkFlip():mkClassic());side='l';dir=1;turn=0;over=false;drawnCard=null;note='';
@@ -294,7 +294,7 @@ function playCard(p,card,chosen){
   }
   if(f.c===4)msg+=(msg?' · ':'')+'색: '+pal().n[chosen];
   note=msg?PL[p].n+': '+msg:'';
-  if(p===0&&hands[0].length===1)unoPrompt();
+  if(p===0){if(hands[0].length===1&&!unoCalled)unoPrompt();unoCalled=false;}
   phase='busy';drawnCard=null;render();
   const id=gid;setTimeout(()=>{if(id===gid)nextTurn();},D(700));
 }
@@ -309,7 +309,12 @@ function unoPrompt(){
     $('note').textContent='우노를 안 눌러서 카드 2장!';render();
   },3500);
 }
-$('bUno').addEventListener('click',()=>{unlock();if(!unoPending)return;unoPending=false;clearTimeout(unoT);sfx.uno();$('note').textContent='우노! 👍';render();});
+$('bUno').addEventListener('click',()=>{
+  unlock();if(over||phase==='')return;
+  if(unoPending){unoPending=false;clearTimeout(unoT);sfx.uno();$('note').textContent='우노! 👍';return;}
+  if(hands[0].length<=2){unoCalled=true;sfx.uno();$('note').textContent='우노! 👍';}
+  else{sfx.no();$('note').textContent='아직 카드가 많아요';}
+});
 
 /* ---------- 컴퓨터 ---------- */
 function bestColor(p,except){
