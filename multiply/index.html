@@ -111,6 +111,7 @@ button,a{font-family:inherit;color:inherit}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
 .lv.hw.done .stars{color:#9a9aa8;font-size:17px}
 .lv{border:3px solid var(--edge);border-radius:18px;background:#fff;padding:10px 8px;cursor:pointer;font-size:19px;line-height:1.3}
+.sec{font-size:22px;margin:14px 0 6px;text-align:left;padding-left:4px}
 .lv small{display:block;font-size:14px;opacity:.65}
 .lv .stars{font-size:20px;color:#ffb400;min-height:26px}
 .lv:active{transform:translateY(3px)}
@@ -442,7 +443,7 @@ function showMenu(){
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
-    h+='<div class="lvs">';
+    h+='<div class="sec">연습문제</div><div class="lvs">';
     for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+'</button>';
     h+='</div>';
   }else{
