@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>우노 카드놀이</title>
+<meta name="theme-color" content="#1f6b4a">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
+<style>
+:root{--ink:#2a2a33;--card:#fffdf6;--edge:#dccfae;--good:#2f8f4e;--bad:#e4572e;
+  --font:"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--vh:1vh;
+  --hw:min(calc(var(--vh)*13),calc(100vw/7.2));--pw:min(calc(var(--vh)*16),calc(100vw/6));
+  --w0:#e53935;--w1:#f6c90e;--w2:#3d9c4a;--w3:#2272d6}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#1f6b4a;color:#fff;
+  font-family:var(--font);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;color-scheme:light;transition:background .5s}
+body.dark{background:#2c2347}
+button,a{font-family:inherit;color:inherit}
+#app{height:calc(var(--vh)*100);display:flex;flex-direction:column;padding:6px 10px 10px;gap:4px}
+#top{display:flex;gap:8px;align-items:stretch;flex:none}
+#opps{flex:1;display:flex;gap:8px;min-width:0}
+.opp{flex:1;min-width:0;background:rgba(0,0,0,.25);border-radius:16px;padding:6px 10px;display:flex;align-items:center;gap:8px;border:3px solid transparent;min-height:calc(var(--vh)*13)}
+.opp.on{border-color:#ffe14d;background:rgba(255,225,77,.18)}
+.opp .em{font-size:calc(var(--vh)*6)}
+.opp .tx{display:flex;flex-direction:column;min-width:0}
+.opp .nm{font-size:calc(var(--vh)*3.4);white-space:nowrap}
+.opp .ct{font-size:calc(var(--vh)*4.4);line-height:1}
+.opp .ct small{font-size:.6em;opacity:.8}
+.opp .bk{display:flex;margin-left:auto;padding-right:6px}
+.opp .bk i{width:calc(var(--vh)*3.2);height:calc(var(--vh)*4.8);border-radius:4px;background:#1d1d24;border:2px solid #fff;margin-right:calc(var(--vh)*-1.8);flex:none}
+.opp .ub{background:#ffe14d;color:#c00;border-radius:10px;padding:2px 8px;font-size:calc(var(--vh)*3.2);margin-left:4px}
+#tools{flex:none;display:flex;flex-direction:column;gap:4px;width:calc(var(--vh)*26)}
+#timeBox{background:rgba(0,0,0,.25);border-radius:12px;padding:3px 8px;text-align:center;font-size:calc(var(--vh)*3)}
+#timeBox.low{background:#a8760a}
+.trow{display:flex;gap:4px}
+.tb{flex:1;height:calc(var(--vh)*6.5);min-height:36px;border:0;border-radius:12px;background:#fff;color:var(--ink);font-size:calc(var(--vh)*3.4);cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.25);padding:0}
+.tb:active{transform:translateY(2px)}
+.tb.holdable{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}
+.tb.hold{background-size:100% 100%;transition:background-size .9s linear}
+#mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--vh)*2.5);position:relative}
+#piles{display:flex;align-items:center;gap:calc(var(--vh)*3)}
+.pile{position:relative;--cw:var(--pw)}
+#draw{cursor:pointer}
+#draw .badge{position:absolute;right:-10px;bottom:-8px;background:#fff;color:var(--ink);border-radius:12px;padding:1px 8px;font-size:calc(var(--vh)*3);box-shadow:0 2px 0 rgba(0,0,0,.3)}
+#draw.can{animation:bob .8s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-6px)}}
+#disc .card{animation:drop .25s ease-out}
+@keyframes drop{from{transform:scale(1.3) rotate(-8deg);opacity:.4}}
+#colorBox{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:calc(var(--vh)*3.2)}
+#colorDot{width:calc(var(--vh)*10);height:calc(var(--vh)*10);border-radius:50%;border:5px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+#dirI{font-size:calc(var(--vh)*5);line-height:1}
+#status{font-size:calc(var(--vh)*5);text-align:center;line-height:1.1;min-height:calc(var(--vh)*5.5)}
+#status.me{color:#ffe14d}
+#note{font-size:calc(var(--vh)*3.3);opacity:.9;text-align:center;min-height:calc(var(--vh)*3.6)}
+#act{position:absolute;right:6px;bottom:4px;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.abtn{border:0;border-radius:18px;min-height:calc(var(--vh)*10);padding:0 22px;font-size:calc(var(--vh)*5);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3);display:none}
+.abtn:active{transform:translateY(3px)}
+#bUno{background:#ffe14d;color:#c00;animation:pulse .4s ease-in-out infinite alternate}
+#bPass{background:#fff;color:var(--ink)}
+@keyframes pulse{to{transform:scale(1.12)}}
+#hand{flex:none;display:flex;justify-content:safe center;overflow-x:auto;overflow-y:hidden;padding:calc(var(--hw)*.22) 10px 6px;-webkit-overflow-scrolling:touch;min-height:calc(var(--hw)*1.5 + var(--hw)*.22 + 14px)}
+#hand .card{--cw:var(--hw);margin-left:calc(var(--hw)*-.3);cursor:pointer;transition:transform .12s}
+#hand .card:first-child{margin-left:0}
+#hand.my .card.ok{transform:translateY(calc(var(--hw)*-.2));box-shadow:0 0 0 3px #ffe14d,0 4px 10px rgba(0,0,0,.4)}
+#hand.my .card.no{filter:brightness(.55)}
+#hand .card.new{animation:drop .3s ease-out}
+#hand .card.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* cards */
+.card{position:relative;width:var(--cw);height:calc(var(--cw)*1.5);border-radius:calc(var(--cw)*.12);border:calc(var(--cw)*.05) solid #fff;background:var(--bg);box-shadow:0 2px 6px rgba(0,0,0,.35);flex:none;overflow:hidden}
+.card .oval{position:absolute;left:10%;right:10%;top:16%;bottom:16%;background:#fff;border-radius:50%;transform:rotate(-24deg)}
+.card.wild .oval{background:conic-gradient(var(--w0) 0 25%,var(--w1) 0 50%,var(--w2) 0 75%,var(--w3) 0)}
+.card .sy{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--cw)*.5);font-weight:900;font-family:Arial Black,Arial,sans-serif;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.card.wild .sy{color:#fff!important;text-shadow:0 0 4px #000,0 0 4px #000}
+.card.long .sy{font-size:calc(var(--cw)*.34)}
+.card .cn{position:absolute;font-style:normal;color:#fff;font-weight:900;font-size:calc(var(--cw)*.2);font-family:Arial Black,Arial,sans-serif;line-height:1;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+.card .tl{left:7%;top:5%}.card .br{right:7%;bottom:5%;transform:rotate(180deg)}
+.card.back{--bg:#1d1d24}
+.card.back .oval{background:linear-gradient(135deg,#e53935,#f6a000)}
+.card.back .sy{color:#fff;font-size:calc(var(--cw)*.4)}
+/* overlay */
+#overlay{position:fixed;inset:0;background:rgba(20,30,25,.65);display:none;align-items:center;justify-content:center;padding:12px;z-index:5}
+#overlay.on{display:flex}
+.pop{background:var(--card);color:var(--ink);border-radius:24px;padding:16px 22px;width:min(600px,100%);max-height:100%;overflow:auto;text-align:center;box-shadow:0 8px 0 rgba(0,0,0,.25)}
+.pop h1{margin:0 0 2px;font-size:32px}.pop h2{margin:0 0 8px;font-size:28px}
+.sub{font-size:15px;opacity:.7;margin:0 0 4px}
+.row{margin:8px 0}.row>b{display:inline-block;font-size:17px;margin-bottom:4px;font-weight:400;opacity:.75}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;min-height:52px;border:3px solid var(--edge);border-radius:14px;background:#fff;font-size:20px;cursor:pointer}
+.seg button.on{border-color:#2d8f4e;background:#dff3e5}
+.go{width:100%;min-height:60px;margin-top:8px;border:0;border-radius:18px;background:var(--good);color:#fff;font-size:26px;box-shadow:0 5px 0 #20703a;cursor:pointer;display:block;text-align:center;text-decoration:none;line-height:60px;padding:0}
+.go:active{transform:translateY(4px);box-shadow:0 1px 0 #20703a}
+.go.alt{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--edge);margin-top:8px;font-size:20px;min-height:52px;line-height:52px}
+.links{display:flex;gap:8px;flex-wrap:wrap}.links .go{margin-top:8px;flex:1;min-width:90px}
+.big{font-size:52px;line-height:1.1}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cbtn{min-height:84px;border:4px solid #fff;border-radius:18px;font-size:26px;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.hint{font-size:14px;opacity:.65;margin-top:6px;line-height:1.35}
+@media (orientation:portrait){#tools{width:calc(var(--vh)*13)}#opps{flex-direction:column}.opp .bk{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div id="opps"></div>
+    <div id="tools"><div id="timeBox"></div>
+      <div class="trow"><button class="tb" id="bMenu">☰</button><button class="tb" id="bSound">🔊</button><button class="tb holdable" id="bParent">👪</button></div></div>
+  </header>
+  <main id="mid">
+    <div id="piles">
+      <div class="pile" id="draw"></div>
+      <div class="pile" id="disc"></div>
+      <div id="colorBox"><div id="dirI"></div><div id="colorDot"></div><div id="colorName"></div></div>
+    </div>
+    <div id="status"></div><div id="note"></div>
+    <div id="act"><button class="abtn" id="bUno">우노!</button><button class="abtn" id="bPass">넘기기 ➜</button></div>
+  </main>
+  <section id="hand"></section>
+</div>
+<div id="overlay"></div>
+<script src="../algakki/guard.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const LS=Guard.LS;
+const D=ms=>window.__fast?10:ms;
+const LC=['#e53935','#f6c90e','#3d9c4a','#2272d6'],LI=['#c62828','#b88a00','#2e7d38','#1a5fb8'],LN=['빨강','노랑','초록','파랑'];
+const DC=['#e0559b','#1fa8a0','#f28a1c','#7a4cc2'],DI=['#c23a82','#0f857e','#d46f05','#5d34a3'],DN=['분홍','청록','주황','보라'];
+const SYM={skip:'⊘',rev:'⇄',p2:'+2',p1:'+1',p5:'+5',w4:'+4',w2:'+2',sall:'⊘⊘',wc:'+색',flip:'⇋',w:'★'};
+const CP=[{n:'여우',e:'🦊'},{n:'판다',e:'🐼'},{n:'호랑이',e:'🐯'}];
+const pal=sd=>(sd||side)==='l'?{c:LC,i:LI,n:LN}:{c:DC,i:DI,n:DN};
+let side='l',mode='classic',np=3,deck=[],discard=[],hands=[],PL=[],dir=1,turn=0,curColor=0,phase='',over=false,gid=0,drawnCard=null,note='',muted=false,overlayMode='';
+let unoPending=false,unoT=null;
+const mod=x=>((x%np)+np)%np;
+const face=c=>c[side];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---------- sound ---------- */
+let AC;
+function unlock(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();}catch(e){}}
+function tone(f0,f1,d,type,v,delay){
+  if(muted)return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const t0=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine';o.frequency.setValueAtTime(f0,t0);if(f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t0+d);
+    g.gain.setValueAtTime(v||.08,t0);g.gain.exponentialRampToValueAtTime(.0001,t0+d);
+    o.connect(g);g.connect(AC.destination);o.start(t0);o.stop(t0+d);}catch(e){}
+}
+const sfx={
+  play:()=>tone(500,760,.1,'triangle',.07),
+  deal:()=>tone(420,520,.07,'triangle',.05),
+  no:()=>tone(230,170,.2,'sawtooth',.04),
+  uno:()=>{tone(784,784,.12,'square',.05);tone(1046,1046,.2,'square',.05,.1)},
+  flip:()=>{tone(300,900,.3,'sine',.08);tone(900,300,.3,'sine',.06,.25)},
+  win:()=>[523,659,784,1046,1318].forEach((f,i)=>tone(f,f,.22,'triangle',.09,i*.12)),
+  lose:()=>[392,330,262].forEach((f,i)=>tone(f,f,.25,'sine',.09,i*.18))
+};
+
+/* ---------- 덱 ---------- */
+function mkClassic(){
+  const d=[];
+  for(let c=0;c<4;c++){
+    d.push({l:{c,v:'0'}});
+    for(let n=1;n<=9;n++){d.push({l:{c,v:''+n}});d.push({l:{c,v:''+n}});}
+    for(const v of['skip','rev','p2']){d.push({l:{c,v}});d.push({l:{c,v}});}
+  }
+  for(let i=0;i<4;i++){d.push({l:{c:4,v:'w'}});d.push({l:{c:4,v:'w4'}});}
+  return d;
+}
+function mkFlip(){
+  const L=[],Dk=[];
+  for(let c=0;c<4;c++){
+    for(let n=1;n<=9;n++)for(let k=0;k<2;k++){L.push({c,v:''+n});Dk.push({c,v:''+n});}
+    for(let k=0;k<2;k++){
+      for(const v of['p1','rev','skip','flip'])L.push({c,v});
+      for(const v of['p5','rev','sall','flip'])Dk.push({c,v});
+    }
+  }
+  for(let i=0;i<4;i++){L.push({c:4,v:'w'});L.push({c:4,v:'w2'});Dk.push({c:4,v:'w'});Dk.push({c:4,v:'wc'});}
+  const Ds=shuffle(Dk);
+  return L.map((l,i)=>({l,d:Ds[i]}));
+}
+function drawOne(){
+  if(!deck.length&&discard.length>1){const top=discard.pop();deck=shuffle(discard);discard=[top];}
+  return deck.pop()||null;
+}
+function drawTo(p,n){const out=[];for(let i=0;i<n;i++){const c=drawOne();if(!c)break;hands[p].push(c);out.push(c);}return out;}
+function playable(card){
+  const f=face(card),t=face(discard[discard.length-1]);
+  return f.c===4||f.c===curColor||(t.c!==4&&f.v===t.v);
+}
+
+/* ---------- 전적 ---------- */
+const SCK='score.uno';
+function getScore(){const d={a:0,b:0};const s=LS.get(SCK,d)||d;return s;}
+
+/* ---------- 그리기 ---------- */
+function cardEl(card,sd){
+  sd=sd||side;const f=card[sd],P=pal(sd);
+  const e=document.createElement('div');e.className='card'+(f.c===4?' wild':'');
+  e.style.setProperty('--bg',f.c===4?'#1d1d24':P.c[f.c]);
+  for(let i=0;i<4;i++)e.style.setProperty('--w'+i,P.c[i]);
+  const t=SYM[f.v]||f.v;if(t.length>=2)e.classList.add('long');
+  const ink=f.c===4?'#fff':P.i[f.c];
+  e.innerHTML='<i class="cn tl">'+t+'</i><i class="cn br">'+t+'</i><b class="oval"></b><span class="sy" style="color:'+ink+'">'+t+'</span>';
+  e._c=card;return e;
+}
+function backEl(){const e=document.createElement('div');e.className='card back';e.innerHTML='<b class="oval"></b><span class="sy">?</span>';return e;}
+let newCards=[];
+function render(){
+  document.body.classList.toggle('dark',side==='d');
+  // opponents
+  const o=$('opps');o.innerHTML='';
+  for(let i=1;i<np;i++){
+    const n=hands[i].length,d=document.createElement('div');
+    d.className='opp'+(turn===i&&!over?' on':'');
+    d.innerHTML='<span class="em">'+PL[i].e+'</span><span class="tx"><span class="nm">'+PL[i].n+'</span><span class="ct">'+n+'<small>장</small></span></span><span class="bk">'+'<i></i>'.repeat(Math.min(n,8))+'</span>'+(n===1?'<span class="ub">우노!</span>':'');
+    o.appendChild(d);
+  }
+  // piles
+  const dr=$('draw');dr.innerHTML='';dr.appendChild(backEl());
+  const bd=document.createElement('span');bd.className='badge';bd.textContent=deck.length;dr.appendChild(bd);
+  dr.classList.toggle('can',phase==='human');
+  const dc=$('disc');dc.innerHTML='';if(discard.length)dc.appendChild(cardEl(discard[discard.length-1]));
+  const P=pal();
+  $('colorDot').style.background=P.c[curColor];$('colorName').textContent=P.n[curColor];
+  $('dirI').textContent=dir===1?'↻':'↺';
+  // hand
+  const h=$('hand');h.innerHTML='';
+  const mine=hands[0].slice().sort((a,b)=>{const fa=face(a),fb=face(b);return fa.c-fb.c||(fa.v<fb.v?-1:fa.v>fb.v?1:0);});
+  const my=(phase==='human'||phase==='drawn');
+  h.className=my?'my':'';
+  for(const c of mine){
+    const e=cardEl(c);
+    if(my){const ok=playable(c)&&(phase!=='drawn'||c===drawnCard);e.classList.add(ok?'ok':'no');}
+    if(newCards.includes(c))e.classList.add('new');
+    h.appendChild(e);
+  }
+  newCards=[];
+  $('bPass').style.display=phase==='drawn'?'block':'none';
+  $('bUno').style.display=unoPending?'block':'none';
+  $('bSound').textContent=muted?'🔇':'🔊';
+}
+function setStatus(t,n,cls){const s=$('status');s.textContent=t;s.className=cls||'';$('note').textContent=n||'';}
+
+/* ---------- 게임 진행 ---------- */
+function newGame(){
+  gid++;clearTimeout(unoT);unoPending=false;
+  mode=LS.get('uno.mode','classic');np=Math.max(2,Math.min(4,LS.get('uno.np',3)));
+  PL=[{n:'나',e:'🙂'}].concat(CP.slice(0,np-1));
+  deck=shuffle(mode==='flip'?mkFlip():mkClassic());side='l';dir=1;turn=0;over=false;drawnCard=null;note='';
+  hands=[];for(let i=0;i<np;i++)hands.push(deck.splice(deck.length-7,7));
+  const k=deck.findIndex(c=>/^\d$/.test(c.l.v)&&c.l.c<4);
+  const st=deck.splice(k,1)[0];discard=[st];curColor=st.l.c;
+  newCards=hands[0].slice();
+  closeOverlay();sfx.deal();nextTurn();
+}
+function nextTurn(){
+  if(over)return;
+  if(turn===0){phase='human';setStatus('내 차례! 낼 카드를 눌러요',note,'me');}
+  else{phase='cpu';setStatus(PL[turn].e+' '+PL[turn].n+' 차례',note);}
+  note='';render();
+  if(turn!==0)cpuTurn();
+}
+function doFlip(){
+  side=side==='l'?'d':'l';
+  curColor=face(discard[discard.length-1]).c;
+  sfx.flip();
+}
+function playCard(p,card,chosen){
+  const h=hands[p];h.splice(h.indexOf(card),1);discard.push(card);
+  const f=face(card);curColor=f.c===4?chosen:f.c;sfx.play();
+  if(h.length===0){render();finish(p);return;}
+  const P=pal();
+  let msg='';
+  const adv=n=>{turn=mod(p+dir*n);};
+  const q0=mod(p+dir);
+  switch(f.v){
+    case 'skip':msg+=PL[q0].n+' 건너뛰기 🚫';adv(2);break;
+    case 'sall':msg+='모두 건너뛰기! 한 번 더 🚫';adv(0);break;
+    case 'rev':dir=-dir;msg+='방향 바꾸기 🔄';adv(np===2?2:1);break;
+    case 'p1':case 'p2':case 'p5':case 'w4':case 'w2':{
+      const n={p1:1,p2:2,p5:5,w4:4,w2:2}[f.v];const got=drawTo(q0,n);
+      if(q0===0)newCards=got.slice();
+      msg+=PL[q0].n+' 카드 '+got.length+'장 뽑고 건너뛰기';adv(2);break;}
+    case 'wc':{
+      let k=0;const got=[];
+      for(;;){const c=drawOne();if(!c)break;hands[q0].push(c);got.push(c);k++;if(face(c).c===chosen)break;}
+      if(q0===0)newCards=got.slice();
+      msg+=PL[q0].n+' '+P.n[chosen]+' 나올 때까지 '+k+'장 뽑기';adv(2);break;}
+    case 'flip':doFlip();msg+='뒤집기! '+(side==='d'?'🌙 어두운 면':'☀️ 밝은 면');adv(1);break;
+    default:adv(1);
+  }
+  if(f.c===4)msg+=(msg?' · ':'')+'색: '+pal().n[chosen];
+  note=msg?PL[p].n+': '+msg:'';
+  if(p===0&&hands[0].length===1)unoPrompt();
+  phase='busy';drawnCard=null;render();
+  const id=gid;setTimeout(()=>{if(id===gid)nextTurn();},D(700));
+}
+function pass(p){
+  const q=mod(p+dir);turn=q;nextTurn();
+}
+function unoPrompt(){
+  unoPending=true;const id=gid;clearTimeout(unoT);
+  unoT=setTimeout(()=>{
+    if(id!==gid||!unoPending)return;
+    unoPending=false;const got=drawTo(0,2);newCards=got.slice();sfx.no();
+    $('note').textContent='우노를 안 눌러서 카드 2장!';render();
+  },3500);
+}
+$('bUno').addEventListener('click',()=>{unlock();if(!unoPending)return;unoPending=false;clearTimeout(unoT);sfx.uno();$('note').textContent='우노! 👍';render();});
+
+/* ---------- 컴퓨터 ---------- */
+function bestColor(p,except){
+  const cnt=[0,0,0,0];hands[p].forEach(c=>{if(c!==except){const f=face(c);if(f.c<4)cnt[f.c]++;}});
+  const m=Math.max.apply(null,cnt);if(m===0)return Math.floor(Math.random()*4);
+  const best=cnt.map((v,i)=>v===m?i:-1).filter(i=>i>=0);return best[Math.floor(Math.random()*best.length)];
+}
+function cpuTurn(){
+  const id=gid;
+  setTimeout(()=>{
+    if(id!==gid||over)return;
+    const p=turn,pl=hands[p].filter(playable);
+    if(pl.length){cpuPlay(p,pl);return;}
+    const got=drawTo(p,1);sfx.deal();
+    setStatus(PL[p].e+' '+PL[p].n+': 낼 카드가 없어 1장 뽑았어요','');render();
+    setTimeout(()=>{
+      if(id!==gid||over)return;
+      const d=got[0];
+      if(d&&playable(d)){cpuPlay(p,[d]);}
+      else{pass(p);}
+    },D(900));
+  },D(1100));
+}
+function cpuPlay(p,pl){
+  const nx=hands[mod(turn+dir)].length;
+  const nonWild=pl.filter(c=>face(c).c!==4);
+  const pool=nonWild.length&&Math.random()<.9?nonWild:pl;
+  const act=v=>!/^\d$/.test(v);
+  pool.sort((a,b)=>{
+    const sa=(act(face(a).v)&&nx<=3?2:0)+Math.random(),sb=(act(face(b).v)&&nx<=3?2:0)+Math.random();
+    return sb-sa;});
+  const c=pool[0];
+  playCard(p,c,face(c).c===4?bestColor(p,c):0);
+}
+
+/* ---------- 내 차례 ---------- */
+function askColor(cb){
+  const P=pal();
+  openOverlay('<h2>어떤 색으로 바꿀까요?</h2><div class="cols">'+[0,1,2,3].map(i=>'<button class="cbtn" data-col="'+i+'" style="background:'+P.c[i]+'">'+P.n[i]+'</button>').join('')+'</div>','color');
+  $('overlay').onclick=e=>{const b=e.target.closest('[data-col]');if(!b)return;$('overlay').onclick=ovClick;closeOverlay();cb(+b.dataset.col);};
+}
+$('hand').addEventListener('click',e=>{
+  unlock();
+  const el=e.target.closest('.card');if(!el||over||overlayMode)return;
+  if(phase!=='human'&&phase!=='drawn')return;
+  const c=el._c;
+  if(!playable(c)||(phase==='drawn'&&c!==drawnCard)){sfx.no();el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');return;}
+  phase='busy';
+  if(face(c).c===4){phase='color';askColor(col=>{phase='busy';playCard(0,c,col);});}
+  else playCard(0,c,0);
+});
+$('draw').addEventListener('click',()=>{
+  unlock();
+  if(phase!=='human'||over||overlayMode)return;
+  const got=drawTo(0,1);newCards=got.slice();sfx.deal();
+  const d=got[0];
+  if(d&&playable(d)){phase='drawn';drawnCard=d;setStatus('뽑은 카드를 낼 수 있어요!','내거나 "넘기기"를 눌러요','me');render();}
+  else{phase='busy';setStatus('낼 카드가 없어요. 다음 사람 차례','');render();const id=gid;setTimeout(()=>{if(id===gid)pass(0);},D(900));}
+});
+$('bPass').addEventListener('click',()=>{if(phase!=='drawn')return;phase='busy';drawnCard=null;pass(0);});
+
+/* ---------- 끝 ---------- */
+function finish(p){
+  over=true;phase='over';clearTimeout(unoT);unoPending=false;
+  const sc=getScore();if(p===0)sc.a++;else sc.b++;LS.set(SCK,sc);
+  if(p===0)sfx.win();else sfx.lose();
+  render();
+  const rest=hands.map((h,i)=>i===0?'':PL[i].e+' '+PL[i].n+' '+h.length+'장').filter(Boolean).join(' · ');
+  openOverlay('<div class="big">'+(p===0?'🏆':PL[p].e)+'</div><h2>'+(p===0?'내가 이겼어요! 🎉':PL[p].n+'(이)가 이겼어요')+'</h2><div class="sub">남은 카드: '+rest+'</div><div class="sub">🏆 나 '+sc.a+' : '+sc.b+' 컴퓨터</div>'
+    +'<button class="go" data-act="again">한 판 더</button><button class="go alt" data-act="menu">메뉴</button>','end');
+}
+
+/* ---------- 메뉴 ---------- */
+function openOverlay(h,m){overlayMode=m;const o=$('overlay');o.innerHTML='<div class="pop">'+h+'</div>';o.className='on';}
+function closeOverlay(){overlayMode='';const o=$('overlay');o.className='';o.innerHTML='';}
+function showMenu(){
+  const m=LS.get('uno.mode','classic'),n=LS.get('uno.np',3),sc=getScore();
+  let h='<h1>🃏 우노 카드놀이</h1><div class="sub">같은 색·숫자·모양 카드를 내서 손에 든 카드를 먼저 다 내요 · 🏆 나 '+sc.a+' : '+sc.b+'</div>';
+  h+='<div class="row"><b>종류</b><div class="seg" id="segMode"><button data-m="classic" class="'+(m==='classic'?'on':'')+'">기본</button><button data-m="flip" class="'+(m==='flip'?'on':'')+'">플립 (뒤집기)</button></div></div>';
+  h+='<div class="row"><b>사람 수 (나 + 컴퓨터)</b><div class="seg" id="segNp">'+[2,3,4].map(x=>'<button data-n="'+x+'" class="'+(n===x?'on':'')+'">'+x+'명</button>').join('')+'</div></div>';
+  h+='<button class="go" data-act="start">시작하기</button>';
+  if(!over&&hands.length&&phase!==''&&phase!=='over')h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
+  h+='<div class="hint">낼 카드가 없으면 왼쪽 더미를 눌러 1장 뽑아요. 카드가 1장 남으면 "우노!" 버튼을 꼭 눌러요.</div>';
+  h+='<div class="links"><a class="go alt" href="../">♟ 체스</a><a class="go alt" href="../algakki/">🪨 알까기</a><a class="go alt" href="../multiply/">✖️ 곱셈</a><a class="go alt" href="../connect4/">🔴 사목</a><a class="go alt" href="../spot/">👀 그림</a></div>';
+  openOverlay(h,'menu');
+}
+function ovClick(e){
+  unlock();
+  const sm=e.target.closest('#segMode button');
+  if(sm){LS.set('uno.mode',sm.dataset.m);document.querySelectorAll('#segMode button').forEach(b=>b.classList.toggle('on',b===sm));return;}
+  const sn=e.target.closest('#segNp button');
+  if(sn){LS.set('uno.np',+sn.dataset.n);document.querySelectorAll('#segNp button').forEach(b=>b.classList.toggle('on',b===sn));return;}
+  const t=e.target.closest('[data-act]');if(!t)return;
+  const a=t.dataset.act;
+  if(a==='start'||a==='again')newGame();
+  else if(a==='menu')showMenu();
+  else if(a==='close')closeOverlay();
+}
+$('overlay').onclick=ovClick;
+$('bMenu').addEventListener('click',showMenu);
+$('bSound').addEventListener('click',()=>{muted=!muted;$('bSound').textContent=muted?'🔇':'🔊';if(!muted){unlock();sfx.deal();}});
+let holdT=null;const bP=$('bParent');
+bP.addEventListener('pointerdown',()=>{bP.classList.add('hold');holdT=setTimeout(()=>{holdT=null;bP.classList.remove('hold');Guard.parentFlow();},900);});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>bP.addEventListener(ev,()=>{clearTimeout(holdT);bP.classList.remove('hold');}));
+function vh(){document.documentElement.style.setProperty('--vh',(window.innerHeight/100)+'px');}
+window.addEventListener('resize',vh);
+
+/* boot */
+vh();
+hands=[[]];PL=[{n:'나',e:'🙂'}];
+showMenu();
+Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className=s<=300?'low':'';},onReset:()=>{}});
+window.__uno={get phase(){return phase;},get over(){return over;},get turn(){return turn;},get np(){return np;},get mode(){return mode;},get side(){return side;},
+  total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},newGame};
+})();
+</script>
+</body>
+</html>
