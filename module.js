@@ -121,7 +121,7 @@ window.addEventListener('pagehide',flushDay);
 
 /* ---------- 화면: 설정 / 잠금 / 부모 메뉴 ---------- */
 function limChips(cur){
-  return [15,30,45,60,90,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-lim="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join('');
+  return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-lim="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join('');
 }
 async function showSetup(msg){
   const bio=await bioAvailable();

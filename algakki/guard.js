@@ -68,7 +68,7 @@ async function confirmParent(){
     if(await hashPin(v,p.salt)===p.pin) return true;
   }
 }
-function limChips(cur){ return [15,30,45,60,90,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
+function limChips(cur){ return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
 function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button>','lock'); }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
