@@ -578,7 +578,8 @@ function showMenu(){
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
-  h+='<div class="icons"><button class="ic" id="mSnd" aria-label="소리">'+(muted?'🔇':'🔊')+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
+  Guard.extras();
+  h+='<div class="icons"><button class="ic" data-x="parent" aria-label="부모님 (꾹 누르기)">👪</button><button class="ic" id="mSnd" aria-label="소리">'+(muted?'🔇':'🔊')+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
   openOverlay(h,'menu');
   $('mSnd').addEventListener('click',()=>{ $('bSound').click(); $('mSnd').textContent=muted?'🔇':'🔊'; });
 }
