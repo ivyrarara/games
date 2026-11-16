@@ -644,6 +644,17 @@ function zoneAt(p){
   }
   return best;
 }
+function eraseCells(q){
+  if(!erase||phase!=='ask'||!cur) return;
+  const r=ERA[eraSz-1]/2; let hit=false;
+  for(const k in zones){
+    if(cur.vals[k]===undefined) continue;
+    const z=zones[k];
+    if(q.x<z.x-r||q.x>z.x+z.w+r||q.y<z.y-r||q.y>z.y+z.h+r) continue;
+    delete cur.vals[k]; delete cur.res[k]; hit=true;
+  }
+  if(hit){ cur.sel=null; say('',''); render(); }
+}
 function markSel(){ const a=padOn?selKey():null; document.querySelectorAll('#prob .cell.act').forEach(e=>e.classList.remove('act')); if(a){ const e=$('prob').querySelector('.cell[data-k="'+a+'"]'); if(e) e.classList.add('act'); } }
 
 /* 손글씨 숫자 인식 (기기 안에서 실행, 서버 전송 없음) */
@@ -707,11 +718,11 @@ pen.addEventListener('pointerdown',e=>{
     cur.sel=k; markSel();
     const a=ansS[k]||(ansS[k]={strokes:[],t:null}); clearTimeout(a.t);
     const s=[q]; s.col=ink; a.strokes.push(s); pdraw={p:q,k,s}; stroke(actx,q,q,ink);
-  }else{ pdraw={p:q,k:null}; stroke(pctx,q,q); }
+  }else{ pdraw={p:q,k:null}; stroke(pctx,q,q); eraseCells(q); }
 });
 pen.addEventListener('pointermove',e=>{
   if(!pdraw) return; const q=pp(e);
-  if(pdraw.k){ pdraw.s.push(q); stroke(actx,pdraw.p,q,pdraw.s.col); } else stroke(pctx,pdraw.p,q);
+  if(pdraw.k){ pdraw.s.push(q); stroke(actx,pdraw.p,q,pdraw.s.col); } else{ stroke(pctx,pdraw.p,q); eraseCells(q); }
   pdraw.p=q;
 });
 ['pointerup','pointercancel'].forEach(ev=>pen.addEventListener(ev,()=>{
