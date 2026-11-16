@@ -44,6 +44,9 @@ button,a{font-family:inherit;color:inherit}
 #mid{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--vh)*2.5);position:relative}
 #row{display:flex;align-items:center;justify-content:center;gap:calc(var(--vh)*4);max-width:100%}#msg{display:flex;flex-direction:column;gap:calc(var(--vh)*1.5);text-align:left;max-width:calc(var(--vh)*60)}#status,#note{text-align:left!important}#piles{display:flex;align-items:center;gap:calc(var(--vh)*3)}
 .pile{position:relative;--cw:var(--pw)}
+#draw .card{box-shadow:2px 2px 0 #34343d,3px 3px 0 #000,5px 5px 0 #34343d,6px 6px 0 #000,8px 8px 0 #34343d,9px 9px 0 #000,0 0 0 0 #000}
+#disc .card{box-shadow:2px 2px 0 #eee,3px 3px 0 #8a8a8a,5px 5px 0 #eee,6px 6px 0 #8a8a8a,8px 8px 0 #eee,9px 9px 0 #8a8a8a}
+.pile{margin:0 10px 10px 0}
 #draw{cursor:pointer}
 #draw .badge{position:absolute;right:-10px;bottom:-8px;background:#fff;color:var(--ink);border-radius:12px;padding:1px 8px;font-size:calc(var(--vh)*3);box-shadow:0 2px 0 rgba(0,0,0,.3)}
 #draw.can{animation:bob .8s ease-in-out infinite alternate}
