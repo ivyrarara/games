@@ -1,0 +1,41 @@
+/* 공용 스킨: 검정 바탕 + 스티커 색면 + 굵은 글씨 */
+:root{--f:Lilita,"Jua","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--font:var(--f);
+  --bg:#121212;--ink:#14143a;--card:var(--k1);--edge:rgba(0,0,0,.28);--navy:#14143a;
+  --k1:#ff8fd0;--k2:#ffc400;--k3:#cdbaf0;--k4:#8fe0a8}
+html[data-g=chess]{--k1:#ff8fd0;--k2:#ffc400;--k3:#cdbaf0;--k4:#8fe0a8}
+html[data-g=algakki]{--k1:#8fe0a8;--k2:#ffc400;--k3:#ff8fd0;--k4:#cdbaf0}
+html[data-g=multiply]{--k1:#cdbaf0;--k2:#ffc400;--k3:#8fe0a8;--k4:#ff8fd0}
+html[data-g=connect4]{--k1:#ffc400;--k2:#ff8fd0;--k3:#cdbaf0;--k4:#8fe0a8}
+html[data-g=spot]{--k1:#ff9a5c;--k2:#ffc400;--k3:#cdbaf0;--k4:#8fe0a8}
+html[data-g=uno]{--k1:#7fa8ff;--k2:#ffc400;--k3:#ff8fd0;--k4:#8fe0a8}
+html[data-g=memory]{--k1:#ff8fd0;--k2:#ffc400;--k3:#cdbaf0;--k4:#8fe0a8}
+html,body{background:#121212!important;color:#fff;font-family:var(--f)!important;color-scheme:dark}
+button,a,input,select{font-family:var(--f)}
+.box{background:var(--k1)!important;color:var(--navy)!important;border:0!important;border-radius:22px!important;box-shadow:none!important}
+.btn,.mini,.tb{color:var(--navy)!important;border-radius:18px!important;box-shadow:none!important;background:var(--k2);letter-spacing:.01em}
+.btns>:nth-child(4n+1),.btn:nth-child(4n+1){background:var(--k2)}
+.btns>:nth-child(4n+2),.btn:nth-child(4n+2){background:var(--k3)}
+.btns>:nth-child(4n+3),.btn:nth-child(4n+3){background:var(--k4)}
+.btns>:nth-child(4n+4),.btn:nth-child(4n+4){background:var(--k1)}
+#mini>:nth-child(4n+1){background:var(--k2)}#mini>:nth-child(4n+2){background:var(--k3)}#mini>:nth-child(4n+3){background:var(--k4)}#mini>:nth-child(4n+4){background:var(--k1)}
+.trow>:nth-child(4n+1){background:var(--k2)}.trow>:nth-child(4n+2){background:var(--k3)}.trow>:nth-child(4n+3){background:var(--k4)}.trow>:nth-child(4n+4){background:var(--k1)}
+.btn:active,.mini:active,.tb:active,.go:active{transform:scale(.95)!important;box-shadow:none!important}
+.btn:disabled,.mini:disabled{opacity:1;background:#2c2c2c!important;color:#777!important}
+.btn small,.mini small{opacity:.7}
+#overlay{background:rgba(0,0,0,.78)!important}
+#overlay .card,#overlay>div{background:var(--k1)!important;color:var(--navy)!important;border-radius:30px!important;box-shadow:none!important}
+.go{background:var(--navy)!important;color:#fff!important;box-shadow:none!important;border-radius:22px!important}
+.go.alt{background:rgba(255,255,255,.6)!important;color:var(--navy)!important}
+
+.box,.btn,.mini,.tb,.go,#overlay .card,#overlay h1,#overlay h2{font-weight:700}
+.links{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+.links .go{flex:1 1 30%!important;min-width:100px!important;width:auto!important;min-height:48px!important;height:auto!important;line-height:1.2!important;font-size:17px!important;margin-top:4px!important;padding:8px 6px!important;display:flex!important;align-items:center;justify-content:center;text-decoration:none}
+a.btn,a.mini,a.tb,a.go{text-decoration:none!important}
+html[data-g=uno] .opp{background:var(--k3)!important;color:var(--navy)!important;border-color:transparent!important}
+html[data-g=uno] .opp:nth-child(2){background:var(--k4)!important}
+html[data-g=uno] .opp:nth-child(3){background:var(--k2)!important}
+html[data-g=uno] .opp.on{box-shadow:0 0 0 4px #fff}
+html[data-g=uno] #timeBox{background:var(--k2)!important;color:var(--navy)}
+#pad button{background:var(--k2)!important;color:var(--navy)!important;box-shadow:none!important;border-radius:20px!important}
+#pad button:nth-child(3n+2){background:var(--k3)!important}#pad button:nth-child(3n){background:var(--k4)!important}
+#pad .hint{background:var(--k1)!important}
