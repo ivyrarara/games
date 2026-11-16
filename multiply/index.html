@@ -433,7 +433,7 @@ function starStr(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
 function hwAllDone(){ const d=LS.get('mult.hwdone',null)||{}; return [1,2,3].every(k=>d[k]); }
 function showMenu(){
   const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=true;
-  let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">'+(hwAllDone()?'숙제를 다 했어요! 연습 문제도 풀 수 있어요':'숙제도 연습 문제도 골라 풀어요')+'</div>';
+  let h='<h1>✖️ 곱셈 몬스터</h1>';
   h+='<div class="hws">';
   const nxt=[1,2,3].find(k=>!done[k]);
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
