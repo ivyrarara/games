@@ -1,4 +1,4 @@
-const V='chess-v139';
+const V='chess-v140';
 const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','whowins/index.html','whowins/art.js','whowins/art2.js','whowins/art3.js','whowins/art4.js','whowins/data.js','whowins/data2.js','whowins/data3.js','whowins/data4.js','algakki/index.html','algakki/guard.js','multiply/index.html','multiply/digits.json','connect4/index.html','spot/index.html','uno/index.html','chess/index.html','memory/index.html','fonts/fonts.css','fonts/lilita.woff2','fonts/bh108.woff','fonts/bh109.woff','fonts/bh112.woff','fonts/bh117.woff','fonts/bh118.woff','fonts/bh119.woff'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
