@@ -360,7 +360,6 @@ function render(){
 
 /* ---------- flow ---------- */
 function startRound(lv){
-  if(!hwAllDone()) return;
   level=lv; LS.set('mult.level',lv);
   qs=genRound(lv); R={cleared:0,first:0,streak:0,best:0,total:TOTAL,missed:[],seen:new Set(qs.map(q=>q.a+'x'+q.b))};
   closeOverlay(); phase='ask'; setMood('idle'); nextQ();
