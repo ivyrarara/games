@@ -52,8 +52,9 @@ button,a{font-family:inherit;color:inherit}
 #status{font-size:calc(var(--vh)*5);text-align:center;line-height:1.1;min-height:calc(var(--vh)*5.5)}
 #status.me{color:#ffe14d}
 #note{font-size:calc(var(--vh)*3.3);opacity:.9;text-align:center;min-height:calc(var(--vh)*3.6)}
-#act{position:absolute;right:6px;bottom:4px;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-.abtn{border:0;border-radius:18px;min-height:calc(var(--vh)*10);padding:0 22px;font-size:calc(var(--vh)*5);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3);display:none}
+#act{position:absolute;left:0;right:0;bottom:2px;display:flex;flex-direction:row;gap:14px;justify-content:center;z-index:2;pointer-events:none}
+#act .abtn{pointer-events:auto}
+.abtn{border:0;border-radius:22px;min-height:calc(var(--vh)*12);padding:0 34px;font-size:calc(var(--vh)*6.5);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3);display:none}
 .abtn:active{transform:translateY(3px)}
 #bUno{background:#ffe14d;color:#c00;animation:pulse .4s ease-in-out infinite alternate}
 #bPass{background:#fff;color:var(--ink)}
@@ -422,7 +423,7 @@ hands=[[]];PL=[{n:'나',e:'🙂'}];
 showMenu();
 Guard.start({onTick:s=>{const b=$('timeBox');b.textContent=Guard.label(s);b.className=s<=300?'low':'';},onReset:()=>{}});
 window.__uno={get phase(){return phase;},get over(){return over;},get turn(){return turn;},get np(){return np;},get mode(){return mode;},get side(){return side;},
-  total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},newGame};
+  total(){return deck.length+discard.length+hands.reduce((a,h)=>a+h.length,0);},get hands(){return hands.map(h=>h.length);},forceUno(){unoPrompt();render();},newGame};
 })();
 </script>
 </body>
