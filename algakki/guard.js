@@ -73,7 +73,6 @@ function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
   let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
-  if(lim) h+='<div class="row"><b>오늘만 시간 더 주기</b><div class="chips">'+[10,20,30].map(v=>'<button class="chip" data-ga="extra" data-v="'+v+'">+'+v+'분</button>').join('')+'</div></div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
     +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-ga="score-yes">지우기</button><button class="chip" data-ga="score-no">취소</button></div>':'<button class="chip" data-ga="score">전적 초기화</button>')+'</div>'
     +'<button class="go" data-ga="close">닫기</button>';
