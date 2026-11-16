@@ -436,7 +436,6 @@ function showMenu(){
   if(!over&&hands.length&&phase!==''&&phase!=='over')h+='<button class="go alt" data-act="close" style="margin-top:10px">계속하던 게임으로</button>';
   h+=Guard.extras();
   h+='<div class="hint">낼 카드가 없으면 왼쪽 더미를 눌러 1장 뽑아요. 카드가 1장 남으면 "우노!" 버튼을 꼭 눌러요.</div>';
-  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu');
 }
 function ovClick(e){

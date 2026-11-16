@@ -345,7 +345,6 @@ function showMenu(){
   h+='<button class="go" data-act="start" style="display:flex;align-items:center;justify-content:center;line-height:1;padding:6px 0 0;font-size:34px;min-height:86px"><svg viewBox="0 0 24 24" width="30" height="30" style="vertical-align:-3px;margin-right:12px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   if(st.length&&!over) h+='<button class="go alt" data-act="close" style="margin-top:10px">계속하던 게임으로</button>';
   h+=Guard.extras();
-  h+='<a class="go alt" href="../">🏠 처음으로</a>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();
 }

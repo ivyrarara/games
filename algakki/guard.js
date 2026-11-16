@@ -113,7 +113,7 @@ let xInit=false;
 function xInstall(){
   if(xInit) return; xInit=true;
   const st=document.createElement('style');
-  st.textContent='.xrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}.xrow .go{margin:0!important;min-height:74px;padding:8px 4px!important;font-size:17px!important;line-height:1.25;gap:3px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}.xrow .go small{font-size:11px;opacity:.65;margin-top:2px}.xrow .go.xhold{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}.xrow .go.xhold.hold{background-size:100% 100%;transition:background-size .9s linear}';
+  st.textContent='.xicons{display:flex;justify-content:flex-end;gap:10px;margin:16px 0 0}.xicons .ic{width:56px;height:56px;border-radius:50%;background:#fff;border:3px solid #dccfae;box-shadow:0 3px 0 #dccfae;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;padding:0;cursor:pointer;color:inherit;font-family:inherit}.xicons .ic.xhold{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}.xicons .ic.xhold.hold{background-size:100% 100%;transition:background-size .9s linear}';
   document.head.appendChild(st);
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-x="sound"]'); if(!b) return;
@@ -129,13 +129,13 @@ function xInstall(){
   },true);
   ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,stop,true));
 }
-function xLabel(off){ return off?'🔇<span>소리 꺼짐</span>':'🔊<span>소리 켜짐</span>'; }
+function xLabel(off){ return off?'🔇':'🔊'; }
 function xSoundLabel(){
   const s=document.getElementById('bSound'); return xLabel(!!s&&s.textContent.indexOf('🔇')>=0);
 }
 function extras(){
   xInstall();
-  return '<div class="xrow"><button class="go alt" data-x="sound">'+xSoundLabel()+'</button><button class="go alt xhold" data-x="parent">👪<span>부모님</span><small>꾹 누르기</small></button></div>';
+  return '<div class="xicons"><button class="ic xhold" data-x="parent" aria-label="부모님 (꾹 누르기)">👪</button><button class="ic" data-x="sound" aria-label="소리">'+xSoundLabel()+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
 }
 window.Guard={
   extras,

@@ -263,7 +263,6 @@ function showMenu(){
   h+='<button class="go" data-act="start" style="display:flex;align-items:center;justify-content:center;line-height:1;padding:6px 0 0;font-size:34px;min-height:86px"><svg viewBox="0 0 24 24" width="30" height="30" style="vertical-align:-3px;margin-right:12px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   if(started&&!over)h+='<button class="go alt" data-act="close" style="margin-top:10px">계속하던 게임으로</button>';
   h+=Guard.extras();
-  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu');initLvBar();
 }
 $('overlay').addEventListener('click',e=>{unlock();const t=e.target.closest('[data-act]');if(!t)return;const a=t.dataset.act;if(a==='start'||a==='again')newGame();else if(a==='next'){setLv(Math.min(7,cfg.level+1));newGame();}else if(a==='menu')showMenu();else if(a==='close')closeOverlay();});
