@@ -436,11 +436,11 @@ function showMenu(){
   let h='<h1>✖️ 곱셈 몬스터</h1>';
   h+='<div class="hws">';
   const nxt=[1,2,3].find(k=>!done[k]);
-  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
+  for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
     h+='<div class="lvs">';
-    for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+' '+LV[k].n+'<small>예: '+LV[k].ex+'</small><div class="stars">'+starStr(all[k]||0)+'</div></button>';
+    for(const k of [1,2,3,4]) h+='<button class="lv'+(k===level?' rec':'')+'" data-lv="'+k+'">Lv'+k+'</button>';
     h+='</div>';
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
