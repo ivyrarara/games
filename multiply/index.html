@@ -122,6 +122,8 @@ button,a{font-family:inherit;color:inherit}
 .lock{margin:6px 0 12px;padding:12px;border-radius:14px;background:#ececf0;color:#7a7a88;font-size:17px}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
 .lv.prac{width:100%;margin-top:10px;font-size:26px;padding:16px 0}
+.lv.prac.hl{background:#ffe27a;border-color:#e0a100;font-weight:700}
+.lv.prac.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
 .lv.hw{background:#ffe27a;border-color:#e0a100}
 .lv.hw.done{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8;cursor:default}
 .lv.hw .stars{color:#7a4f00;font-size:17px}
@@ -569,7 +571,7 @@ function showMenu(){
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회'+(prog&&prog.hw===k&&prog.cleared?'<div class="stars">이어서 '+prog.cleared+'/'+prog.total+'</div>':'')+'</button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
   h+='</div>';
   if(open){
-    h+='<button class="lv prac" data-lv="4">✏️ 연습문제</button>';
+    h+=hwAllDone()?'<button class="lv prac hl" data-lv="4">✏️ 연습문제</button>':'<button class="lv prac done" disabled>✏️ 연습문제 🔒</button>';
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
@@ -589,7 +591,7 @@ function showEnd(stars){
 $('overlay').addEventListener('click',e=>{
   unlock();
   const t=e.target.closest('[data-lv],[data-hw],[data-act]'); if(!t) return;
-  if(t.dataset.lv){ startRound(+t.dataset.lv); return; }
+  if(t.dataset.lv){ if(hwAllDone()) startRound(+t.dataset.lv); return; }
   if(t.dataset.hw){ startHw(+t.dataset.hw); return; }
   const a=t.dataset.act;
   if(a==='again'){ if(R&&R.hw) startHw(R.hw); else startRound(level); }
