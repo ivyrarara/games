@@ -60,7 +60,7 @@ button,a{font-family:inherit;color:inherit}
 #pen{touch-action:none;cursor:crosshair;z-index:1}
 #ans{pointer-events:none}
 #pentools{position:absolute;right:10px;top:10px;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 10px;z-index:2;max-width:calc(100% - 20px)}
-#szrow{display:flex;gap:6px;width:100%;justify-content:flex-end}
+#szrow{display:flex;flex-direction:column;align-items:flex-end;gap:6px;width:100%}
 .sz{width:42px;height:42px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--edge);background:#fff;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
 .sz i{display:block;border-radius:50%;background:#2b2b35}
 .sz.on{box-shadow:0 0 0 4px #ffc400;background:#fff8d6}
@@ -145,11 +145,11 @@ button,a{font-family:inherit;color:inherit}
   #right.nopad #pad{flex:1;min-width:120px;height:auto}
   #right.nopad #mini{grid-template-columns:repeat(4,1fr);flex:3;margin-top:0}
   #hpwrap{width:180px}
-  #prob{padding-top:128px}
-  .vf{--cs:min(100px,26vw,calc((var(--vh)*100 - 392px)/3.75))}
+  #prob{padding-top:76px}
+  .vf{--cs:min(100px,24vw,calc((var(--vh)*100 - 340px)/3.75))}
   .vf .cc{height:calc(var(--cs)*.75)} .cc .cell.carry{height:calc(var(--cs)*.7)}
   .pt{width:80px;height:64px;font-size:28px}
-  .sz{width:38px;height:38px}
+  .sz{width:34px;height:34px}
 }
 @media (max-height:520px) and (orientation:landscape){.eq{font-size:46px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
