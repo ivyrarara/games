@@ -432,8 +432,8 @@ function closeOverlay(){ overlayMode=''; const o=$('overlay'); o.className=''; o
 function starStr(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
 function hwAllDone(){ const d=LS.get('mult.hwdone',null)||{}; return [1,2,3].every(k=>d[k]); }
 function showMenu(){
-  const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=hwAllDone();
-  let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">'+(open?'숙제를 다 했어요! 연습 문제도 풀 수 있어요':'먼저 숙제를 풀어요')+'</div>';
+  const all=getStars(),done=LS.get('mult.hwdone',null)||{},open=true;
+  let h='<h1>✖️ 곱셈 몬스터</h1><div class="sub">'+(hwAllDone()?'숙제를 다 했어요! 연습 문제도 풀 수 있어요':'숙제도 연습 문제도 골라 풀어요')+'</div>';
   h+='<div class="hws">';
   const nxt=[1,2,3].find(k=>!done[k]);
   for(const k of [1,2,3]) h+=done[k]?'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">✔ 완료</div></button>':k===nxt?'<button class="lv hw" data-hw="'+k+'">📒 숙제 '+k+'회<div class="stars">'+starStr(all['hw'+k]||0)+'</div></button>':'<button class="lv hw done" disabled>📒 숙제 '+k+'회<div class="stars">🔒</div></button>';
@@ -445,7 +445,7 @@ function showMenu(){
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
-  h+=Guard.extras();
+  h+=Guard.extras().replace(/<button[^>]*data-x="parent".*?<\/button>/,'').replace('class="xrow"','class="xrow" style="grid-template-columns:1fr"');
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu');
