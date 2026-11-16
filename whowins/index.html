@@ -108,8 +108,8 @@ button,a{font-family:inherit;color:inherit}
 .beat{font-size:clamp(17px,2.4vw,22px);line-height:1.5;text-align:center;background:#1b3350;border-radius:16px;padding:12px 14px;min-height:76px;display:flex;align-items:center;justify-content:center}
 .dots{display:flex;gap:6px;justify-content:center;margin-top:8px}.dots i{width:10px;height:10px;border-radius:50%;background:#3a5a80}.dots i.on{background:var(--amber)}
 .res{display:flex;flex-direction:column;gap:10px}
-.win{display:flex;align-items:center;gap:12px;background:#243b12;border:3px solid #6fbf3b;border-radius:18px;padding:8px 12px}
-.win svg{width:34%;max-width:200px;flex:none}
+.win{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:0}
+.win svg{width:min(100%,760px);flex:none}
 .win .t{font-family:var(--font);font-size:clamp(24px,4vw,38px);line-height:1.2}
 .win .t small{display:block;font-size:.5em;opacity:.8;font-family:var(--body)}
 .verdict{text-align:center;font-size:20px;padding:8px;border-radius:14px}.verdict.ok{background:#1f4d2a}.verdict.no{background:#4a3a1a}
@@ -143,7 +143,6 @@ button,a{font-family:inherit;color:inherit}
   .cover .side svg{max-height:calc(var(--vh)*20)}
   .arena{height:calc(var(--vh)*28)}
   .pick .duo{flex-direction:column}.pc{display:flex;align-items:center;gap:10px}.pc svg{width:48%}
-  .win svg{width:40%}
 }
 .pop .mlist .th svg{display:block}
 </style>
