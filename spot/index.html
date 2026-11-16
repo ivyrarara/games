@@ -151,8 +151,9 @@ function layoutCard(el,card,side){
   const k=card.length,rot0=rnd(0,360),ids=shuffle(card),items=[];
   const ring=k>=5?k-1:k, big=k===4?.28:k===6?.26:.22, rad=k===4?.27:k===6?.34:.36;
   let i=0;
-  if(k>=5) items.push({s:ids[i++],x:0,y:0,sz:k===6?.30:.24});
-  for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*rad,y:Math.sin(a)*rad,sz:big*rnd(.92,1.08)}); }
+  const mul=shuffle(Array.from({length:ring},(_,q)=>.68+.62*q/Math.max(1,ring-1)));
+  if(k>=5) items.push({s:ids[i++],x:0,y:0,sz:(k===6?.30:.24)*rnd(.8,1.25)});
+  for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*rad,y:Math.sin(a)*rad,sz:big*mul[q]}); }
   for(const it of items){
     const b=document.createElement('button');
     b.className='sym'; b.dataset.s=it.s; b.dataset.side=side; b.textContent=symEmo[it.s];
