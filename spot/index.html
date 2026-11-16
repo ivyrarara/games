@@ -26,6 +26,7 @@ button,a{font-family:inherit;color:inherit}
 @keyframes shake{25%{transform:translate(calc(-50% - 8px),-50%) rotate(var(--rot,0deg))}75%{transform:translate(calc(-50% + 8px),-50%) rotate(var(--rot,0deg))}}
 #panel{width:260px;display:flex;flex-direction:column;gap:10px}
 .box{background:var(--card);border-radius:18px;border:2px solid var(--edge);padding:12px 14px}
+#status{display:none!important}
 #status{font-size:22px;line-height:1.25;min-height:84px}
 #status small{display:block;font-size:14px;opacity:.7;margin-top:4px;line-height:1.3}
 #status.ok{background:#e3f5e7;border-color:var(--good)}
@@ -65,12 +66,13 @@ button,a{font-family:inherit;color:inherit}
 #lvthumb{position:absolute;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;border:4px solid #2d8f4e;box-shadow:0 3px 0 rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:24px;transition:left .08s}
 @media (orientation:portrait){
   #app{flex-direction:column;gap:8px}
-  #cards{--d:min(calc(100vw - 24px), calc((var(--vh)*100 - 330px)/2));flex-direction:column;gap:10px}
+  #cards{--d:min(calc(100vw - 24px), calc((var(--vh)*100 - 270px)/2));flex-direction:column;gap:10px}
   #panel{width:min(100%,640px);gap:8px}
   #status{min-height:64px;font-size:20px}
   .info{flex-direction:row;gap:8px}.info>.box{flex:1}
-  .btns{grid-template-columns:repeat(4,1fr)}.btn.wide{grid-column:auto}
-  .btn{font-size:15px;min-height:50px}
+  .btns{grid-template-columns:repeat(5,1fr)}.btn.wide{grid-column:auto}
+  .btn{font-size:13px;min-height:50px;padding:4px 2px;white-space:nowrap}.btn small{font-size:10px}
+  .time{font-size:15px;padding:8px 6px;white-space:nowrap}
 }
 @media (max-height:520px) and (orientation:landscape){#status{min-height:70px;font-size:20px}#panel{gap:7px}}
 </style>
