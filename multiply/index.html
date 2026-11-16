@@ -121,6 +121,8 @@ button,a{font-family:inherit;color:inherit}
 .lvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .lock{margin:6px 0 12px;padding:12px;border-radius:14px;background:#ececf0;color:#7a7a88;font-size:17px}
 .hws{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 10px}
+.icons{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+.ic{width:56px;height:56px;border-radius:50%;background:#fff;border:3px solid #dccfae;box-shadow:0 3px 0 #dccfae;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;padding:0;cursor:pointer}
 .lv.prac{width:100%;margin-top:10px;font-size:26px;padding:16px 0}
 .lv.prac.hl{background:#ffe27a;border-color:#e0a100;font-weight:700}
 .lv.prac.gray{background:#ececf0;border-color:#c9c9d6;color:#9a9aa8}
@@ -575,10 +577,10 @@ function showMenu(){
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
-  h+=Guard.extras().replace(/<button[^>]*data-x="parent".*?<\/button>/,'').replace('class="xrow"','class="xrow" style="grid-template-columns:1fr"');
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
-  h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
+  h+='<div class="icons"><button class="ic" id="mSnd" aria-label="소리">'+(muted?'🔇':'🔊')+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
   openOverlay(h,'menu');
+  $('mSnd').addEventListener('click',()=>{ $('bSound').click(); $('mSnd').textContent=muted?'🔇':'🔊'; });
 }
 function showEnd(stars){
   const msg=stars===3?'대단해요! 용으로 완전히 자랐어요!':stars===2?'잘했어요! 용으로 자랐어요!':stars===1?'용으로 자랐어요! 한 번 더 하면 더 잘할 수 있어요':'용으로 자랐어요! 쪼개서 풀기를 연습해 봐요';
