@@ -64,6 +64,11 @@ button,a{font-family:inherit;color:inherit}
   .btn{font-size:15px;min-height:52px}
 }
 @media (max-height:520px) and (orientation:landscape){#status{min-height:70px;font-size:20px}#panel{gap:7px}}
+.hide-x{}
+#bAgain,#bSound,#bParent{display:none!important}
+.btns{grid-template-columns:1fr 1fr!important}.btn.wide{grid-column:auto!important}
+
+.box{background:rgba(75,58,40,.09)!important;border:0!important;box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -300,6 +305,7 @@ function showMenu(){
     h+='<div class="row"><b>내 색깔</b><div class="chips">'+chip('color',1,'🔴 빨강 (먼저 시작)')+chip('color',-1,'🟡 노랑')+'</div></div>';
   }
   h+='<button class="go" data-act="start">시작하기</button>';
+  h+=Guard.extras();
   if(moves.length&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu');

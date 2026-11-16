@@ -75,6 +75,11 @@ button,a{font-family:inherit;color:inherit}
   .time{font-size:15px;padding:8px 6px;white-space:nowrap}
 }
 @media (max-height:520px) and (orientation:landscape){#status{min-height:70px;font-size:20px}#panel{gap:7px}}
+.hide-x{}
+#bAgain,#bSound,#bParent{display:none!important}
+.btns{grid-template-columns:1fr 1fr!important}.btn.wide{grid-column:auto!important}
+
+.box{background:rgba(75,58,40,.09)!important;border:0!important;box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -261,6 +266,7 @@ function showMenu(){
   let h='<h1>👀 Spot It</h1><div class="sub">두 카드에 똑같은 그림이 딱 하나! 컴퓨터보다 먼저 찾아요</div>';
   h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
+  h+=Guard.extras();
   if(live&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu'); initLvBar();

@@ -133,6 +133,7 @@ button,a{font-family:inherit;color:inherit}
 }
 @media (max-height:520px) and (orientation:landscape){.eq{font-size:46px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+#bSound,#bParent{display:none!important}
 </style>
 </head>
 <body>
@@ -444,6 +445,7 @@ function showMenu(){
   }else{
     h+='<div class="lock">🔒 연습 문제는 숙제를 모두 끝내면 열려요</div>';
   }
+  h+=Guard.extras();
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
   openOverlay(h,'menu');

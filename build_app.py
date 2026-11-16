@@ -48,5 +48,27 @@ p=p.replace('  h+=\'<a class="go alt" href="../algakki/"','  h+=\'<a class="go a
 p=_re.sub(r"(  h\+='<a class=\"go alt\" href=\"\.\./uno/\"[^\n]*\n)",lambda m:m.group(1)+m.group(1).replace('../uno/','../memory/').replace('🃏 UNO','🧠 Memory'),p,count=1)
 p=_re.sub(r"  h\+='<a class=\"go alt\" href=\"\.\./(algakki|multiply|connect4|spot|uno|memory)/\"[^\n]*\n",'',p)
 p=p.replace('🏠 처음 화면','🏠 처음으로')
+
+_css = box_css = ".box{background:rgba(75,58,40,.09)!important;border:0!important;box-shadow:none!important}\n#bSound,#bParent{display:none!important}\n.btn.wide{grid-column:span 2!important}\n.xrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}.xrow .go{margin:0!important;min-height:74px;padding:8px 4px!important;font-size:17px!important;line-height:1.25;gap:3px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}.xrow .go small{font-size:11px;opacity:.65;margin-top:2px}.xrow .go.xhold{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}.xrow .go.xhold.hold{background-size:100% 100%;transition:background-size .9s linear}\n"
+_i = p.rindex('</style>'); p = p[:_i] + _css + p[_i:]
+assert p.count('<button class="btn" id="bMenu">☰ 새 게임</button>')==1
+p = p.replace('<button class="btn" id="bMenu">☰ 새 게임</button>','<button class="btn wide" id="bMenu">☰ 메뉴</button>')
+_fn = """function xLabel(off){ return off?'🔇<span>소리 꺼짐</span>':'🔊<span>소리 켜짐</span>'; }
+function chessExtras(){
+  const off=$('bSound').textContent.indexOf('🔇')>=0;
+  return '<div class="xrow"><button class="go alt" data-x="sound">'+xLabel(off)+'</button><button class="go alt xhold" data-x="parent">👪<span>부모님</span><small>꾹 누르기</small></button></div>';
+}
+(function(){
+  document.addEventListener('click',e=>{ const b=e.target.closest('[data-x="sound"]'); if(!b) return; const wasOff=b.textContent.indexOf('🔇')>=0; $('bSound').click(); b.innerHTML=xLabel(!wasOff); },true);
+  let t=null,cur=null; const stop=()=>{ clearTimeout(t); t=null; if(cur){cur.classList.remove('hold'); cur=null;} };
+  document.addEventListener('pointerdown',e=>{ const b=e.target.closest('[data-x="parent"]'); if(!b) return; cur=b; b.classList.add('hold'); t=setTimeout(()=>{ t=null; b.classList.remove('hold'); cur=null; parentFlow(); },900); },true);
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,stop,true));
+})();
+"""
+assert p.count('function showMenu(){')==1
+p = p.replace('function showMenu(){', _fn+'function showMenu(){')
+_a = "  h+='<button class=\"go\" data-act=\"start\">시작하기</button>';"
+assert p.count(_a)==1
+p = p.replace(_a,_a+"\n  h+=chessExtras();")
 _os.makedirs('chess',exist_ok=True)
 open('chess/index.html','w').write(p)

@@ -108,7 +108,37 @@ setInterval(()=>tick(),1000);
 function flush(){ if(DAY) LS.set('day',DAY); }
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flush(); tickLast=Date.now(); });
 window.addEventListener('pagehide',flush);
+
+let xInit=false;
+function xInstall(){
+  if(xInit) return; xInit=true;
+  const st=document.createElement('style');
+  st.textContent='.xrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}.xrow .go{margin:0!important;min-height:74px;padding:8px 4px!important;font-size:17px!important;line-height:1.25;gap:3px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;white-space:nowrap}.xrow .go small{font-size:11px;opacity:.65;margin-top:2px}.xrow .go.xhold{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}.xrow .go.xhold.hold{background-size:100% 100%;transition:background-size .9s linear}';
+  document.head.appendChild(st);
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('[data-x="sound"]'); if(!b) return;
+    const wasOff=b.textContent.indexOf('🔇')>=0;
+    const s=document.getElementById('bSound'); if(s) s.click();
+    b.innerHTML=xLabel(!wasOff);
+  },true);
+  let t=null,cur=null;
+  const stop=()=>{ clearTimeout(t); t=null; if(cur){cur.classList.remove('hold'); cur=null;} };
+  document.addEventListener('pointerdown',e=>{
+    const b=e.target.closest('[data-x="parent"]'); if(!b) return;
+    cur=b; b.classList.add('hold'); t=setTimeout(()=>{ t=null; b.classList.remove('hold'); cur=null; parentFlow(); },900);
+  },true);
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>document.addEventListener(ev,stop,true));
+}
+function xLabel(off){ return off?'🔇<span>소리 꺼짐</span>':'🔊<span>소리 켜짐</span>'; }
+function xSoundLabel(){
+  const s=document.getElementById('bSound'); return xLabel(!!s&&s.textContent.indexOf('🔇')>=0);
+}
+function extras(){
+  xInstall();
+  return '<div class="xrow"><button class="go alt" data-x="sound">'+xSoundLabel()+'</button><button class="go alt xhold" data-x="parent">👪<span>부모님</span><small>꾹 누르기</small></button></div>';
+}
 window.Guard={
+  extras,
   start(o){
     opts=o||{};
     if(opts.hub){ started=false;

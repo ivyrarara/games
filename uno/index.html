@@ -123,6 +123,7 @@ button,a{font-family:inherit;color:inherit}
   #note{font-size:14px;min-height:18px}
   #mid{gap:14px}
 }
+#bSound,#bParent{display:none!important}
 </style>
 </head>
 <body>
@@ -432,6 +433,7 @@ function showMenu(){
   h+='<div class="row"><b>종류</b><div class="seg" id="segMode"><button data-m="classic" class="'+(m==='classic'?'on':'')+'">기본</button><button data-m="flip" class="'+(m==='flip'?'on':'')+'">플립 (뒤집기)</button></div></div>';
   h+='<div class="row"><b>사람 수 (나 + 컴퓨터)</b><div class="seg" id="segNp">'+[2,3,4].map(x=>'<button data-n="'+x+'" class="'+(n===x?'on':'')+'">'+x+'명</button>').join('')+'</div></div>';
   h+='<button class="go" data-act="start">시작하기</button>';
+  h+=Guard.extras();
   if(!over&&hands.length&&phase!==''&&phase!=='over')h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   h+='<div class="hint">낼 카드가 없으면 왼쪽 더미를 눌러 1장 뽑아요. 카드가 1장 남으면 "우노!" 버튼을 꼭 눌러요.</div>';
   h+='<a class="go alt" href="../" style="display:block;text-align:center;line-height:52px;text-decoration:none">🏠 처음으로</a>';
