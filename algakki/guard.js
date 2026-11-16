@@ -70,10 +70,10 @@ async function confirmParent(){
   }
 }
 function limChips(cur){ return [15,30,45,60,0].map(v=>'<button class="chip'+(cur===v?' on':'')+'" data-gl="'+v+'">'+(v?v+'분':'제한 없음')+'</button>').join(''); }
-function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">👪 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
+function showLock(){ if(!opts.hub){ flush(); location.href='../'; return; } open('<div class="big">🌙</div><h2>오늘 게임 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-ga="parent">🙅🏻‍♀️ 부모님 확인</button><a class="go alt" href="multiply/" style="display:block;line-height:56px;text-decoration:none;text-align:center">✖️ 곱셈 몬스터</a>','lock'); }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
-  let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
     +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-ga="score-yes">지우기</button><button class="chip" data-ga="score-no">취소</button></div>':'<button class="chip" data-ga="score">전적 초기화</button>')+'</div>'
     +'<button class="go" data-ga="close">닫기</button>';
@@ -135,7 +135,7 @@ function xSoundLabel(){
 }
 function extras(){
   xInstall();
-  return '<div class="xicons"><button class="ic xhold" data-x="parent" aria-label="부모님 (꾹 누르기)">👪</button><button class="ic" data-x="sound" aria-label="소리">'+xSoundLabel()+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
+  return '<div class="xicons"><button class="ic xhold" data-x="parent" aria-label="부모님 (꾹 누르기)">🙅🏻‍♀️</button><button class="ic" data-x="sound" aria-label="소리">'+xSoundLabel()+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
 }
 window.Guard={
   extras,

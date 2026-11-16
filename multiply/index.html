@@ -188,7 +188,7 @@ button,a{font-family:inherit;color:inherit}
       <button class="mini" id="bMenu">☰<span>메뉴</span></button>
       <button class="mini" id="bPad">⌨<span>숫자판</span></button>
       <button class="mini" id="bSound">🔊<span>소리</span></button>
-      <button class="mini holdable" id="bParent">👪<span>부모님</span><small>꾹 누르기</small></button>
+      <button class="mini holdable" id="bParent">🙅🏻‍♀️<span>부모님</span><small>꾹 누르기</small></button>
     </div>
   </div>
 </div>
@@ -579,7 +579,7 @@ function showMenu(){
   }
   if(R&&phase==='ask') h+='<button class="go" data-act="close">계속하던 문제로</button>';
   Guard.extras();
-  h+='<div class="icons"><button class="ic" data-x="parent" aria-label="부모님 (꾹 누르기)">👪</button><button class="ic" id="mSnd" aria-label="소리">'+(muted?'🔇':'🔊')+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
+  h+='<div class="icons"><button class="ic" data-x="parent" aria-label="부모님 (꾹 누르기)">🙅🏻‍♀️</button><button class="ic" id="mSnd" aria-label="소리">'+(muted?'🔇':'🔊')+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
   openOverlay(h,'menu');
   $('mSnd').addEventListener('click',()=>{ $('bSound').click(); $('mSnd').textContent=muted?'🔇':'🔊'; });
 }

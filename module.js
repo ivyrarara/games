@@ -125,7 +125,7 @@ function limChips(cur){
 }
 async function showSetup(msg){
   const bio=await bioAvailable();
-  let h='<h2>👪 부모님 설정</h2><div class="row"><b>하루 체스 시간</b><div class="chips">'+limChips(setupLimit)+'</div></div>'
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="row"><b>하루 체스 시간</b><div class="chips">'+limChips(setupLimit)+'</div></div>'
     +'<div class="row"><b>시간을 늘리거나 설정을 바꿀 때 쓸 확인 방법</b></div>';
   if(msg) h+='<div class="sub err">'+msg+'</div>';
   if(bio) h+='<button class="go" data-act="s-bio">지문 / 화면 잠금으로 등록</button>';
@@ -140,11 +140,11 @@ function finishSetup(){
 }
 function showLock(){
   flushDay(); location.href='../'; return;
-  openOverlay('<div class="big">🌙</div><h2>오늘 체스 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-act="l-parent">👪 부모님 확인</button>','lock');
+  openOverlay('<div class="big">🌙</div><h2>오늘 체스 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-act="l-parent">🙅🏻‍♀️ 부모님 확인</button>','lock');
 }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
-  let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
     +'<div class="row"><button class="chip" data-act="p-rereg">확인 방법 다시 정하기</button></div>'
     +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-act="p-score-yes">지우기</button><button class="chip" data-act="p-score-no">취소</button></div>':'<button class="chip" data-act="p-score">전적 초기화</button>')+'</div>'

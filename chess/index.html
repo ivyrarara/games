@@ -135,6 +135,7 @@ button{font-family:inherit;color:inherit}
 #bSound,#bParent{display:none!important}
 .btn.wide{grid-column:span 2!important}
 .xicons{display:flex;justify-content:flex-end;gap:10px;margin:16px 0 0}.xicons .ic{width:56px;height:56px;border-radius:50%;background:#fff;border:3px solid #dccfae;box-shadow:0 3px 0 #dccfae;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;padding:0;cursor:pointer;color:inherit;font-family:inherit}.xicons .ic.xhold{background-image:linear-gradient(#ffcf70,#ffcf70);background-repeat:no-repeat;background-size:0 100%}.xicons .ic.xhold.hold{background-size:100% 100%;transition:background-size .9s linear}
+.info{display:flex!important;flex-direction:column!important;gap:2px!important;justify-content:flex-end}.info>.box{flex:none!important;min-width:0;font-size:15px!important;padding:0 4px!important;text-align:left!important;background:none!important;white-space:normal!important}.info>.box.low{color:#c0392b}
 </style>
 </head>
 <body>
@@ -185,7 +186,7 @@ button{font-family:inherit;color:inherit}
       <button class="btn" id="bSound">🔊 소리</button>
       <a class="btn" href="../">🏠 처음</a>
       <button class="btn wide" id="bMenu">☰ 메뉴</button>
-      <button class="btn holdable" id="bParent">👪 부모님<small>꾹 누르기</small></button>
+      <button class="btn holdable" id="bParent">🙅🏻‍♀️ 부모님<small>꾹 누르기</small></button>
     </div>
   </aside>
 </div>
@@ -684,7 +685,7 @@ function chip(key,val,label){ return '<button class="chip'+(cfg[key]===val?' on'
 function xLabel(off){ return off?'🔇':'🔊'; }
 function chessExtras(){
   const off=$('bSound').textContent.indexOf('🔇')>=0;
-  return '<div class="xicons"><button class="ic xhold" data-x="parent" aria-label="부모님 (꾹 누르기)">👪</button><button class="ic" data-x="sound" aria-label="소리">'+xLabel(off)+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
+  return '<div class="xicons"><button class="ic xhold" data-x="parent" aria-label="부모님 (꾹 누르기)">🙅🏻‍♀️</button><button class="ic" data-x="sound" aria-label="소리">'+xLabel(off)+'</button><a class="ic" href="../" aria-label="처음으로">🏠</a></div>';
 }
 (function(){
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-x="sound"]'); if(!b) return; const wasOff=b.textContent.indexOf('🔇')>=0; $('bSound').click(); b.innerHTML=xLabel(!wasOff); },true);
@@ -895,7 +896,7 @@ function limChips(cur){
 }
 async function showSetup(msg){
   const bio=await bioAvailable();
-  let h='<h2>👪 부모님 설정</h2><div class="row"><b>하루 체스 시간</b><div class="chips">'+limChips(setupLimit)+'</div></div>'
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="row"><b>하루 체스 시간</b><div class="chips">'+limChips(setupLimit)+'</div></div>'
     +'<div class="row"><b>시간을 늘리거나 설정을 바꿀 때 쓸 확인 방법</b></div>';
   if(msg) h+='<div class="sub err">'+msg+'</div>';
   if(bio) h+='<button class="go" data-act="s-bio">지문 / 화면 잠금으로 등록</button>';
@@ -910,11 +911,11 @@ function finishSetup(){
 }
 function showLock(){
   flushDay(); location.href='../'; return;
-  openOverlay('<div class="big">🌙</div><h2>오늘 체스 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-act="l-parent">👪 부모님 확인</button>','lock');
+  openOverlay('<div class="big">🌙</div><h2>오늘 체스 시간이 끝났어요</h2><div class="sub">내일 또 만나요!</div><button class="go alt" data-act="l-parent">🙅🏻‍♀️ 부모님 확인</button>','lock');
 }
 function showParent(){
   const s=dayState(), lim=LS.get('limit',30);
-  let h='<h2>👪 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
+  let h='<h2>🙅🏻‍♀️ 부모님 설정</h2><div class="sub">오늘 '+Math.floor(s.used/60)+'분 사용 · '+(lim?'한도 '+(lim+s.extra)+'분':'제한 없음')+'</div>';
   h+='<div class="row"><b>하루 한도</b><div class="chips">'+limChips(lim)+'</div></div>'
     +'<div class="row"><button class="chip" data-act="p-rereg">확인 방법 다시 정하기</button></div>'
     +'<div class="row">'+(resetAsk?'<b>모든 게임 전적을 지울까요?</b><div class="chips"><button class="chip" data-act="p-score-yes">지우기</button><button class="chip" data-act="p-score-no">취소</button></div>':'<button class="chip" data-act="p-score">전적 초기화</button>')+'</div>'
