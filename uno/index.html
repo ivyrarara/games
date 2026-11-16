@@ -296,7 +296,7 @@ function doFlip(){
 function playCard(p,card,chosen){
   const h=hands[p];h.splice(h.indexOf(card),1);discard.push(card);
   const f=face(card);curColor=f.c===4?chosen:f.c;sfx.play();
-  if(p!==0){if(h.length===1)exposed[p]=true;else delete exposed[p];}
+  if(p!==0){if(h.length===1){const tk=exposed[p]=Date.now(),gi=gid;setTimeout(()=>{if(gi===gid&&exposed[p]===tk)delete exposed[p];},3000);}else delete exposed[p];}
   if(h.length===0){render();finish(p);return;}
   const P=pal();
   let msg='';
