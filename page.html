@@ -373,7 +373,7 @@ function showMenu(){
   let h='<h1>♟ Chess</h1>';
   h+='<div class="row"><b>누구랑 할까요?</b><div class="chips">'+chip('mode','cpu','컴퓨터랑')+chip('mode','two','둘이서 같이')+'</div></div>';
   if(cfg.mode==='cpu'){
-    h+='<div class="row"><b>컴퓨터 실력</b> <small>이기면 올라가고, 지면 내려가요</small><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
+    h+='<div class="row"><div class="lvbar"><span>쉬움</span><div id="lvtrack">'+[1,2,3,4,5,6,7].map(n=>'<i class="dt" style="left:'+((n-1)/6*100)+'%"></i>').join('')+'<div id="lvthumb"></div></div><span>어려움</span></div></div>';
     h+='<div class="row"><b>내 말 색깔</b><div class="chips">'+chip('color',1,'흰색 (먼저 시작)')+chip('color',-1,'검정')+'</div></div>';
   }
   h+='<button class="go" data-act="start">시작하기</button>';
