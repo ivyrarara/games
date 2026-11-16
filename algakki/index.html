@@ -312,7 +312,7 @@ function showMenu(){
   h+='<div class="row"><b>누구랑 할까요?</b><div class="chips">'+chip('mode','cpu','컴퓨터랑')+chip('mode','two','둘이서 같이')+'</div></div>';
   if(cfg.mode==='cpu') h+='<div class="row"><b>컴퓨터 실력</b><div class="chips">'+chip('level',1,'🐣 쉬움')+chip('level',2,'🐯 보통')+chip('level',3,'🐲 어려움')+'</div></div>';
   h+='<div class="row"><b>알 개수</b><div class="chips">'+chip('n',5,'5개')+chip('n',7,'7개')+chip('n',9,'9개')+'</div></div>';
-  h+='<button class="go" data-act="start"><svg viewBox="0 0 24 24" width="24" height="24" style="vertical-align:-3px;margin-right:10px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
+  h+='<button class="go" data-act="start" style="display:flex;align-items:center;justify-content:center;line-height:1;padding:6px 0 0;font-size:34px;min-height:86px"><svg viewBox="0 0 24 24" width="30" height="30" style="vertical-align:-3px;margin-right:12px"><path d="M7 4.5v15l12-7.5z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>Play!</button>';
   h+=Guard.extras();
   h+='<a class="go alt" href="../">🏠 처음으로</a>';
   if(st.length&&!over) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
