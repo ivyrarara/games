@@ -101,7 +101,18 @@ button,a{font-family:inherit;color:inherit}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cbtn{min-height:84px;border:4px solid #fff;border-radius:18px;font-size:26px;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.5)}
 .hint{font-size:14px;opacity:.65;margin-top:6px;line-height:1.35}
-@media (orientation:portrait){#tools{width:calc(var(--vh)*13)}#opps{flex-direction:column}.opp .bk{display:none}.opp .bk.mini{display:flex}}
+@media (orientation:portrait){
+  #top{flex-direction:column;gap:6px}
+  #tools{width:auto;flex-direction:row;align-items:stretch;gap:6px}
+  #timeBox{flex:1;white-space:nowrap;font-size:15px;padding:0 8px;display:flex;align-items:center;justify-content:center;min-height:40px}
+  .trow{flex:none;gap:6px}.trow .tb{flex:none;width:44px;height:40px;min-height:40px;font-size:20px}
+  #opps{flex-direction:row;gap:6px}
+  .opp{padding:6px 8px;gap:6px;min-height:0;flex-wrap:wrap}.opp .em{font-size:26px}.opp .nm{font-size:14px}.opp .ct{font-size:20px}
+  .opp .bk{display:none}.opp .bk.mini{display:flex;flex-basis:100%;margin-left:0;justify-content:center}.opp .bk.mini .card{--cw:24px}
+  #status{font-size:20px;min-height:26px}
+  #bUno{font-size:24px;min-height:52px;padding:0 28px;margin-bottom:6px}
+  #mid{gap:14px}
+}
 </style>
 </head>
 <body>
