@@ -148,21 +148,25 @@ function renderRec(){ const r=getScore().cpu,d=r.d?' · 무 '+r.d:''; $('rec').t
 /* ---------- 라운드 ---------- */
 function layoutCard(el,card,side){
   el.innerHTML='';
-  const k=card.length,rot0=rnd(0,360),ids=shuffle(card),items=[];
-  const base=.165*Math.sqrt(8/k);
-  const mulF=n=>shuffle(Array.from({length:n},(_,q)=>.45+1.15*q/Math.max(1,n-1)));
-  let i=0;
-  if(k<=9){
-    const ring=k-1,mul=mulF(ring);
-    items.push({s:ids[i++],x:0,y:0,sz:.2*Math.sqrt(8/k)*rnd(.6,1.5)});
-    for(let q=0;q<ring;q++){ const a=(rot0+q*360/ring)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*.32,y:Math.sin(a)*.32,sz:base*mul[q]}); }
-  }else{
-    const no=Math.ceil(k*.58),ni=k-no,mo=mulF(no),mi=mulF(ni);
-    for(let q=0;q<no;q++){ const a=(rot0+q*360/no)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*.335,y:Math.sin(a)*.335,sz:base*mo[q]}); }
-    for(let q=0;q<ni;q++){ const a=(rot0+180/no+q*360/ni)*Math.PI/180; items.push({s:ids[i++],x:Math.cos(a)*.15,y:Math.sin(a)*.15,sz:base*mi[q]*.95}); }
+  const k=card.length,ids=shuffle(card);
+  const mul=shuffle(Array.from({length:k},(_,q)=>.45+1.15*q/Math.max(1,k-1)));
+  let base=.27*Math.sqrt(8/k),items=null;
+  for(let t=0;t<80&&!items;t++,base*=.95){
+    const sz=mul.map(m=>base*m),order=sz.map((_,i)=>i).sort((a,b)=>sz[b]-sz[a]),placed=[];
+    let ok=true;
+    for(const i of order){
+      const r=sz[i]*.71;let done=false;
+      for(let n=0;n<250&&!done;n++){
+        const a=Math.random()*Math.PI*2,d=Math.sqrt(Math.random())*(.47-r);
+        const x=Math.cos(a)*d,y=Math.sin(a)*d;
+        if(placed.every(p=>Math.hypot(p.x-x,p.y-y)>=p.r+r+.006)){placed[i]={x,y,r,sz:sz[i]};done=true;}
+      }
+      if(!done){ok=false;break;}
+    }
+    if(ok)items=placed;
   }
+  items=items.map((p,i)=>({s:ids[i],x:p.x,y:p.y,sz:p.sz}));
   for(const it of items){
-    const rr=Math.hypot(it.x,it.y),lim=.44-it.sz*.6; if(rr>lim&&rr>0){ it.x*=lim/rr; it.y*=lim/rr; }
     const b=document.createElement('button');
     b.className='sym'; b.dataset.s=it.s; b.dataset.side=side; b.textContent=EMO[it.s];
     b.style.left=(50+it.x*100)+'%'; b.style.top=(50+it.y*100)+'%';
