@@ -65,6 +65,7 @@ button,a{font-family:inherit;color:inherit}
 .chip{font-size:14px;padding:4px 12px;border-radius:999px;background:#1d3a5c}
 .prof{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px;align-items:start}
 .prof .art{background:linear-gradient(#244a73,#193555);border-radius:18px;padding:8px}
+.prof .art{position:relative}.prof .art .ph{display:block;width:100%;height:calc(var(--vh)*30);object-fit:cover;border-radius:12px;position:relative;z-index:1}.prof .art.has svg{display:none}
 .prof .art svg{width:100%;display:block;max-height:calc(var(--vh)*30);margin:0 auto}
 .prof h2{font-size:clamp(34px,4.8vw,50px);margin:6px 0 0}.prof .tagline{font-size:16px;opacity:.75}
 .prof h2.a{color:var(--ca)}.prof h2.b{color:var(--cb)}
@@ -202,6 +203,23 @@ const fmtKg=k=>k>=1000?(Math.round(k/100)/10)+'톤':(k>=1?(Math.round(k*10)/10)+
 const fmtKm=v=>v+'km/h';
 /* 저장 */
 const saveCur=()=>{};
+const WIKI={shark:'Great_white_shark',orca:'Killer_whale',trex:'Tyrannosaurus',trike:'Triceratops',tiger:'Tiger',bear:'Brown_bear',croc:'Nile_crocodile',hippo:'Hippopotamus',elephant:'African_bush_elephant',rhino:'White_rhinoceros',anaconda:'Green_anaconda',jaguar:'Jaguar',wolf:'Wolf',lion:'Lion',leopard:'Leopard',cheetah:'Cheetah',hyena:'Spotted_hyena',gorilla:'Gorilla',buffalo:'African_buffalo',polarbear:'Polar_bear',wolverine:'Wolverine',tasdevil:'Tasmanian_devil',mongoose:'Mongoose',bullshark:'Bull_shark',hammerhead:'Great_hammerhead',spermwhale:'Sperm_whale',squid:'Giant_squid',seacroc:'Saltwater_crocodile',alligator:'American_alligator',python:'Reticulated_python',kingcobra:'King_cobra',komodo:'Komodo_dragon',mamba:'Black_mamba',spino:'Spinosaurus',raptor:'Velociraptor',proto:'Protoceratops',allo:'Allosaurus',stego:'Stegosaurus',ankylo:'Ankylosaurus',eagle:'Bald_eagle',owl:'Great_horned_owl',ostrich:'Common_ostrich',cassowary:'Southern_cassowary',harpy:'Harpy_eagle',fireant:'Red_imported_fire_ant',bulletant:'Paraponera_clavata',tarantula:'Tarantula',scorpion:'Emperor_scorpion',hornet:'Asian_giant_hornet',mantis:'Mantis',centipede:'Scolopendra',beetle:'Trypoxylus_dichotomus',stagbeetle:'Stag_beetle',blackwidow:'Southern_black_widow',recluse:'Brown_recluse'};
+const photoMem={};
+function getPhoto(k){
+  if(photoMem[k]!==undefined) return Promise.resolve(photoMem[k]);
+  const c=LS.get('ww.ph.'+k,null); if(c){ photoMem[k]=c; return Promise.resolve(c); }
+  const t=WIKI[k]; if(!t||!window.fetch){ return Promise.resolve(null); }
+  return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(t)).then(r=>r.ok?r.json():null).then(j=>{
+    let u=j&&j.thumbnail&&j.thumbnail.source; if(u) u=u.replace(/\/(\d+)px-/,'/640px-');
+    if(u){ photoMem[k]=u; LS.set('ww.ph.'+k,u); } return u||null;
+  }).catch(()=>null);
+}
+function photoImg(u){ return '<img class="ph" src="'+u+'" alt="" onerror="this.parentNode.classList.remove(\'has\');this.remove()">'; }
+function fillPhoto(k){
+  if(S.page!==1&&S.page!==2) return; const want=S.page===1?S.m.a:S.m.b; if(want!==k) return;
+  const box=document.querySelector('.prof .art'); if(!box||box.querySelector('.ph')) return;
+  getPhoto(k).then(u=>{ if(!u) return; const b=document.querySelector('.prof .art'); if(!b||b.querySelector('.ph')||(S.page===1?S.m.a:S.m.b)!==k) return; b.insertAdjacentHTML('afterbegin',photoImg(u)); b.classList.add('has'); });
+}
 /* 페이지 */
 const PAGES=7;
 function statRows(a){
@@ -283,6 +301,7 @@ function render(){
    case 6: h=resPage(m); break;
   }
   $('page').innerHTML=h; $('page').scrollTop=0;
+  if(S.page===1) fillPhoto(m.a); else if(S.page===2) fillPhoto(m.b);
   const DI={0:1,3:2,4:3,5:4,6:5}; $('head').innerHTML=(DI[S.page]?DI[S.page]+' / 5':'')+'<small>'+TITLES[S.page]+'</small>';
   const prev=$('nPrev'), next=$('nNext');
   prev.classList.toggle('hide',S.page===0||S.page>=5); prev.disabled=false;
@@ -295,7 +314,7 @@ function randMatch(skip){ let pool=MS.filter(x=>!seen.includes(x.id)&&x!==skip);
 function nextLabel(){ return '다음 대결 ▶'; }
 function updInfo(){}
 function go(p){ S.page=p; render(); }
-function start(id){ S.m=MS.find(x=>x.id===id); if(!seen.includes(id)){ seen.push(id); LS.set('ww.seen',seen); } S.page=0; S.pick=null; S.fs=0; close(); render(); }
+function start(id){ S.m=MS.find(x=>x.id===id); getPhoto(S.m.a); getPhoto(S.m.b); if(!seen.includes(id)){ seen.push(id); LS.set('ww.seen',seen); } S.page=0; S.pick=null; S.fs=0; close(); render(); }
 $('nPrev').addEventListener('click',()=>{ sfx.tap(); if(S.page>0&&S.page<5) go(({1:0,2:0,3:0,4:3})[S.page]); });
 $('nNext').addEventListener('click',()=>{
   sfx.tap();
