@@ -686,6 +686,7 @@ function showMenu(){
   h+='<button class="go" data-act="start">시작하기</button>';
   h+='<a class="go alt" href="algakki/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🪨 알까기 하러 가기</a>';
   h+='<a class="go alt" href="multiply/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">✖️ 곱셈 몬스터 하러 가기</a>';
+  h+='<a class="go alt" href="connect4/" style="display:block;text-align:center;line-height:56px;text-decoration:none;color:var(--ink)">🔴 사목 놀이 하러 가기</a>';
   if(G&&!over&&G.stack.length) h+='<button class="go alt" data-act="close">계속하던 게임으로</button>';
   openOverlay(h,'menu');
   if(cfg.mode==='cpu') initLvBar();
