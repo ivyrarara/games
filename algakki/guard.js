@@ -145,7 +145,7 @@ window.Guard={
       if(timeLeft()<=0) showLock(); return; }
     if(!LS.get('parent',null)){ location.replace('../'); return; }
     started=true; tickLast=Date.now();
-    if(!opts.noLimit&&timeLeft()<=0) showLock();
+    if((!opts.noLimit||opts.lockOnly)&&timeLeft()<=0) showLock();
     tick(true);
   },
   parentFlow,
