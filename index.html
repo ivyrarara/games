@@ -39,10 +39,14 @@ html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;backgrou
   .st,.fl{left:var(--px,var(--lx));top:var(--py,var(--ly));width:var(--ps,var(--ls));height:var(--ps,var(--ls))}
   .st .tx{font-size:calc(var(--ps,var(--ls))*var(--fs,.2))}
 }
+#bTime{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:6;width:60px;height:60px;border:0;border-radius:50%;background:#fff;box-shadow:0 5px 0 #b9b2a0;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent}
+#bTime:active{transform:translateY(3px);box-shadow:0 2px 0 #b9b2a0}
+#bTime svg{width:34px;height:34px}
 </style>
 </head>
 <body>
 <div id="cluster"></div>
+<button id="bTime" aria-label="시간 제한 설정"><svg viewBox="0 0 32 32" fill="none" stroke="#14143a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="17" r="11"/><path d="M16 10.5V17l4.5 3M12.5 3.5h7"/></svg></button>
 <script src="algakki/guard.js"></script>
 <script>
 const C={pink:'#ff8fd0',yellow:'#ffc400',green:'#2f9b55',blue:'#1f5fd8',lav:'#cdbaf0',orange:'#ff5a14',red:'#ff3d2e',navy:'#14143a'};
@@ -109,6 +113,7 @@ G.forEach(g=>{const a=document.createElement('a');a.className='st';a.href=g.h;
   a.style.cssText=`--lx:${g.lx};--ly:${g.ly};--ls:${g.ls};--px:${g.px};--py:${g.py};--ps:${g.ps};--r:${g.r}deg;--tr:${g.tr}deg;--tc:${g.tc};--fs:${g.fs};--z:${g.z};--halo:${g.halo||g.c2||g.c1}`;
   a.innerHTML=shape(g.k,g.c1,g.c2)+`<svg class="deco" viewBox="0 0 100 100">${g.d()}</svg>`+`<span class="tx${g.han?' han':''}">${g.t}</span>`;wob(a);box.appendChild(a);});
 Guard.start({hub:true});
+document.getElementById('bTime').addEventListener('click',()=>{ if(Guard.LS.get('parent',null)) Guard.parentFlow(); else Guard.start({hub:true}); });
 addEventListener('pageshow',e=>{ if(e.persisted) Guard.start({hub:true}); });
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
