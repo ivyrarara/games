@@ -86,7 +86,7 @@ ov.addEventListener('click',e=>{
   if(a==='parent') parentFlow();
   else if(a==='score'){ resetAsk=true; showParent(); }
   else if(a==='score-no'){ resetAsk=false; showParent(); }
-  else if(a==='score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); LS.set('score.mult',null); LS.set('score.connect4',null); LS.set('score.spot',null); LS.set('score.uno',null); LS.set('score.memory',null); LS.set('mult.hwdone',null); resetAsk=false; if(opts.onReset) opts.onReset(); showParent(); }
+  else if(a==='score-yes'){ LS.set('score.chess',null); LS.set('score.algakki',null); LS.set('score.mult',null); LS.set('score.connect4',null); LS.set('score.spot',null); LS.set('score.uno',null); LS.set('score.memory',null); LS.set('mult.hwdone',null); LS.set('mult.wkdone',null); resetAsk=false; if(opts.onReset) opts.onReset(); showParent(); }
   else if(a==='close') back();
 });
 function tick(noCount){
