@@ -165,6 +165,8 @@ button,a{font-family:inherit;color:inherit}
 .lv.prac.wp{background:#dff3e3;border-color:var(--good)}
 .wk #pentools{top:auto;bottom:8px;flex-wrap:nowrap}.wk #pentools .pt{width:78px!important;height:54px!important;min-height:0!important;padding:0!important;font-size:22px!important;border-radius:14px}.wk #pentools .pt span{font-size:13px!important}.wk #szrow{display:none}
 #rec{display:none!important}
+#lvName{position:absolute;right:16px;top:10px;z-index:2;font-size:17px;color:var(--ink);white-space:nowrap}
+#streak{top:auto!important;bottom:8px}
 .wk #ans{display:none}.wk #pen{pointer-events:none}.wk #probwrap{touch-action:none}
 .wkq{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}
 .wkq #msg{min-height:44px;font-size:22px;text-align:center}.wkq #msg.ok{font-size:30px}
@@ -188,11 +190,8 @@ button,a{font-family:inherit;color:inherit}
 <body>
 <div id="app">
   <div id="left">
-    <div id="head">
-      <div class="box chip2" id="lvName"></div>
-      <div class="box chip2" id="rec"></div>
-    </div>
     <div id="scene" class="box">
+      <div id="lvName"></div><div id="rec"></div>
       <div id="mon"></div>
       <div id="hpwrap"><div class="lbl" id="hpl">진화</div><div id="hp"><i id="hpf" style="width:0%"></i></div><div id="dragons"></div></div>
       <div id="streak"></div>
