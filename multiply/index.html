@@ -844,7 +844,7 @@ function startWp(){
 /* ---------- 힌트: 같은 레이아웃의 예시 + 단계별 애니메이션 ---------- */
 const EX={
  1:{ex:{type:1,A:12,n:3,opts:[2,4,6,12],ans:[4]},steps:[
-   {hl:['s'],cap:"예시 문제를 봐요 👀<br><b>12는 □의 3배</b> = □를 <b>3번 더하면 12</b>예요"},
+   {hl:['s'],arrow:'×3',cap:"예시 문제를 봐요 👀<br><b>12는 □의 3배</b> = □를 <b>3번 더하면 12</b>예요"},
    {hl:['c2'],cap:"보기에서 2를 골라 <b>3번 더해</b> 봐요",bub:"2 + 2 + 2 = 6 ❌ <small>(12가 아니에요)</small>"},
    {hl:['c4'],cap:"그럼 4는 어떨까요?",bub:"4 + 4 + 4 = 12 ⭕ 딱 맞아요!"},
    {hl:['b0'],vals:{0:4},cap:"맞는 수 <b>4</b>를 □에 쓰면 끝! 🎉",bub:"12는 4의 3배"},
@@ -891,7 +891,7 @@ function exHTML(e,hl,vals){
   const fx=(x,tok)=>'<div class="cell fix'+H(tok||'')+'">'+x+'</div>',em='<div class="cc"></div>';
   const chips=()=>'<div class="bogi"><span class="bt">보기</span>'+e.opts.map(o=>'<button class="chp'+H('c'+o)+'">'+o+'</button>').join('')+'</div>';
   const S=H('s').trim();
-  if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 '+e.n+'배입니다.</span></div></div>';
+  if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
   if(e.type===2) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는</span>'+bx(1)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
   if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 '+e.K+'의</span>'+bx(1)+'<span><span class="nb">배</span>입니다.</span></div></div>';
   const L='<div class="ln"></div>';
@@ -908,7 +908,7 @@ function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&(D.ex.type===2||D.ex.type===3))); a.classList.toggle('xa',!!((st.arrow&&D.ex.type>=2&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
+  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',!!((st.arrow&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
   if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
@@ -918,8 +918,8 @@ function exStep(i){
       { const g=Math.max(10,(y2-y1)*.8); path+='<path d="M'+x1+' '+y1+' C '+x1+' '+(y1+g)+', '+x2+' '+(y2-g)+', '+x2+' '+y2+'"/>'+exHead(x2,y2-g,x2,y2); } });
     a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#d93025"/></marker></defs>'+path+'</svg>');
   }
-  if(st.arrow&&(D.ex.type===2||D.ex.type===3)){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
-    const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx');
+  if(st.arrow&&D.ex.type<=3){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
+    const ar=a.getBoundingClientRect(),bxs=[...a.querySelectorAll('.bx')]; if(D.ex.type===1){ bxs.unshift(bxs[0]); bxs[0]=a.querySelector('.sent>span'); }
     if(bxs.length>1){ const sm=bxs[1].getBoundingClientRect(),bg=bxs[0].getBoundingClientRect();
       const x1=sm.left+sm.width/2-ar.left,y1=sm.top-ar.top-9,x2=bg.left+bg.width/2-ar.left,y2=bg.top-ar.top-12,h=Math.max(16,Math.min(26,Math.abs(x1-x2)*.25));
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
