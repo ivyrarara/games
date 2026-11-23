@@ -668,18 +668,20 @@ function selIdx(){
 function wkEnter(v){
   const i=selIdx(); if(i===null) return;
   cur.vals[i]=v; delete cur.res[i]; cur.sel=null;
-  if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)){ say('',''); render(); return; }
-  let bad=0;
-  cur.blanks.forEach((b,j)=>{
-    if(cur.res[j]==='ok') return;
-    if(cur.vals[j]===b) cur.res[j]='ok';
-    else{ cur.res[j]='bad'; bad++; cur.wrong++; cur.wa[j]=(cur.wa[j]||0)+1; bump('w'); }
-  });
-  if(!bad){ solved(); return; }
-  R.streak=0; sfx.no(); setMood('laugh',600);
-  if(cur.blanks.some((b,j)=>cur.wa[j]>=2)){ cur.hinted=true; say('같이 생각해 봐요! '+wkHint(),'hint'); } else say('','');
-  cur.flash=true; render();
-  const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.blanks.forEach((b,j)=>{ if(q.res[j]==='bad'){ delete q.vals[j]; delete q.res[j]; } }); render(); } },450);
+  if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)){ say('',''); render(); return; }   /* 빈칸을 다 채울 때까지는 정오 표시 없음 */
+  if(cur.blanks.every((b,j)=>cur.vals[j]===b)){ cur.blanks.forEach((b,j)=>cur.res[j]='ok'); solved(); return; }
+  cur.fails=(cur.fails||0)+1; cur.wrong++; R.streak=0; sfx.no(); setMood('laugh',600);
+  if(cur.fails>=2){   /* 두 번째 실패: 이 문제는 실패 처리, 정답 보여주고 같은 유형 새 문제 추가 */
+    phase='fb'; cur.blanks.forEach((b,j)=>{ cur.vals[j]=b; cur.res[j]='ok'; });
+    { const qn=cur.no; if(qn&&!R.missed.includes(qn)) R.missed.push(qn); }
+    R.total++; qs.push(genWk(cur.type,Math.random)); renderHead();
+    say('아쉬워요! 정답은 이거예요. 비슷한 문제가 한 번 더 나와요 😉','hint'); render();
+    const id=R; setTimeout(()=>{ if(R===id&&phase==='fb') nextQ(); },2600);
+    return;
+  }
+  cur.hinted=true; say('아쉬워요, 다시 해 볼까요? '+wkHint(),'hint');
+  cur.blanks.forEach((b,j)=>cur.res[j]='bad'); cur.flash=true; render();
+  const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.vals={}; q.res={}; render(); } },700);
 }
 function wkHint(){
   const c=cur;
