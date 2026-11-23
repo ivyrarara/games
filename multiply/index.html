@@ -855,10 +855,8 @@ const EX={
    {hl:['c3','c6'],circ:1,vals:{0:6,1:3},cap:"3은 어때요?",bub:"3 × 2 = 6 ⭕ <small>(보기에 6이 있어요!)</small>"}]},
  3:{ex:{type:3,K:12,opts:[2,4,5,26,48,70],ans:[48,4]},steps:[
    {hl:['s'],arrow:'몇배',cap:"<b>12 × 몇 = 큰 수</b>를<br>보기에서 찾아요"},
-   {hl:['c2'],cap:"2배는?",bub:"12 × 2 = 24 ❌ <small>(보기에 없어요)</small>"},
-   {hl:['c4','c48'],cap:"4배는?",bub:"12 × 4 = 48 ⭕ <small>(보기에 있어요!)</small>"},
-   {hl:['b0','b1'],vals:{0:48,1:4},cap:"<b>48</b>은 12의 <b>4</b>배! 🎉",bub:"48은 12의 4배"},
-   {hl:[],vals:{0:48,1:4},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+   {hl:['c2'],wrong:{1:2},cap:"2배는?",bub:"12 × 2 = 24 ❌ <small>(보기에 없어요)</small>"},
+   {hl:['c4','c48'],vals:{0:48,1:4},cap:"4배는?",bub:"12 × 4 = 48 ⭕ <small>(보기에 있어요!)</small>"}]},
  4:{ex:{type:4,t:7,d:4,m:2,ans:[7]},steps:[
    {hl:[],cap:"□를 구하는 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
    {hl:['b','m','r2'],cap:"일의 자리끼리 곱해요<br>아랫줄 끝 <b>8</b>과 같아요 ⭕",bub:"4 × 2 = 8"},
@@ -906,7 +904,7 @@ function exStep(i){
   const WR=st.wrong||{},VV=Object.assign({},st.vals||{},WR);
   a.innerHTML=exHTML(D.ex,st.hl||[],VV);
   Object.keys(WR).forEach(k=>{ const b=[...a.querySelectorAll('.bx,.cell:not(.fix)')][k]; if(b){ b.classList.remove('good','xhl'); b.classList.add('xwrong'); } });
-  a.style.position='relative'; a.classList.toggle('xv6',D.ex.type===6); a.classList.toggle('xc',!!((st.arrow||st.wrong||st.circ)&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
+  a.style.position='relative'; a.classList.toggle('xv6',D.ex.type===6); a.classList.toggle('xc',!!((st.arrow||(st.wrong&&D.ex.type!==3)||st.circ)&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
   if(D.ex.type<=3&&Object.keys(VV).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
