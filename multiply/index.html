@@ -213,6 +213,7 @@ button,a{font-family:inherit;color:inherit}
 .cell[data-i]{cursor:pointer}
 @media (orientation:portrait){.sent{font-size:22px;gap:3px}.bx{width:54px;height:46px;font-size:26px}.chp{min-width:50px;height:46px;font-size:24px;padding:0 6px}.wkq .ins{font-size:15px}.wkq{gap:8px}
  #scene{height:122px;padding-top:20px;box-sizing:border-box}#lvName{font-size:15px}#mon{width:90px;height:90px}#right:not(.nopad){height:290px}#pad button{min-height:40px;font-size:28px}#pad{gap:6px}#pentools{top:auto;bottom:6px;right:8px}#pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}#pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
+.xarr path.xx2{fill:none;stroke:#d93025;stroke-width:5;stroke-linecap:round;opacity:.85;animation:xdraw .35s}#exArea .bx.xwrong{color:#d93025;border:3px dashed #d93025;background:#fff5f5;font-family:'Gamja Flower','Nanum Pen Script','Segoe Print','Bradley Hand',cursive;font-size:36px!important;line-height:1;padding:0;font-weight:400}
 </style>
 </head>
 <body>
@@ -845,7 +846,7 @@ function startWp(){
 const EX={
  1:{ex:{type:1,A:12,n:3,opts:[2,4,6,12],ans:[4]},steps:[
    {hl:['s'],arrow:'×3',cap:"예시 문제를 봐요 👀<br><b>12는 □의 3배</b> = <b>□ × 3 = 12</b>예요"},
-   {hl:['c2'],cap:"보기에서 2를 골라 <b>×3</b> 해 봐요",bub:"2 × 3 = 6 ❌ <small>(12가 아니에요)</small>"},
+   {hl:['c2'],wrong:{0:2},cap:"보기에서 2를 골라 <b>×3</b> 해 봐요",bub:"2 × 3 = 6 ❌ <small>(12가 아니에요)</small>"},
    {hl:['c4'],cap:"그럼 4는 어떨까요?",bub:"4 × 3 = 12 ⭕ 딱 맞아요!"},
    {hl:['b0'],vals:{0:4},cap:"맞는 수 <b>4</b>를 □에 쓰면 끝! 🎉",bub:"12는 4의 3배"},
    {hl:[],vals:{0:4},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
@@ -907,12 +908,14 @@ function exHead(cx,cy,x,y){ const a=Math.atan2(y-cy,x-cx),L=13,W=7,bx=x-L*Math.c
 function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
-  a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
+  const WR=st.wrong||{},VV=Object.assign({},st.vals||{},WR);
+  a.innerHTML=exHTML(D.ex,st.hl||[],VV);
+  Object.keys(WR).forEach(k=>{ const b=a.querySelectorAll('.bx')[k]; if(b){ b.classList.remove('good'); b.classList.add('xwrong'); } });
   a.style.position='relative'; a.classList.toggle('xv6',D.ex.type===6); a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
-  if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
+  if(D.ex.type<=3&&Object.keys(VV).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
-    Object.entries(st.vals).forEach(([i,v])=>{ const ch=chs.find(c=>+c.textContent===+v),bx=bxs[i]; if(!ch||!bx) return;
+    Object.entries(VV).forEach(([i,v])=>{ const ch=chs.find(c=>+c.textContent===+v),bx=bxs[i]; if(!ch||!bx) return;
       ch.classList.add('xout'); if(pv[i]===v) return; const c=ch.getBoundingClientRect(),b=bx.getBoundingClientRect();
       const x1=c.left+c.width/2-ar.left,y1=c.bottom-ar.top+4,x2=b.left+b.width/2-ar.left,y2=b.top-ar.top-8,dx=(x2>=x1?-1:1)*Math.min(14,Math.abs(x2-x1)*.3+8);
       { const g=Math.max(10,(y2-y1)*.8); path+='<path d="M'+x1+' '+y1+' C '+x1+' '+(y1+g)+', '+x2+' '+(y2-g)+', '+x2+' '+y2+'"/>'+exHead(x2,y2-g,x2,y2); } });
@@ -947,6 +950,7 @@ function exStep(i){
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
       a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><path d="M'+x1+' '+y1+' Q '+mx+' '+cy+' '+x2+' '+y2+'"/>'+exHead(mx,cy,x2,y2)+'<text x="'+mx+'" y="'+((y1+cy)/2-6)+'" text-anchor="middle" class="xtimes">'+st.arrow+'</text></svg>'); }
   }
+  if(Object.keys(WR).length){ const ar=a.getBoundingClientRect(); let g=''; Object.keys(WR).forEach(k=>{ const b=a.querySelectorAll('.bx')[k]; if(!b) return; const r=b.getBoundingClientRect(),cx=r.left+r.width/2-ar.left,cy=r.top+r.height/2-ar.top,w=r.width*.5,h=r.height*.5; g+='<path class="xx2" d="M'+(cx-w)+' '+(cy-h)+' L'+(cx+w)+' '+(cy+h)+' M'+(cx+w)+' '+(cy-h)+' L'+(cx-w)+' '+(cy+h)+'"/>'; }); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>'); }
   const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub&&st.cap.replace(/<[^>]*>/g,'').replace(/\s/g,'').indexOf(st.bub.replace(/<[^>]*>/g,'').replace(/\s/g,''))<0?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
   const pv=document.querySelector('[data-act="xprev"]'),nx=document.querySelector('[data-act="xnext"]'); if(pv) pv.disabled=exI===0; if(nx) nx.disabled=exI===D.steps.length-1;
