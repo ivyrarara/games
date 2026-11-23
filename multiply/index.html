@@ -213,7 +213,7 @@ button,a{font-family:inherit;color:inherit}
 .cell[data-i]{cursor:pointer}
 @media (orientation:portrait){.sent{font-size:22px;gap:3px}.bx{width:54px;height:46px;font-size:26px}.chp{min-width:50px;height:46px;font-size:24px;padding:0 6px}.wkq .ins{font-size:15px}.wkq{gap:8px}
  #scene{height:122px;padding-top:20px;box-sizing:border-box}#lvName{font-size:15px}#mon{width:90px;height:90px}#right:not(.nopad){height:290px}#pad button{min-height:40px;font-size:28px}#pad{gap:6px}#pentools{top:auto;bottom:6px;right:8px}#pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}#pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
-.xarr path.xx2{fill:none;stroke:#d93025;stroke-width:5;stroke-linecap:round;opacity:.85;animation:xdraw .35s}#exArea .bx.xwrong,#exArea .cell.xwrong{color:#d93025;border:3px dashed #d93025;background:#fff5f5;font-family:'Gamja Flower','Nanum Pen Script','Segoe Print','Bradley Hand',cursive;font-size:36px!important;line-height:1;padding:0;font-weight:400}
+.xarr path.xx2{fill:none;stroke:#d93025;stroke-width:5;stroke-linecap:round;opacity:.85;animation:xdraw .35s}#exArea .bx.xwrong,#exArea .cell.xwrong{color:#3b3b4f;border:3px dashed #d93025;background:#fff5f5;font-family:'Gamja Flower','Nanum Pen Script','Segoe Print','Bradley Hand',cursive;font-size:48px!important;line-height:1;padding:0;font-weight:400;-webkit-text-stroke:1px #3b3b4f}#exArea .cell.xwrong{font-size:calc(var(--cs)*.95)!important;-webkit-text-stroke:1.4px #3b3b4f}
 </style>
 </head>
 <body>
@@ -869,7 +869,6 @@ const EX={
    {hl:['m'],vals:{0:3},cap:"□가 3이면?",bub:"14 × 3 = 42 ⭕ 딱 맞아요!"},
    {hl:[],vals:{0:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  6:{ex:{type:6,t:1,d:6,m:7,ans:[1,1]},steps:[
-   {hl:[],cap:"□가 두 개인 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
    {hl:['b','m','r2'],carry:4,cap:"<b>6 × 7 = 42</b><br>일의 자리 <b>2</b>를 쓰고 <b>4는 올림</b>이에요 ⭕",bub:"6 × 7 = 42"},
    {hl:['a','m','r1'],carry:4,cap:"<b>십의 자리</b>: □ × 7 에 올림 4를 더해요<br>결과는 <b>1□</b> 모양 (10~19)",bub:"□ × 7 + 4 = 1□"},
    {hl:['a'],carry:4,vals:{0:1},cap:"□에 1을 넣어 봐요",bub:"1 × 7 + 4 = 11 ⭕"},
@@ -942,7 +941,7 @@ function exStep(i){
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
       a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><path d="M'+x1+' '+y1+' Q '+mx+' '+cy+' '+x2+' '+y2+'"/>'+exHead(mx,cy,x2,y2)+'<text x="'+mx+'" y="'+((y1+cy)/2-6)+'" text-anchor="middle" class="xtimes">'+st.arrow+'</text></svg>'); }
   }
-  if(Object.keys(WR).length){ const ar=a.getBoundingClientRect(); let g=''; Object.keys(WR).forEach(k=>{ const b=[...a.querySelectorAll('.bx,.cell:not(.fix)')][k]; if(!b) return; const r=b.getBoundingClientRect(),cx=r.left+r.width/2-ar.left,cy=r.top+r.height/2-ar.top,w=r.width*.5,h=r.height*.5; g+='<path class="xx2" d="M'+(cx-w)+' '+(cy-h)+' L'+(cx+w)+' '+(cy+h)+' M'+(cx+w)+' '+(cy-h)+' L'+(cx-w)+' '+(cy+h)+'"/>'; }); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>'); }
+  if(Object.keys(WR).length){ const ar=a.getBoundingClientRect(); let g=''; Object.keys(WR).forEach(k=>{ const b=[...a.querySelectorAll('.bx,.cell:not(.fix)')][k]; if(!b) return; const r=b.getBoundingClientRect(),cx=r.left+r.width/2-ar.left,cy=r.top+r.height/2-ar.top,w=r.width*.42,h=r.height*.42; g+='<path class="xx2" d="M'+(cx-w)+' '+(cy-h)+' L'+(cx+w)+' '+(cy+h)+' M'+(cx+w)+' '+(cy-h)+' L'+(cx-w)+' '+(cy+h)+'"/>'; }); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>'); }
   const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub&&st.cap.replace(/<[^>]*>/g,'').replace(/\s/g,'').indexOf(st.bub.replace(/<[^>]*>/g,'').replace(/\s/g,''))<0?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
   const pv=document.querySelector('[data-act="xprev"]'),nx=document.querySelector('[data-act="xnext"]'); if(pv) pv.disabled=exI===0; if(nx) nx.disabled=exI===D.steps.length-1;
