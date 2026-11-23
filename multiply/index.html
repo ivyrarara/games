@@ -169,6 +169,8 @@ button,a{font-family:inherit;color:inherit}
 .xcap{min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
 .xcap b{color:#d9480f}
 .xbub{display:none}.xcap .xb{font-size:23px;font-weight:700;color:#1d4ed8}.xbub0{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1d4ed8;text-align:center;animation:xfade .45s}
+#hintT{display:none}
+@media (orientation:landscape){.wk #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:62px!important;align-items:center;justify-content:center;gap:8px;background:#fff6cc!important;font-size:24px!important;font-weight:800;border-radius:16px;box-shadow:0 4px 0 var(--edge)}.wk #pentools{flex-wrap:wrap!important;width:176px;justify-content:flex-end}.wk #right.nopad #pad{display:none}}
 .xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
@@ -218,6 +220,7 @@ button,a{font-family:inherit;color:inherit}
     </div>
     <div id="probwrap" class="box"><div id="prob"></div><canvas id="ans"></canvas><canvas id="pen"></canvas>
       <div id="pentools">
+        <button id="hintT" class="pt" data-k="💡" aria-label="힌트">💡 힌트</button>
         <button class="pt on" data-t="pen" aria-label="펜">✏️<span>펜</span></button>
         <button class="pt" data-t="erase" aria-label="지우개">🧽<span>지우개</span></button>
         <div id="szrow"></div>
@@ -913,6 +916,13 @@ function openExample(c){
 
 /* ---------- overlays ---------- */
 function openOverlay(h,m){ overlayMode=m; const o=$('overlay'); o.innerHTML='<div class="card">'+h+'</div>'; o.className='on'; }
+(function(){ let sx=null,sy=0;
+  const o=document.getElementById('overlay');
+  o.addEventListener('pointerdown',e=>{ sx=(overlayMode==='hint'&&$('exArea'))?e.clientX:null; sy=e.clientY; });
+  o.addEventListener('pointerup',e=>{ if(sx===null) return; const dx=e.clientX-sx,dy=e.clientY-sy; sx=null;
+    if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.4){ exStep(exI+(dx<0?1:-1)); } });
+  o.addEventListener('pointercancel',()=>{ sx=null; });
+})();
 function closeOverlay(){ clearInterval(exT); overlayMode=''; const o=$('overlay'); o.className=''; o.innerHTML=''; }
 function starStr(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
 function hwAllDone(){ const d=LS.get('mult.wkdone',null)||{}; return [1,2,3,4,5].every(k=>d[k]); }
@@ -961,6 +971,7 @@ function press(k){
   if(/^\d$/.test(k)){ if(cur&&cur.wk){ sfx.key(); if(cur.type>=4) wkEnter(+k); else wkDigit(k); return; } sfx.key(); resetAns(); enter(+k); }
 }
 $('pad').addEventListener('pointerdown',e=>{ unlock(); const b=e.target.closest('button'); if(b){ e.preventDefault(); press(b.dataset.k); } });
+$('hintT').addEventListener('pointerdown',e=>{ unlock(); e.preventDefault(); e.stopPropagation(); press('💡'); });
 document.addEventListener('keydown',e=>{ if(/^[0-9]$/.test(e.key)) press(e.key); });
 $('bMenu').addEventListener('click',showMenu);
 $('bSound').addEventListener('click',()=>{ muted=!muted; render(); if(!muted){unlock();sfx.step();} });
