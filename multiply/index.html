@@ -732,7 +732,7 @@ function wkStart(extra,list){
   closeOverlay(); phase='ask'; renderDragons(); setMood('idle'); nextQ();
 }
 function startWk(day){
-  const d=LS.get('mult.wkdone',null)||{}; if(day!==[1,2,3,4,5].find(k=>!d[k])) return;
+  const d=LS.get('mult.wkdone',null)||{}; if(d[day]) return;
   wkStart({wk:day},WK[day]);
 }
 function startWp(){
@@ -750,7 +750,7 @@ function showMenu(){
   let h='<h1>✖️ 곱셈 몬스터</h1>';
   const wd=LS.get('mult.wkdone',null)||{},wn=[1,2,3,4,5].find(k=>!wd[k]);
   h+='<div class="sub">📒 이번 주 숙제</div><div class="hws hws5">';
-  for(const k of [1,2,3,4,5]) h+=wd[k]?'<button class="lv hw done" disabled>'+k+'일차<div class="stars">✔ 완료</div></button>':k===wn?'<button class="lv hw" data-wk="'+k+'">'+k+'일차<div class="stars">시작!</div></button>':'<button class="lv hw done" disabled>'+k+'일차<div class="stars">🔒</div></button>';
+  for(const k of [1,2,3,4,5]) h+=wd[k]?'<button class="lv hw done" disabled>'+k+'일차<div class="stars">✔ 완료</div></button>':'<button class="lv hw" data-wk="'+k+'">'+k+'일차<div class="stars">시작!</div></button>';
   h+='</div>';
   h+='<button class="lv prac wp" data-wp="1">✏️ 연습문제 (이번 주 유형)</button>';
   h+=hwAllDone()?'<button class="lv prac hl" data-lv="4">✖️ 세로셈 연습</button>':'<button class="lv prac gray" data-lv="4">✖️ 세로셈 연습 🔒</button>';
