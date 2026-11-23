@@ -671,7 +671,7 @@ function wkEnter(v){
   if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)){ say('',''); render(); return; }   /* 빈칸을 다 채울 때까지는 정오 표시 없음 */
   if(cur.blanks.every((b,j)=>cur.vals[j]===b)){ cur.blanks.forEach((b,j)=>cur.res[j]='ok'); solved(); return; }
   cur.fails=(cur.fails||0)+1; cur.wrong++; R.streak=0; sfx.no(); setMood('laugh',600);
-  if(cur.fails>=2){   /* 두 번째 실패: 이 문제는 실패 처리, 정답 보여주고 같은 유형 새 문제 추가 */
+  if(cur.fails>=3){   /* 세 번째 실패: 이 문제는 실패 처리, 정답 보여주고 같은 유형 새 문제 추가 */
     phase='fb'; cur.blanks.forEach((b,j)=>{ cur.vals[j]=b; cur.res[j]='ok'; });
     { const qn=cur.no; if(qn&&!R.missed.includes(qn)) R.missed.push(qn); }
     R.total++; qs.push(genWk(cur.type,Math.random)); renderHead();
