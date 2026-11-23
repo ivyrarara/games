@@ -165,12 +165,29 @@ button,a{font-family:inherit;color:inherit}
 .lv.prac.wp{background:#dff3e3;border-color:var(--good)}
 .wk #pentools{top:auto;bottom:8px;flex-wrap:nowrap}.wk #pentools .pt{width:78px!important;height:54px!important;min-height:0!important;padding:0!important;font-size:22px!important;border-radius:14px}.wk #pentools .pt span{font-size:13px!important}.wk #szrow{display:none}
 #rec{display:none!important}
+/* 힌트: 같은 화면 위의 움직이는 풀이 예시 */
+.xcap{min-height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
+.xcap b{color:#d9480f}
+.xbub{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1d4ed8;text-align:center;animation:xfade .45s}
+.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+#exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
+#exArea .wkq{padding-bottom:0;gap:8px}
+#exArea .xhl{animation:xp .9s ease-in-out infinite;position:relative;z-index:1}
+#exArea .xfill{animation:xpop .5s}
+#exArea .xhl.chp,#exArea .xhl.cell,#exArea .xhl.bx{background:#fff3bf!important;border-color:#f59f00!important}
+#exArea .bx.good,#exArea .cell.good{color:#1d4ed8;border:3px solid #2563eb;background:#e8f0ff}
+.xdots{display:flex;gap:8px;justify-content:center;margin:6px 0 10px}.xdots i{width:10px;height:10px;border-radius:50%;background:#d8cfae}.xdots i.on{background:#f59f00;transform:scale(1.3)}
+.xbtns{display:flex;gap:10px;margin-bottom:10px}.xbtns .go{flex:1;min-height:0;padding:10px 0;font-size:20px;margin:0}
+@keyframes xfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes xp{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes xpop{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+
 .hs{text-align:left}.hs h3{margin:0 0 8px;font-size:24px;text-align:center}.hs ol{margin:0 0 14px;padding-left:26px;font-size:19px;line-height:1.55}.hs li{margin-bottom:8px}.hs b{color:#d9480f}
 #lvName{position:absolute;left:16px;top:10px;z-index:2;font-size:17px;color:var(--ink);white-space:nowrap}
 #streak{top:8px!important;bottom:auto!important}
-.wkc #pad button:not(.hint){display:none}.wkc #pad{grid-template-columns:1fr;flex:none;height:60px!important;min-height:0}.wkc #pad .hint{flex-direction:row;gap:10px;min-height:0!important;height:60px;font-size:20px}.wkc #pad .hint{font-size:30px}.wkc #pad .hint small{font-size:18px;margin:0}.wkc #right{height:auto!important}
+.wk #right.nopad #pad button:not(.hint){display:none}.wk #right.nopad #pad{grid-template-columns:1fr;flex:none;height:60px!important;min-height:0}.wk #right.nopad #pad .hint{flex-direction:row;gap:10px;min-height:0!important;height:60px;font-size:20px}.wk #right.nopad #pad .hint{font-size:30px}.wk #right.nopad #pad .hint small{font-size:18px;margin:0}.wk #right.nopad{height:auto!important}
 .wk .wkq{padding-bottom:62px;box-sizing:border-box}
-.wk #ans{display:none}.wk #pen{pointer-events:none}.wk #probwrap{touch-action:none}
+.wk #pen{pointer-events:none}.wk #probwrap{touch-action:none}
 .wkq{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}
 .wkq #msg{word-break:keep-all;min-height:44px;font-size:22px;text-align:center}.wkq #msg.ok{font-size:30px}
 .bogi{flex-wrap:nowrap}.sent{flex-wrap:nowrap;white-space:nowrap}
@@ -187,7 +204,7 @@ button,a{font-family:inherit;color:inherit}
 .bx.flash{animation:shake .4s}
 .cell[data-i]{cursor:pointer}
 @media (orientation:portrait){.sent{font-size:22px;gap:3px}.bx{width:54px;height:46px;font-size:26px}.chp{min-width:50px;height:46px;font-size:24px;padding:0 6px}.wkq .ins{font-size:15px}.wkq{gap:8px}
- .wk #scene{height:122px;padding-top:20px;box-sizing:border-box}#lvName{font-size:15px}.wk #mon{width:90px;height:90px}.wk #right{height:290px}.wk #pad button{min-height:40px;font-size:28px}.wk #pad{gap:6px}.wk #pentools{top:auto;bottom:6px;right:8px}.wk #pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}.wk #pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
+ .wk #scene{height:122px;padding-top:20px;box-sizing:border-box}#lvName{font-size:15px}.wk #mon{width:90px;height:90px}.wk #right:not(.nopad){height:290px}.wk #pad button{min-height:40px;font-size:28px}.wk #pad{gap:6px}.wk #pentools{top:auto;bottom:6px;right:8px}.wk #pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}.wk #pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
 </style>
 </head>
 <body>
@@ -512,7 +529,7 @@ function nextQ(){
 }
 function hint(){
   if(phase!=='ask'||!cur) return;
-  if(cur.wk){ cur.hinted=true; openOverlay(wkSolution(cur)+'<button class="go" data-act="close">알겠어요!</button>','hint'); return; }
+  if(cur.wk){ cur.hinted=true; openExample(cur); return; }
   const k=selKey(); if(!k) return;
   cur.hinted=true; say(hintText(k),'hint'); render();
 }
@@ -669,14 +686,20 @@ function selIdx(){
 }
 function wkEnter(v){
   const i=selIdx(); if(i===null) return;
-  cur.vals[i]=v; delete cur.res[i]; cur.sel=null; cur.buf='';
+  cur.vals[i]=v; delete cur.res[i]; cur.sel=null; cur.buf=''; cur.bufK=null;
+  clearTimeout(cur.jt);
   if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)){ say('',''); render(); return; }   /* 빈칸을 다 채울 때까지는 정오 표시 없음 */
+  say('',''); render();
+  const q0=cur; cur.jt=setTimeout(()=>{ if(cur===q0&&phase==='ask') wkJudge(); },2000);   /* 다 채운 뒤 2초 생각할 시간 */
+}
+function wkJudge(){
+  if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)) return;
   if(cur.blanks.every((b,j)=>cur.vals[j]===b)){ cur.blanks.forEach((b,j)=>cur.res[j]='ok'); solved(); return; }
   cur.fails=(cur.fails||0)+1; cur.wrong++; R.streak=0; sfx.no(); setMood('laugh',600);
   if(cur.fails>=3){   /* 세 번째 실패: 이 문제는 실패 처리, 정답 보여주고 같은 유형 새 문제 추가 */
     phase='fb'; cur.blanks.forEach((b,j)=>{ cur.vals[j]=b; cur.res[j]='ok'; });
     { const qn=cur.no; if(qn&&!R.missed.includes(qn)) R.missed.push(qn); }
-    R.total++; qs.push(wkNew(cur.type)); renderHead();
+    R.total++; { const nw=wkNew(cur.type); let at=qs.findIndex(x=>x.type>cur.type); if(at<0) at=qs.length; qs.splice(at,0,nw); } renderHead();   /* 같은 유형 뒤에 끼워 넣어 쉬운 유형 먼저 */
     say('아쉬워요! 정답은 이거예요. 비슷한 문제가 한 번 더 나와요 😉','hint'); render();
     const id=R; setTimeout(()=>{ if(R===id&&phase==='fb') nextQ(); },2600);
     return;
@@ -685,16 +708,32 @@ function wkEnter(v){
   cur.blanks.forEach((b,j)=>cur.res[j]='bad'); cur.flash=true; render();
   const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.vals={}; q.res={}; render(); } },700);
 }
-function wkDigit(d){   /* 보기 문제: 숫자판으로 직접 써넣기. 보기에 있는 수가 되면 입력 확정 */
-  const i=selIdx(); if(i===null) return;
+function wkDigit(d){ const i=selIdx(); if(i===null) return; wkTyped(i,String(d)); }
+function wkTyped(k,ch){   /* 보기 문제: 숫자를 이어 써서 보기에 있는 수가 되면 입력 확정 */
   clearTimeout(cur.bt); const opts=cur.opts.map(String);
-  let b=(cur.buf||'')+d;
-  if(!opts.some(o=>o.startsWith(b))) b=opts.some(o=>o.startsWith(d))?d:'';
-  cur.buf=b; if(!b){ render(); return; }
+  let b=(cur.bufK===k?cur.buf||'':'')+ch;
+  if(!opts.some(o=>o.startsWith(b))) b=opts.some(o=>o.startsWith(ch))?ch:'';
+  cur.buf=b; cur.bufK=k; cur.sel=k; if(!b){ render(); return; }
   const exact=opts.includes(b),longer=opts.some(o=>o!==b&&o.startsWith(b));
-  if(exact&&!longer){ cur.buf=''; wkEnter(+b); return; }
-  if(exact){ const q=cur; q.bt=setTimeout(()=>{ if(cur===q&&q.buf===b){ q.buf=''; wkEnter(+b); } },900); }
+  if(exact&&!longer){ cur.buf=''; cur.bufK=null; wkEnter(+b); return; }
+  if(exact){ const q=cur; q.bt=setTimeout(()=>{ if(cur===q&&q.buf===b){ q.buf=''; q.bufK=null; q.sel=k; wkEnter(+b); } },900); }
   render();
+}
+function recognizeWk(k,strokes){
+  const r=readDigit(strokes);
+  if(!r){ clearTimeout(cur.jt); cur.sel=k; cur.buf=''; cur.bufK=null; delete cur.vals[k]; delete cur.res[k]; say('',''); render(); return; }   /* 짧게 톡 = 칸 선택 */
+  let d=r.top;
+  const bad=()=>{ say('숫자를 잘 못 읽었어요. 한 번 더 또박또박 써 줄래요? ✏️','no'); render(); };
+  if(cur.type>=4){
+    const want=cur.blanks[k];
+    if(d!==want&&r.p[want]>=0.2) d=want;
+    if(d!==want&&r.p[r.top]<0.5) return bad();
+    sfx.key(); cur.sel=k; wkEnter(d); return;
+  }
+  const opts=cur.opts.map(String),buf=(cur.bufK===k?cur.buf||'':'');
+  let best=-1,bp=0; for(let x=0;x<10;x++){ if(opts.some(o=>o.startsWith(buf+x))&&r.p[x]>bp){ best=x; bp=r.p[x]; } }
+  if(best>=0&&(d===best||bp>=0.2)) d=best; else if(r.p[r.top]<0.5) return bad();
+  sfx.key(); wkTyped(k,String(d));
 }
 function wkSolution(c){
   const L=[];
@@ -766,6 +805,7 @@ function renderWk(){
   $('prob').innerHTML=f+(c.type<=3?'':'<div class="side"><div id="msg" class="'+msgC+'">'+msgT+'</div></div>');
   $('bSound').innerHTML=(muted?'🔇':'🔊')+'<span>'+(muted?'소리 꺼짐':'소리')+'</span>';
   const hb=$('pad').querySelector('.hint'); if(hb) hb.classList.toggle('hl',phase==='ask'&&cur.wrong>0&&!cur.hinted);
+  layoutAct();
 }
 $('prob').addEventListener('pointerdown',e=>{
   if(!cur||!cur.wk||phase!=='ask'||overlayMode) return;
@@ -773,11 +813,12 @@ $('prob').addEventListener('pointerdown',e=>{
   const ch=e.target.closest('[data-c]');
   if(ch){ e.preventDefault(); sfx.key(); wkEnter(+ch.dataset.c); return; }
   const b=e.target.closest('[data-i]');
-  if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; cur.buf=''; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
+  if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; if(cur.vals[i]===undefined){ return; }   /* 비어 있거나 쓰던 중이면 선택만 */
+  clearTimeout(cur.jt); cur.buf=''; cur.bufK=null; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
 });
 const wkNew=t=>{ const p=genWk(t,Math.random); return {...p,wk:true,app:0,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}; };
 function wkStart(extra,list){
-  qs=list.map((p,i)=>({...p,wk:true,app:0,no:i+1,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}));
+  qs=list.map((p,i)=>({...p,wk:true,app:0,no:i+1,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()})).sort((x,y)=>x.type-y.type||x.no-y.no);   /* 쉬운 유형(1번)부터 */
   R={...extra,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set()};
   closeOverlay(); phase='ask'; renderDragons(); setMood('idle'); nextQ();
 }
@@ -790,9 +831,87 @@ function startWp(){
   wkStart({wp:true},[1,2,3,4,5,6].map(t=>genWk(t,rnd)));
 }
 
+
+/* ---------- 힌트: 같은 레이아웃의 예시 + 단계별 애니메이션 ---------- */
+const EX={
+ 1:{ex:{type:1,A:12,n:3,opts:[2,4,6,12],ans:[4]},steps:[
+   {hl:['s'],cap:"예시 문제를 봐요 👀<br><b>12는 □의 3배</b> = □를 <b>3번 더하면 12</b>예요"},
+   {hl:['c2'],cap:"보기에서 2를 골라 <b>3번 더해</b> 봐요",bub:"2 + 2 + 2 = 6 ❌ <small>(12가 아니에요)</small>"},
+   {hl:['c4'],cap:"그럼 4는 어떨까요?",bub:"4 + 4 + 4 = 12 ⭕ 딱 맞아요!"},
+   {hl:['b0'],vals:{0:4},cap:"맞는 수 <b>4</b>를 □에 쓰면 끝! 🎉",bub:"12는 4의 3배"},
+   {hl:[],vals:{0:4},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+ 2:{ex:{type:2,n:2,opts:[3,6,7,10],ans:[6,3]},steps:[
+   {hl:['s'],cap:"<b>큰 수는 작은 수의 2배</b>예요<br>작은 수를 <b>2번 더하면</b> 큰 수!"},
+   {hl:['c7'],cap:"7부터 해 봐요",bub:"7 + 7 = 14 ❌ <small>(보기에 없어요)</small>"},
+   {hl:['c3','c6'],cap:"3은 어때요?",bub:"3 + 3 = 6 ⭕ <small>(보기에 6이 있어요!)</small>"},
+   {hl:['b0'],vals:{0:6},cap:"<b>큰 수 6</b>을 앞 □에 써요"},
+   {hl:['b1'],vals:{0:6,1:3},cap:"<b>작은 수 3</b>을 뒤 □에 써요 🎉",bub:"6은 3의 2배"},
+   {hl:[],vals:{0:6,1:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+ 3:{ex:{type:3,K:12,opts:[2,4,5,26,48,70],ans:[48,4]},steps:[
+   {hl:['s'],cap:"<b>12를 몇 번 더한 수</b>를<br>보기에서 찾아요"},
+   {hl:['c2'],cap:"2번 더하면?",bub:"12 × 2 = 24 ❌ <small>(보기에 없어요)</small>"},
+   {hl:['c4','c48'],cap:"4번 더하면?",bub:"12 × 4 = 48 ⭕ <small>(보기에 있어요!)</small>"},
+   {hl:['b0','b1'],vals:{0:48,1:4},cap:"<b>48</b>은 12의 <b>4</b>배! 🎉",bub:"48은 12의 4배"},
+   {hl:[],vals:{0:48,1:4},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+ 4:{ex:{type:4,t:7,d:4,m:2,ans:[7]},steps:[
+   {hl:[],cap:"□를 구하는 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
+   {hl:['b','m','r2'],cap:"일의 자리끼리 곱해요<br>아랫줄 끝 <b>8</b>과 같아요 ⭕",bub:"4 × 2 = 8"},
+   {hl:['a','m','r0','r1'],cap:"이제 <b>십의 자리</b>예요<br>아랫줄 앞쪽 <b>14</b>가 돼야 해요",bub:"□ × 2 = 14"},
+   {hl:['a'],cap:"2단에서 14를 찾아봐요",bub:"2×6=12 ❌ → 2×7=14 ⭕"},
+   {hl:['a'],vals:{0:7},cap:"<b>□는 7</b>! 🎉",bub:"7 × 2 = 14"},
+   {hl:[],vals:{0:7},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+ 5:{ex:{type:5,a:14,m:3,ans:[3]},steps:[
+   {hl:['m'],cap:"<b>14 × □ = 42</b><br>□에 수를 넣어 곱해 봐요"},
+   {hl:['m'],cap:"□가 2이면?",bub:"14 × 2 = 28 ⬆️ <small>(42보다 작아요)</small>"},
+   {hl:['m'],cap:"□가 3이면?",bub:"14 × 3 = 42 ⭕ 딱 맞아요!"},
+   {hl:['m'],vals:{0:3},cap:"<b>□는 3</b>! 🎉"},
+   {hl:[],vals:{0:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
+ 6:{ex:{type:6,t:1,d:6,m:7,ans:[1,1]},steps:[
+   {hl:[],cap:"□가 두 개인 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
+   {hl:['b','m','r2'],cap:"<b>6 × 7 = 42</b><br>일의 자리 <b>2</b>를 쓰고 <b>4는 올림</b>이에요 ⭕",bub:"6 × 7 = 42"},
+   {hl:['a','m','r1'],cap:"<b>십의 자리</b>: □ × 7 에 올림 4를 더해요<br>결과는 <b>1□</b> 모양 (10~19)",bub:"□ × 7 + 4 = 1□"},
+   {hl:['a'],vals:{0:1},cap:"□에 1을 넣어 봐요",bub:"1 × 7 + 4 = 11 ⭕"},
+   {hl:['a','r1'],vals:{0:1,1:1},cap:"11에서 <b>끝 1은 아랫줄 가운데</b><br>앞의 1은 백의 자리예요 🎉"},
+   {hl:[],vals:{0:1,1:1},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]}
+};
+function exHTML(e,hl,vals){
+  const H=t=>hl.includes(t)?' xhl':'', V=(i)=>vals[i]!==undefined;
+  const bx=i=>'<button class="bx'+(V(i)?' good xfill':'')+H('b'+i)+'">'+(V(i)?vals[i]:'')+'</button>';
+  const cl=(i,tok)=>'<div class="cell'+(V(i)?' good xfill':'')+H(tok)+'">'+(V(i)?vals[i]:'')+'</div>';
+  const fx=(x,tok)=>'<div class="cell fix'+H(tok||'')+'">'+x+'</div>',em='<div class="cc"></div>';
+  const chips=()=>'<div class="bogi"><span class="bt">보기</span>'+e.opts.map(o=>'<button class="chp'+H('c'+o)+'">'+o+'</button>').join('')+'</div>';
+  const S=H('s').trim();
+  if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 '+e.n+'배입니다.</span></div></div>';
+  if(e.type===2) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는</span>'+bx(1)+'<span>의 '+e.n+'배입니다.</span></div></div>';
+  if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 '+e.K+'의</span>'+bx(1)+'<span>배입니다.</span></div></div>';
+  const L='<div class="ln"></div>';
+  let g;
+  if(e.type===4){ const P=String((10*e.t+e.d)*e.m); g=em+cl(0,'a')+fx(e.d,'b')+fx('×')+em+fx(e.m,'m')+L+fx(P[0],'r0')+fx(P[1],'r1')+fx(P[2],'r2'); }
+  else if(e.type===5){ const P=String(e.a*e.m); g=em+fx(Math.floor(e.a/10),'a')+fx(e.a%10,'b')+fx('×')+em+cl(0,'m')+L+em+fx(P[0],'r1')+fx(P[1],'r2'); }
+  else{ const P=String((10*e.t+e.d)*e.m); g=em+cl(0,'a')+fx(e.d,'b')+fx('×')+em+fx(e.m,'m')+L+fx(P[0],'r0')+cl(1,'r1')+fx(P[2],'r2'); }
+  return '<div class="wkq"><div class="vf">'+g+'</div></div>';
+}
+let exI=0,exT=null,exType=1;
+function exStep(i){
+  const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
+  const a=$('exArea'); if(!a) return;
+  a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
+  const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'; c.style.animation='none'; void c.offsetWidth; c.style.animation='';
+  const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
+  $('exDots').innerHTML=D.steps.map((_,k)=>'<i class="'+(k===exI?'on':'')+'"></i>').join('');
+}
+function openExample(c){
+  exType=c.type; clearInterval(exT);
+  openOverlay('<div class="xtitle">💡 이렇게 풀어요 (예시 문제)</div><div id="exCap" class="xcap"></div><div id="exArea"></div><div id="exBub" class="xbub"></div><div id="exDots" class="xdots"></div>'
+    +'<div class="xbtns"><button class="go alt" data-act="xrestart">↻ 다시</button><button class="go alt" data-act="xnext">다음 ▶</button></div>'
+    +'<button class="go" data-act="close">알겠어요!</button>','hint');
+  exStep(0);
+  exT=setInterval(()=>{ if(!$('exArea')){ clearInterval(exT); return; } if(exI<EX[exType].steps.length-1) exStep(exI+1); },3400);
+}
+
 /* ---------- overlays ---------- */
 function openOverlay(h,m){ overlayMode=m; const o=$('overlay'); o.innerHTML='<div class="card">'+h+'</div>'; o.className='on'; }
-function closeOverlay(){ overlayMode=''; const o=$('overlay'); o.className=''; o.innerHTML=''; }
+function closeOverlay(){ clearInterval(exT); overlayMode=''; const o=$('overlay'); o.className=''; o.innerHTML=''; }
 function starStr(n){ return '★'.repeat(n)+'☆'.repeat(3-n); }
 function hwAllDone(){ const d=LS.get('mult.wkdone',null)||{}; return [1,2,3,4,5].every(k=>d[k]); }
 function showMenu(){
@@ -828,6 +947,8 @@ $('overlay').addEventListener('click',e=>{
   const a=t.dataset.act;
   if(a==='again'){ if(R&&R.wp) startWp(); else if(R&&R.hw) startHw(R.hw); else startRound(level); }
   else if(a==='menu') showMenu();
+  else if(a==='xnext'){ exStep(exI+1); }
+  else if(a==='xrestart'){ exStep(0); }
   else if(a==='close') closeOverlay();
 });
 
@@ -835,7 +956,7 @@ $('overlay').addEventListener('click',e=>{
 function press(k){
   if(phase!=='ask'||overlayMode) return;
   if(k==='💡'){ hint(); return; }
-  if(/^\d$/.test(k)){ if(cur&&cur.wk){ if(cur.type>=4){ sfx.key(); wkEnter(+k); } return; } sfx.key(); resetAns(); enter(+k); }
+  if(/^\d$/.test(k)){ if(cur&&cur.wk){ sfx.key(); if(cur.type>=4) wkEnter(+k); else wkDigit(k); return; } sfx.key(); resetAns(); enter(+k); }
 }
 $('pad').addEventListener('pointerdown',e=>{ unlock(); const b=e.target.closest('button'); if(b){ e.preventDefault(); press(b.dataset.k); } });
 document.addEventListener('keydown',e=>{ if(/^[0-9]$/.test(e.key)) press(e.key); });
@@ -884,6 +1005,7 @@ function stroke(x,a,b,col){
 function layoutAct(){
   zones={}; if(phase!=='ask'||!cur) return;
   const o=pen.getBoundingClientRect();
+  if(cur.wk){ $('prob').querySelectorAll('[data-i]').forEach(el=>{ const r=el.getBoundingClientRect(); zones[el.dataset.i]={x:r.left-o.left,y:r.top-o.top,w:r.width,h:r.height,m:r.width*0.5}; }); return; }
   for(const k of ['o','t','h']){
     const el=$('prob').querySelector('.cell[data-k="'+k+'"]'); if(!el) continue;
     const r=el.getBoundingClientRect();
@@ -958,6 +1080,7 @@ function recognizeAns(k){
   const a=ansS[k]; if(!a) return;
   const strokes=a.strokes; delete ansS[k]; redrawAns();
   if(phase!=='ask'||!cur||!MODEL||cur.res[k]==='ok') return;
+  if(cur.wk){ recognizeWk(+k,strokes); return; }
   const cell=cur.cells.find(c=>c.k===k);
   if(!cell){ say('이 문제에서는 '+LAB[k]+'의 자리 칸이 필요 없어요. 비워 두세요 🙂','no'); render(); return; }
   const r=readDigit(strokes);
@@ -988,12 +1111,23 @@ pen.addEventListener('pointermove',e=>{
 /* 연습장: 숙제 문제 위·주변 아무 곳에나 필기 (칸·보기 버튼은 그대로 터치) */
 let wd=null; const pw=$('probwrap');
 pw.addEventListener('pointerdown',e=>{
-  if(!cur||!cur.wk||phase!=='ask'||e.target.closest('[data-c],[data-i],#pentools')) return;
+  if(!cur||!cur.wk||phase!=='ask'||e.target.closest('[data-c],#pentools')) return;
   unlock(); sizePen(); try{pw.setPointerCapture(e.pointerId);}catch(_){}
-  const q=pp(e); wd={p:q}; stroke(pctx,q,q);
+  const q=pp(e),k=(!erase&&MODEL)?zoneAt(q):null;
+  if(k!==null){
+    cur.sel=+k; const a=ansS[k]||(ansS[k]={strokes:[],t:null}); clearTimeout(a.t);
+    const st=[q]; st.col=ink; a.strokes.push(st); wd={p:q,k,s:st}; stroke(actx,q,q,ink);
+  }else{ wd={p:q,k:null}; stroke(pctx,q,q); eraseCells(q); }
 });
-pw.addEventListener('pointermove',e=>{ if(!wd) return; const q=pp(e); stroke(pctx,wd.p,q); wd.p=q; });
-['pointerup','pointercancel'].forEach(ev=>pw.addEventListener(ev,()=>{ wd=null; }));
+pw.addEventListener('pointermove',e=>{
+  if(!wd) return; const q=pp(e);
+  if(wd.k!==null){ wd.s.push(q); stroke(actx,wd.p,q,wd.s.col); } else{ stroke(pctx,wd.p,q); eraseCells(q); }
+  wd.p=q;
+});
+['pointerup','pointercancel'].forEach(ev=>pw.addEventListener(ev,()=>{
+  if(wd&&wd.k!==null){ const k=wd.k,a=ansS[k]; if(a){ clearTimeout(a.t); a.t=setTimeout(()=>recognizeAns(k),850); } }
+  wd=null;
+}));
 $('pentools').addEventListener('click',e=>{
   const b=e.target.closest('.pt'); if(!b) return;
   const t=b.dataset.t;
@@ -1016,13 +1150,13 @@ window.addEventListener('resize',()=>setTimeout(()=>{ sizePen(); layoutAct(); },
 
 /* 숫자판 보이기/숨기기 */
 let padOn=LS.get('mult.pad',false);
-function applyPad(){ $('right').classList.toggle('nopad',!(padOn||(cur&&cur.wk))); $('bPad').classList.toggle('on',padOn); setTimeout(()=>{ sizePen(); layoutAct(); },50); }
+function applyPad(){ $('right').classList.toggle('nopad',!padOn); $('bPad').classList.toggle('on',padOn); setTimeout(()=>{ sizePen(); layoutAct(); },50); }
 $('bPad').addEventListener('click',()=>{ padOn=!padOn; LS.set('mult.pad',padOn); applyPad(); });
 
 /* boot */
 renderPad(); renderHead(); renderDragons(); setMood('idle'); sizePen(); applyPad(); showMenu();
 Guard.start({free:true,noLimit:true,onReset:renderHead});
-window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ,WK,genWk};
+window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ,WK,genWk,EX};
 })();
 </script>
 </body>
