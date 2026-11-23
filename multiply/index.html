@@ -716,8 +716,8 @@ function wkJudge(){
     return;
   }
   cur.hinted=true; say('아쉬워요, 다시 해 볼까요? 💡힌트를 눌러 봐요','hint');
-  cur.blanks.forEach((b,j)=>cur.res[j]='bad'); cur.flash=true; render();
-  const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.vals={}; q.res={}; render(); } },700);
+  cur.blanks.forEach((b,j)=>cur.res[j]=cur.vals[j]===b?'ok':'bad'); cur.flash=true; render();   /* 맞은 칸은 두고 틀린 칸만 지움 */
+  const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.blanks.forEach((b,j)=>{ if(q.res[j]==='bad'){ delete q.vals[j]; delete q.res[j]; } }); render(); } },700);
 }
 function wkDigit(d){ const i=selIdx(); if(i===null) return; wkTyped(i,String(d)); }
 function wkTyped(k,ch){   /* 보기 문제: 숫자를 이어 써서 보기에 있는 수가 되면 입력 확정 */
