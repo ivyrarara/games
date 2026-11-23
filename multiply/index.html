@@ -166,9 +166,9 @@ button,a{font-family:inherit;color:inherit}
 .wk #pentools{top:auto;bottom:8px;flex-wrap:nowrap}.wk #pentools .pt{width:78px!important;height:54px!important;min-height:0!important;padding:0!important;font-size:22px!important;border-radius:14px}.wk #pentools .pt span{font-size:13px!important}.wk #szrow{display:none}
 #rec{display:none!important}
 /* 힌트: 같은 화면 위의 움직이는 풀이 예시 */
-.xcap{min-height:92px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
+.xcap{min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
 .xcap b{color:#d9480f}
-.xbub{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1d4ed8;text-align:center;animation:xfade .45s}
+.xbub{display:none}.xcap .xb{font-size:23px;font-weight:700;color:#1d4ed8}.xbub0{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1d4ed8;text-align:center;animation:xfade .45s}
 .xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
@@ -896,7 +896,7 @@ function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'; c.style.animation='none'; void c.offsetWidth; c.style.animation='';
+  const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
   $('exDots').innerHTML=D.steps.map((_,k)=>'<i class="'+(k===exI?'on':'')+'"></i>').join('');
 }
@@ -906,7 +906,7 @@ function openExample(c){
     +'<div class="xbtns"><button class="go alt" data-act="xrestart">↻ 다시</button><button class="go alt" data-act="xnext">다음 ▶</button></div>'
     +'<button class="go" data-act="close">알겠어요!</button>','hint');
   exStep(0);
-  exT=setInterval(()=>{ if(!$('exArea')){ clearInterval(exT); return; } if(exI<EX[exType].steps.length-1) exStep(exI+1); },3400);
+  
 }
 
 /* ---------- overlays ---------- */
