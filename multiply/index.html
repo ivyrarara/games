@@ -213,7 +213,7 @@ button,a{font-family:inherit;color:inherit}
 .cell[data-i]{cursor:pointer}
 @media (orientation:portrait){.sent{font-size:22px;gap:3px}.bx{width:54px;height:46px;font-size:26px}.chp{min-width:50px;height:46px;font-size:24px;padding:0 6px}.wkq .ins{font-size:15px}.wkq{gap:8px}
  #scene{height:122px;padding-top:20px;box-sizing:border-box}#lvName{font-size:15px}#mon{width:90px;height:90px}#right:not(.nopad){height:290px}#pad button{min-height:40px;font-size:28px}#pad{gap:6px}#pentools{top:auto;bottom:6px;right:8px}#pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}#pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
-.xarr path.xx2{fill:none;stroke:#d93025;stroke-width:5;stroke-linecap:round;opacity:.85;animation:xdraw .35s}#exArea .bx.xwrong{color:#d93025;border:3px dashed #d93025;background:#fff5f5;font-family:'Gamja Flower','Nanum Pen Script','Segoe Print','Bradley Hand',cursive;font-size:36px!important;line-height:1;padding:0;font-weight:400}
+.xarr path.xx2{fill:none;stroke:#d93025;stroke-width:5;stroke-linecap:round;opacity:.85;animation:xdraw .35s}#exArea .bx.xwrong,#exArea .cell.xwrong{color:#d93025;border:3px dashed #d93025;background:#fff5f5;font-family:'Gamja Flower','Nanum Pen Script','Segoe Print','Bradley Hand',cursive;font-size:36px!important;line-height:1;padding:0;font-weight:400}
 </style>
 </head>
 <body>
@@ -872,9 +872,8 @@ const EX={
    {hl:[],vals:{0:7},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  5:{ex:{type:5,a:14,m:3,ans:[3]},steps:[
    {hl:['m'],cap:"<b>14 × □ = 42</b><br>□에 수를 넣어 곱해 봐요"},
-   {hl:['m'],cap:"□가 2이면?",bub:"14 × 2 = 28 ⬆️ <small>(42보다 작아요)</small>"},
-   {hl:['m'],cap:"□가 3이면?",bub:"14 × 3 = 42 ⭕ 딱 맞아요!"},
-   {hl:['m'],vals:{0:3},cap:"<b>□는 3</b>! 🎉"},
+   {hl:['m'],wrong:{0:2},noel:1,cap:"□가 2이면?",bub:"14 × 2 = 28 ⬆️ <small>(42보다 작아요)</small>"},
+   {hl:['m'],vals:{0:3},cap:"□가 3이면?",bub:"14 × 3 = 42 ⭕ 딱 맞아요!"},
    {hl:[],vals:{0:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  6:{ex:{type:6,t:1,d:6,m:7,ans:[1,1]},steps:[
    {hl:[],cap:"□가 두 개인 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
@@ -910,7 +909,7 @@ function exStep(i){
   const a=$('exArea'); if(!a) return;
   const WR=st.wrong||{},VV=Object.assign({},st.vals||{},WR);
   a.innerHTML=exHTML(D.ex,st.hl||[],VV);
-  Object.keys(WR).forEach(k=>{ const b=a.querySelectorAll('.bx')[k]; if(b){ b.classList.remove('good'); b.classList.add('xwrong'); } });
+  Object.keys(WR).forEach(k=>{ const b=[...a.querySelectorAll('.bx,.cell:not(.fix)')][k]; if(b){ b.classList.remove('good','xhl'); b.classList.add('xwrong'); } });
   a.style.position='relative'; a.classList.toggle('xv6',D.ex.type===6); a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
   if(D.ex.type<=3&&Object.keys(VV).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
@@ -925,7 +924,7 @@ function exStep(i){
     const ar=a.getBoundingClientRect(),ce=a.querySelector('[data-t="a"]');
     if(ce){ const r=ce.getBoundingClientRect(); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><text x="'+(r.left+r.width*.5-ar.left)+'" y="'+(r.top-ar.top-16)+'" text-anchor="middle" class="xcarry">'+st.carry+'</text></svg>'); }
   }
-  if(D.ex.type>=4){   /* 곱할 수는 빨간 타원, 결과 수는 파란 타원으로 묶기 */
+  if(D.ex.type>=4&&!st.noel){   /* 곱할 수는 빨간 타원, 결과 수는 파란 타원으로 묶기 */
     const ar=a.getBoundingClientRect(); let g='';
     let eh=[]; for(let j=exI;j>=0;j--){ if((D.steps[j].hl||[]).includes('m')){ eh=D.steps[j].hl; break; } }   /* 힌트가 끝날 때까지 곱할 수 타원 유지 */
     const els=[...a.querySelectorAll('[data-t]')].filter(e=>eh.includes(e.dataset.t));
@@ -950,7 +949,7 @@ function exStep(i){
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
       a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><path d="M'+x1+' '+y1+' Q '+mx+' '+cy+' '+x2+' '+y2+'"/>'+exHead(mx,cy,x2,y2)+'<text x="'+mx+'" y="'+((y1+cy)/2-6)+'" text-anchor="middle" class="xtimes">'+st.arrow+'</text></svg>'); }
   }
-  if(Object.keys(WR).length){ const ar=a.getBoundingClientRect(); let g=''; Object.keys(WR).forEach(k=>{ const b=a.querySelectorAll('.bx')[k]; if(!b) return; const r=b.getBoundingClientRect(),cx=r.left+r.width/2-ar.left,cy=r.top+r.height/2-ar.top,w=r.width*.5,h=r.height*.5; g+='<path class="xx2" d="M'+(cx-w)+' '+(cy-h)+' L'+(cx+w)+' '+(cy+h)+' M'+(cx+w)+' '+(cy-h)+' L'+(cx-w)+' '+(cy+h)+'"/>'; }); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>'); }
+  if(Object.keys(WR).length){ const ar=a.getBoundingClientRect(); let g=''; Object.keys(WR).forEach(k=>{ const b=[...a.querySelectorAll('.bx,.cell:not(.fix)')][k]; if(!b) return; const r=b.getBoundingClientRect(),cx=r.left+r.width/2-ar.left,cy=r.top+r.height/2-ar.top,w=r.width*.5,h=r.height*.5; g+='<path class="xx2" d="M'+(cx-w)+' '+(cy-h)+' L'+(cx+w)+' '+(cy+h)+' M'+(cx+w)+' '+(cy-h)+' L'+(cx-w)+' '+(cy+h)+'"/>'; }); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>'); }
   const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub&&st.cap.replace(/<[^>]*>/g,'').replace(/\s/g,'').indexOf(st.bub.replace(/<[^>]*>/g,'').replace(/\s/g,''))<0?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
   const pv=document.querySelector('[data-act="xprev"]'),nx=document.querySelector('[data-act="xnext"]'); if(pv) pv.disabled=exI===0; if(nx) nx.disabled=exI===D.steps.length-1;
