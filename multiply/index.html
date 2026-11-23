@@ -177,7 +177,7 @@ button,a{font-family:inherit;color:inherit}
 #pentools #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:108px!important;margin-bottom:-2px;align-items:center;justify-content:center;gap:8px;background:#fff0a8!important;border:3px solid #f2a100!important;color:var(--ink);font-size:24px!important;font-weight:400;border-radius:14px;padding:0!important;box-sizing:border-box}
 #pentools .pt,#pentools #hintT,#mini button{border-radius:16px!important}#pad .hint{display:none}
 #right.nopad{width:84px}#right.nopad #pad{display:none}#right.nopad #mini{grid-template-columns:1fr!important;gap:8px}}
-.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea .wkq{justify-content:flex-start!important}#exArea.xa .bogi{margin-bottom:46px}#exArea.xa .sent{margin-top:0;min-height:96px;align-content:flex-start}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea .wkq{justify-content:flex-start!important}#exArea.xa .bogi{margin-bottom:46px}#exArea.xa .sent{margin-top:0;min-height:96px;align-content:flex-start}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xarr .xel{fill:none;stroke:#d93025;stroke-width:3.5}.xarr .xel.xr{stroke:#2563eb}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
 #exArea .xhl{position:relative;z-index:1}#exArea .xhl.bx,#exArea .xhl.cell:not(.fix){animation:xp .9s ease-in-out infinite}
@@ -887,8 +887,8 @@ function exHTML(e,hl,vals){
   const H=t=>hl.includes(t)?' xhl':'', V=(i)=>vals[i]!==undefined;
   const LB=e.type===2?['큰 수','작은 수']:null;
   const bx=i=>'<button class="bx'+(V(i)?' good xfill':'')+H('b'+i)+(LB&&!V(i)?' xph':'')+'">'+(V(i)?vals[i]:(LB?LB[i]:''))+'</button>';
-  const cl=(i,tok)=>'<div class="cell'+(V(i)?' good xfill':'')+H(tok)+'">'+(V(i)?vals[i]:'')+'</div>';
-  const fx=(x,tok)=>'<div class="cell fix'+H(tok||'')+'">'+x+'</div>',em='<div class="cc"></div>';
+  const cl=(i,tok)=>'<div class="cell'+(V(i)?' good xfill':'')+H(tok)+'" data-t="'+tok+'" data-h="'+(hl.includes(tok)?1:0)+'">'+(V(i)?vals[i]:'')+'</div>';
+  const fx=(x,tok)=>'<div class="cell fix" data-t="'+(tok||'')+'" data-h="'+(tok&&hl.includes(tok)?1:0)+'">'+x+'</div>',em='<div class="cc"></div>';
   const chips=()=>'<div class="bogi"><span class="bt">보기</span>'+e.opts.map(o=>'<button class="chp'+H('c'+o)+'">'+o+'</button>').join('')+'</div>';
   const S=H('s').trim();
   if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
@@ -917,6 +917,15 @@ function exStep(i){
       const x1=c.left+c.width/2-ar.left,y1=c.bottom-ar.top+4,x2=b.left+b.width/2-ar.left,y2=b.top-ar.top-8,dx=(x2>=x1?-1:1)*Math.min(14,Math.abs(x2-x1)*.3+8);
       { const g=Math.max(10,(y2-y1)*.8); path+='<path d="M'+x1+' '+y1+' C '+x1+' '+(y1+g)+', '+x2+' '+(y2-g)+', '+x2+' '+y2+'"/>'+exHead(x2,y2-g,x2,y2); } });
     a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#d93025"/></marker></defs>'+path+'</svg>');
+  }
+  if(D.ex.type>=4){   /* 곱할 수는 빨간 타원, 결과 수는 파란 타원으로 묶기 */
+    const ar=a.getBoundingClientRect(),els=[...a.querySelectorAll('[data-h="1"]')]; let g='';
+    const groups={};
+    els.forEach(e=>{ const t=e.dataset.t,res=t[0]==='r',r=e.getBoundingClientRect(); const key=(res?'r':'o')+(res?Math.round(r.top):Math.round(r.left)); (groups[key]=groups[key]||{res,rs:[]}).rs.push(r); });
+    Object.values(groups).forEach(G=>{ const L=Math.min(...G.rs.map(r=>r.left)),T=Math.min(...G.rs.map(r=>r.top)),Rr=Math.max(...G.rs.map(r=>r.right)),B=Math.max(...G.rs.map(r=>r.bottom));
+      const cx=(L+Rr)/2-ar.left,cy=(T+B)/2-ar.top,rx=(Rr-L)/2*1.08+5,ry=(B-T)/2*1.1+4;
+      g+='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" class="xel'+(G.res?' xr':'')+'"/>'; });
+    if(g) a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>');
   }
   if(st.arrow&&D.ex.type<=3){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
     const ar=a.getBoundingClientRect(),bxs=[...a.querySelectorAll('.bx')]; if(D.ex.type===1){ bxs.unshift(bxs[0]); bxs[0]=a.querySelector('.sent>span'); } if(D.ex.type===3){ bxs[1]=a.querySelector('.nb'); }
