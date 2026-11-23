@@ -177,7 +177,7 @@ button,a{font-family:inherit;color:inherit}
 #pentools #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:108px!important;margin-bottom:-2px;align-items:center;justify-content:center;gap:8px;background:#fff0a8!important;border:3px solid #f2a100!important;color:var(--ink);font-size:24px!important;font-weight:400;border-radius:14px;padding:0!important;box-sizing:border-box}
 #pentools .pt,#pentools #hintT,#mini button{border-radius:16px!important}#pad .hint{display:none}
 #right.nopad{width:84px}#right.nopad #pad{display:none}#right.nopad #mini{grid-template-columns:1fr!important;gap:8px}}
-.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea .wkq{justify-content:flex-start!important}#exArea.xa .bogi{margin-bottom:46px}#exArea.xa .sent{margin-top:0;min-height:96px;align-content:flex-start}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xarr .xel{fill:none;stroke:#d93025;stroke-width:3.5}.xarr .xel.xr{stroke:#2563eb}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea .wkq{justify-content:flex-start!important}#exArea.xa .bogi{margin-bottom:46px}#exArea.xa .sent{margin-top:0;min-height:96px;align-content:flex-start}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xarr .xel{fill:none;stroke:#d93025;stroke-width:3.5}.xarr .xel.xr{stroke:#2563eb}.xarr .xcarry{fill:#d93025;font-size:30px;font-family:inherit;stroke:#d93025;stroke-width:1.4px}#exArea.xv6 .vf{margin-top:26px}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
 #exArea .xhl{position:relative;z-index:1}#exArea .xhl.bx,#exArea .xhl.cell:not(.fix){animation:xp .9s ease-in-out infinite}
@@ -877,10 +877,10 @@ const EX={
    {hl:[],vals:{0:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  6:{ex:{type:6,t:1,d:6,m:7,ans:[1,1]},steps:[
    {hl:[],cap:"□가 두 개인 세로셈이에요<br><b>일의 자리부터</b> 봐요!"},
-   {hl:['b','m','r2'],cap:"<b>6 × 7 = 42</b><br>일의 자리 <b>2</b>를 쓰고 <b>4는 올림</b>이에요 ⭕",bub:"6 × 7 = 42"},
-   {hl:['a','m','r1'],cap:"<b>십의 자리</b>: □ × 7 에 올림 4를 더해요<br>결과는 <b>1□</b> 모양 (10~19)",bub:"□ × 7 + 4 = 1□"},
-   {hl:['a'],vals:{0:1},cap:"□에 1을 넣어 봐요",bub:"1 × 7 + 4 = 11 ⭕"},
-   {hl:['a','r1'],vals:{0:1,1:1},cap:"11에서 <b>끝 1은 아랫줄 가운데</b><br>앞의 1은 백의 자리예요 🎉"},
+   {hl:['b','m','r2'],carry:4,cap:"<b>6 × 7 = 42</b><br>일의 자리 <b>2</b>를 쓰고 <b>4는 올림</b>이에요 ⭕",bub:"6 × 7 = 42"},
+   {hl:['a','m','r1'],carry:4,cap:"<b>십의 자리</b>: □ × 7 에 올림 4를 더해요<br>결과는 <b>1□</b> 모양 (10~19)",bub:"□ × 7 + 4 = 1□"},
+   {hl:['a'],carry:4,vals:{0:1},cap:"□에 1을 넣어 봐요",bub:"1 × 7 + 4 = 11 ⭕"},
+   {hl:['a','r1'],carry:4,vals:{0:1,1:1},cap:"11에서 <b>끝 1은 아랫줄 가운데</b><br>앞의 1은 백의 자리예요 🎉"},
    {hl:[],vals:{0:1,1:1},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]}
 };
 function exHTML(e,hl,vals){
@@ -908,7 +908,7 @@ function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
+  a.style.position='relative'; a.classList.toggle('xv6',D.ex.type===6); a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
   if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
@@ -917,6 +917,10 @@ function exStep(i){
       const x1=c.left+c.width/2-ar.left,y1=c.bottom-ar.top+4,x2=b.left+b.width/2-ar.left,y2=b.top-ar.top-8,dx=(x2>=x1?-1:1)*Math.min(14,Math.abs(x2-x1)*.3+8);
       { const g=Math.max(10,(y2-y1)*.8); path+='<path d="M'+x1+' '+y1+' C '+x1+' '+(y1+g)+', '+x2+' '+(y2-g)+', '+x2+' '+y2+'"/>'+exHead(x2,y2-g,x2,y2); } });
     a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#d93025"/></marker></defs>'+path+'</svg>');
+  }
+  if(st.carry&&D.ex.type===6){   /* 올림 수를 십의 자리 위에 작게 표시 */
+    const ar=a.getBoundingClientRect(),ce=a.querySelector('[data-t="a"]');
+    if(ce){ const r=ce.getBoundingClientRect(); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><text x="'+(r.left+r.width*.5-ar.left)+'" y="'+(r.top-ar.top-5)+'" text-anchor="middle" class="xcarry">'+st.carry+'</text></svg>'); }
   }
   if(D.ex.type>=4){   /* 곱할 수는 빨간 타원, 결과 수는 파란 타원으로 묶기 */
     const ar=a.getBoundingClientRect(),els=[...a.querySelectorAll('[data-h="1"]')]; let g='';
@@ -934,7 +938,7 @@ function exStep(i){
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
       a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><path d="M'+x1+' '+y1+' Q '+mx+' '+cy+' '+x2+' '+y2+'"/>'+exHead(mx,cy,x2,y2)+'<text x="'+mx+'" y="'+((y1+cy)/2-6)+'" text-anchor="middle" class="xtimes">'+st.arrow+'</text></svg>'); }
   }
-  const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
+  const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub&&st.cap.replace(/<[^>]*>/g,'').replace(/\s/g,'').indexOf(st.bub.replace(/<[^>]*>/g,'').replace(/\s/g,''))<0?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
   const pv=document.querySelector('[data-act="xprev"]'),nx=document.querySelector('[data-act="xnext"]'); if(pv) pv.disabled=exI===0; if(nx) nx.disabled=exI===D.steps.length-1;
   $('exDots').innerHTML=D.steps.map((_,k)=>'<i class="'+(k===exI?'on':'')+'"></i>').join('');
