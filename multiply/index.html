@@ -260,7 +260,7 @@ const bump=k=>{ const s=getStats(); s[k]++; LS.set(SCK,s); };
 const getStars=()=>LS.get('mult.stars',null)||{};
 function renderHead(){
   const s=getStats();
-  $('lvName').textContent=(R&&R.wk)?'📒 '+R.wk+'일차 · '+(cur&&cur.n?CIR[cur.n-1]+'번':'다시 도전'):(R&&R.hw)?'📒 숙제 '+R.hw+'회 · '+(cur&&cur.n?CIR[cur.n-1]+'번':'연습 문제'):'✏️ 연습문제';
+  $('lvName').textContent=(R&&R.wk)?'📒 '+R.wk+'일차 · '+(cur&&cur.no?CIR[cur.no-1]+'번':'다시 도전'):(R&&R.hw)?'📒 숙제 '+R.hw+'회 · '+(cur&&cur.n?CIR[cur.n-1]+'번':'연습 문제'):'✏️ 연습문제';
   $('rec').textContent='🏆 정답 '+s.r+' : 오답 '+s.w;
 }
 
@@ -541,7 +541,7 @@ function solved(){
     R.cleared++; sfx.ok(); evolveFx();
     say(!helped?'정답! 🎉 '+(R.streak>=3?R.streak+'연속!':'멋져요'):'잘했어요! 👏','ok');
   }else{
-    if(cur.n&&cur.app===1&&!R.missed.includes(cur.n)) R.missed.push(cur.n);
+    { const qn=cur.wk?cur.no:cur.n; if(qn&&cur.app===1&&!R.missed.includes(qn)) R.missed.push(qn); }
     sfx.step(); say('잘했어요! 비슷한 문제가 한 번 더 나와요 😉','ok');
     qs.push(cur.wk?genWk(cur.type,Math.random):similar(cur));
   }
@@ -713,7 +713,7 @@ $('prob').addEventListener('pointerdown',e=>{
   if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
 });
 function wkStart(extra,list){
-  qs=list.map((p,i)=>({...p,wk:true,app:0,n:i+1,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}));
+  qs=list.map((p,i)=>({...p,wk:true,app:0,no:i+1,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}));
   R={...extra,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set()};
   closeOverlay(); phase='ask'; renderDragons(); setMood('idle'); nextQ();
 }
@@ -949,7 +949,7 @@ $('bPad').addEventListener('click',()=>{ padOn=!padOn; LS.set('mult.pad',padOn);
 /* boot */
 renderPad(); renderHead(); renderDragons(); setMood('idle'); sizePen(); applyPad(); showMenu();
 Guard.start({free:true,noLimit:true,onReset:renderHead});
-window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ};
+window.__mult={monsterSVG,readDigit,sig,startRound,get cur(){return cur;},get R(){return R;},get phase(){return phase;},get qs(){return qs;},genQ,WK,genWk};
 })();
 </script>
 </body>
