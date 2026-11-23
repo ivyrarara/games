@@ -544,7 +544,7 @@ function solved(){
   }else{
     { const qn=cur.wk?cur.no:cur.n; if(qn&&cur.app===1&&!R.missed.includes(qn)) R.missed.push(qn); }
     sfx.step(); say('잘했어요! 비슷한 문제가 한 번 더 나와요 😉','ok');
-    qs.push(cur.wk?genWk(cur.type,Math.random):similar(cur));
+    qs.push(cur.wk?wkNew(cur.type):similar(cur));
   }
   render();
   const id=R;
@@ -674,7 +674,7 @@ function wkEnter(v){
   if(cur.fails>=3){   /* 세 번째 실패: 이 문제는 실패 처리, 정답 보여주고 같은 유형 새 문제 추가 */
     phase='fb'; cur.blanks.forEach((b,j)=>{ cur.vals[j]=b; cur.res[j]='ok'; });
     { const qn=cur.no; if(qn&&!R.missed.includes(qn)) R.missed.push(qn); }
-    R.total++; qs.push(genWk(cur.type,Math.random)); renderHead();
+    R.total++; qs.push(wkNew(cur.type)); renderHead();
     say('아쉬워요! 정답은 이거예요. 비슷한 문제가 한 번 더 나와요 😉','hint'); render();
     const id=R; setTimeout(()=>{ if(R===id&&phase==='fb') nextQ(); },2600);
     return;
@@ -726,6 +726,7 @@ $('prob').addEventListener('pointerdown',e=>{
   const b=e.target.closest('[data-i]');
   if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
 });
+const wkNew=t=>{ const p=genWk(t,Math.random); return {...p,wk:true,app:0,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}; };
 function wkStart(extra,list){
   qs=list.map((p,i)=>({...p,wk:true,app:0,no:i+1,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}));
   R={...extra,cleared:0,first:0,streak:0,best:0,total:qs.length,missed:[],seen:new Set()};
