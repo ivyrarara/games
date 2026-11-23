@@ -177,7 +177,7 @@ button,a{font-family:inherit;color:inherit}
 #pentools #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:108px!important;margin-bottom:-2px;align-items:center;justify-content:center;gap:8px;background:#fff0a8!important;border:3px solid #f2a100!important;color:var(--ink);font-size:24px!important;font-weight:400;border-radius:14px;padding:0!important;box-sizing:border-box}
 #pentools .pt,#pentools #hintT,#mini button{border-radius:16px!important}#pad .hint{display:none}
 #right.nopad{width:84px}#right.nopad #pad{display:none}#right.nopad #mini{grid-template-columns:1fr!important;gap:8px}}
-.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea.xa .sent{margin-top:44px}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xa .bogi{position:relative;top:-16px}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 12px;margin:0 3px;transform:rotate(-2deg)}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea.xa .sent{margin-top:44px}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xa .bogi{position:relative;top:-16px}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
 #exArea .xhl{animation:xp .9s ease-in-out infinite;position:relative;z-index:1}
@@ -893,7 +893,7 @@ function exHTML(e,hl,vals){
   const S=H('s').trim();
   if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 '+e.n+'배입니다.</span></div></div>';
   if(e.type===2) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는</span>'+bx(1)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
-  if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 '+e.K+'의</span>'+bx(1)+'<span>배입니다.</span></div></div>';
+  if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 '+e.K+'의</span>'+bx(1)+'<span><span class="nb">배</span>입니다.</span></div></div>';
   const L='<div class="ln"></div>';
   let g;
   if(e.type===4){ const P=String((10*e.t+e.d)*e.m); g=em+cl(0,'a')+fx(e.d,'b')+fx('×')+em+fx(e.m,'m')+L+fx(P[0],'r0')+fx(P[1],'r1')+fx(P[2],'r2'); }
@@ -908,7 +908,7 @@ function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&D.ex.type===2)); a.classList.toggle('xa',!!((st.arrow&&D.ex.type>=2&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
+  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&(D.ex.type===2||D.ex.type===3))); a.classList.toggle('xa',!!((st.arrow&&D.ex.type>=2&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
   if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
