@@ -177,7 +177,7 @@ button,a{font-family:inherit;color:inherit}
 #pentools #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:108px!important;margin-bottom:-2px;align-items:center;justify-content:center;gap:8px;background:#fff0a8!important;border:3px solid #f2a100!important;color:var(--ink);font-size:24px!important;font-weight:400;border-radius:14px;padding:0!important;box-sizing:border-box}
 #pentools .pt,#pentools #hintT,#mini button{border-radius:16px!important}#pad .hint{display:none}
 #right.nopad{width:84px}#right.nopad #pad{display:none}#right.nopad #mini{grid-template-columns:1fr!important;gap:8px}}
-.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round;animation:xdraw .5s}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea.xa .sent{margin-top:40px}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round;animation:xdraw .5s}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea.xa .sent{margin-top:44px}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xa .bogi{position:relative;top:-16px}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
 #exArea .xhl{animation:xp .9s ease-in-out infinite;position:relative;z-index:1}
@@ -850,14 +850,14 @@ const EX={
    {hl:['b0'],vals:{0:4},cap:"맞는 수 <b>4</b>를 □에 쓰면 끝! 🎉",bub:"12는 4의 3배"},
    {hl:[],vals:{0:4},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  2:{ex:{type:2,n:2,opts:[3,6,7,10],ans:[6,3]},steps:[
-   {hl:['s'],arrow:2,cap:"<b>큰 수는 작은 수의 2배</b>예요<br>작은 수를 <b>2번 더하면</b> 큰 수!"},
+   {hl:['s'],arrow:'×2',cap:"<b>큰 수는 작은 수의 2배</b>예요<br>작은 수를 <b>2번 더하면</b> 큰 수!"},
    {hl:['c7'],cap:"7부터 해 봐요",bub:"7 + 7 = 14 ❌ <small>(보기에 없어요)</small>"},
    {hl:['c3','c6'],cap:"3은 어때요?",bub:"3 + 3 = 6 ⭕ <small>(보기에 6이 있어요!)</small>"},
    {hl:['b0'],vals:{0:6},cap:"<b>큰 수 6</b>을 앞 □에 써요"},
    {hl:['b1'],vals:{0:6,1:3},cap:"<b>작은 수 3</b>을 뒤 □에 써요 🎉",bub:"6은 3의 2배"},
    {hl:[],vals:{0:6,1:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  3:{ex:{type:3,K:12,opts:[2,4,5,26,48,70],ans:[48,4]},steps:[
-   {hl:['s'],cap:"<b>12를 몇 번 더한 수</b>를<br>보기에서 찾아요"},
+   {hl:['s'],arrow:'12 × 몇 배',cap:"<b>12를 몇 번 더한 수</b>를<br>보기에서 찾아요"},
    {hl:['c2'],cap:"2번 더하면?",bub:"12 × 2 = 24 ❌ <small>(보기에 없어요)</small>"},
    {hl:['c4','c48'],cap:"4번 더하면?",bub:"12 × 4 = 48 ⭕ <small>(보기에 있어요!)</small>"},
    {hl:['b0','b1'],vals:{0:48,1:4},cap:"<b>48</b>은 12의 <b>4</b>배! 🎉",bub:"48은 12의 4배"},
@@ -903,25 +903,27 @@ function exHTML(e,hl,vals){
 }
 Object.values(EX).forEach(d=>{ d.steps=d.steps.filter(x=>!/이제 네 문제/.test(x.cap)); });
 let exI=0,exT=null,exType=1;
+function exHead(cx,cy,x,y){ const a=Math.atan2(y-cy,x-cx),L=13,W=7,bx=x-L*Math.cos(a),by=y-L*Math.sin(a),px=-Math.sin(a)*W,py=Math.cos(a)*W; return '<polygon class="xhead" points="'+(x+2*Math.cos(a))+','+(y+2*Math.sin(a))+' '+(bx+px)+','+(by+py)+' '+(bx-px)+','+(by-py)+'"/>'; }
 function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  a.style.position='relative'; a.classList.toggle('xa',!!(st.arrow&&D.ex.type===2));
+  a.style.position='relative'; a.classList.toggle('xa',!!((st.arrow&&D.ex.type>=2&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
   if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
+    const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
     Object.entries(st.vals).forEach(([i,v])=>{ const ch=chs.find(c=>+c.textContent===+v),bx=bxs[i]; if(!ch||!bx) return;
-      ch.classList.add('xout'); const c=ch.getBoundingClientRect(),b=bx.getBoundingClientRect();
-      const x1=c.left+c.width/2-ar.left,y1=c.bottom-ar.top+4,x2=b.left+b.width/2-ar.left,y2=b.top-ar.top-6,dx=(x2>=x1?-1:1)*Math.min(14,Math.abs(x2-x1)*.3+8);
-      path+='<path d="M'+x1+' '+y1+' C '+(x1+dx)+' '+(y1+(y2-y1)*.3)+', '+(x2+dx)+' '+(y1+(y2-y1)*.7)+', '+x2+' '+y2+'" marker-end="url(#xah)"/>'; });
-    a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerWidth="6" markerHeight="6" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#d93025"/></marker></defs>'+path+'</svg>');
+      ch.classList.add('xout'); if(pv[i]===v) return; const c=ch.getBoundingClientRect(),b=bx.getBoundingClientRect();
+      const x1=c.left+c.width/2-ar.left,y1=c.bottom-ar.top+4,x2=b.left+b.width/2-ar.left,y2=b.top-ar.top-8,dx=(x2>=x1?-1:1)*Math.min(14,Math.abs(x2-x1)*.3+8);
+      { const g=Math.max(10,(y2-y1)*.8); path+='<path d="M'+x1+' '+y1+' C '+x1+' '+(y1+g)+', '+x2+' '+(y2-g)+', '+x2+' '+y2+'"/>'+exHead(x2,y2-g,x2,y2); } });
+    a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#d93025"/></marker></defs>'+path+'</svg>');
   }
-  if(st.arrow&&D.ex.type===2){   /* 작은 수 → 큰 수 : ×n 화살표 */
+  if(st.arrow&&(D.ex.type===2||D.ex.type===3)){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx');
     if(bxs.length>1){ const sm=bxs[1].getBoundingClientRect(),bg=bxs[0].getBoundingClientRect();
-      const x1=sm.left+sm.width/2-ar.left,y1=sm.top-ar.top-3,x2=bg.left+bg.width/2-ar.left,y2=bg.top-ar.top-3,h=Math.max(16,Math.min(26,Math.abs(x1-x2)*.25));
-      const mx=(x1+x2)/2,my=Math.min(y1,y2)-h*.55;
-      a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah2" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0 0L6 3L0 6z" fill="#d93025"/></marker></defs><path d="M'+x1+' '+y1+' Q '+mx+' '+(my-h*.5)+' '+x2+' '+y2+'" marker-end="url(#xah2)"/><text x="'+mx+'" y="'+((y1+my-h*.5)/2-5)+'" text-anchor="middle" class="xtimes">×'+st.arrow+'</text></svg>'); }
+      const x1=sm.left+sm.width/2-ar.left,y1=sm.top-ar.top-3,x2=bg.left+bg.width/2-ar.left,y2=bg.top-ar.top-9,h=Math.max(16,Math.min(26,Math.abs(x1-x2)*.25));
+      const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
+      a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><path d="M'+x1+' '+y1+' Q '+mx+' '+cy+' '+x2+' '+y2+'"/>'+exHead(mx,cy,x2,y2)+'<text x="'+mx+'" y="'+((y1+cy)/2-6)+'" text-anchor="middle" class="xtimes">'+st.arrow+'</text></svg>'); }
   }
   const c=$('exCap'); c.innerHTML='<div>'+st.cap+'</div>'+(st.bub?'<div class="xb">'+st.bub+'</div>':''); c.style.animation='none'; void c.offsetWidth; c.style.animation='';
   const b=$('exBub'); b.innerHTML='<div>'+(st.bub||'')+'</div>'; b.style.animation='none'; void b.offsetWidth; b.style.animation='';
