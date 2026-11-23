@@ -166,7 +166,7 @@ button,a{font-family:inherit;color:inherit}
 .wk #pentools{top:auto;bottom:8px;flex-wrap:nowrap}.wk #pentools .pt{width:78px!important;height:54px!important;min-height:0!important;padding:0!important;font-size:22px!important;border-radius:14px}.wk #pentools .pt span{font-size:13px!important}.wk #szrow{display:none}
 #rec{display:none!important}
 /* 힌트: 같은 화면 위의 움직이는 풀이 예시 */
-.xcap{min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
+.xcap{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:21px;line-height:1.45;word-break:keep-all;animation:xfade .45s}
 .xcap b{color:#d9480f}
 .xbub{display:none}.xcap .xb{font-size:23px;font-weight:700;color:#1d4ed8}.xbub0{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#1d4ed8;text-align:center;animation:xfade .45s}
 #hintT{display:none}
@@ -177,7 +177,7 @@ button,a{font-family:inherit;color:inherit}
 #pentools #hintT{display:flex;order:-1;flex:0 0 100%;width:100%!important;height:108px!important;margin-bottom:-2px;align-items:center;justify-content:center;gap:8px;background:#fff0a8!important;border:3px solid #f2a100!important;color:var(--ink);font-size:24px!important;font-weight:400;border-radius:14px;padding:0!important;box-sizing:border-box}
 #pentools .pt,#pentools #hintT,#mini button{border-radius:16px!important}#pad .hint{display:none}
 #right.nopad{width:84px}#right.nopad #pad{display:none}#right.nopad #mini{grid-template-columns:1fr!important;gap:8px}}
-.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea.xa .sent{margin-top:44px}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xa .bogi{position:relative;top:-16px}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
+.bx.xph{width:auto;min-width:74px;padding:0 8px;font-size:17px!important;font-weight:700;color:#b45309}.chp.xout{opacity:.38;border-style:dashed}.xarr marker{overflow:visible}.xarr marker path{fill:#d93025;stroke:none;animation:none}.xarr{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:3;opacity:1}.xarr path:not([d^='M0']){fill:none;stroke:#d93025;stroke-width:4;stroke-linecap:round}@keyframes xdraw{from{opacity:0}to{opacity:1}}#overlay.on .card{touch-action:pan-y}.xarr .xtimes{fill:#d93025;font-size:22px;font-family:inherit;stroke:#fffdf5;stroke-width:5px;paint-order:stroke}#exArea .wkq{justify-content:flex-start!important}#exArea.xa .bogi{margin-bottom:46px}#exArea.xa .sent{margin-top:0;min-height:96px;align-content:flex-start}.xarr .xhead{fill:#d93025;stroke:none}#exArea.xc .nb{display:inline-block;border:3px solid #d93025;border-radius:50%;padding:0 8px;margin:0 1px;transform:rotate(-2deg)}.xx{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ead3;font-size:20px;color:#6b5b3a;cursor:pointer;z-index:2}.xbtns .go:disabled{opacity:.35}.xtitle{font-size:15px;opacity:.7;text-align:center;margin-bottom:2px}
 #exArea{pointer-events:none;display:flex;justify-content:center;padding:6px 0}
 #exArea .wkq{padding-bottom:0;gap:8px}
 #exArea .xhl{position:relative;z-index:1}#exArea .xhl.bx,#exArea .xhl.cell:not(.fix){animation:xp .9s ease-in-out infinite}
@@ -572,7 +572,7 @@ function solved(){
   }else{
     { const qn=cur.wk?cur.no:cur.n; if(qn&&cur.app===1&&!R.missed.includes(qn)) R.missed.push(qn); }
     sfx.step(); say('잘했어요! 비슷한 문제가 한 번 더 나와요 😉','ok');
-    qs.push(cur.wk?wkNew(cur.type):similar(cur));
+    if(cur.wk){ let at=qs.findIndex(x=>x.type>cur.type); if(at<0) at=qs.length; qs.splice(at,0,wkNew(cur.type)); } else qs.push(similar(cur));   /* 숙제: 같은 유형 뒤에 끼워 넣어 유형이 되돌아오지 않게 */
   }
   render();
   const id=R;
@@ -857,7 +857,7 @@ const EX={
    {hl:['b1'],vals:{0:6,1:3},cap:"<b>작은 수 3</b>을 뒤 □에 써요 🎉",bub:"6은 3의 2배"},
    {hl:[],vals:{0:6,1:3},cap:"이제 네 문제도 이렇게 풀어 봐요! 💪"}]},
  3:{ex:{type:3,K:12,opts:[2,4,5,26,48,70],ans:[48,4]},steps:[
-   {hl:['s'],arrow:'12 × 몇 배',cap:"<b>12 × 몇 = 큰 수</b>를<br>보기에서 찾아요"},
+   {hl:['s'],arrow:'?배',cap:"<b>12 × 몇 = 큰 수</b>를<br>보기에서 찾아요"},
    {hl:['c2'],cap:"2배는?",bub:"12 × 2 = 24 ❌ <small>(보기에 없어요)</small>"},
    {hl:['c4','c48'],cap:"4배는?",bub:"12 × 4 = 48 ⭕ <small>(보기에 있어요!)</small>"},
    {hl:['b0','b1'],vals:{0:48,1:4},cap:"<b>48</b>은 12의 <b>4</b>배! 🎉",bub:"48은 12의 4배"},
@@ -893,7 +893,7 @@ function exHTML(e,hl,vals){
   const S=H('s').trim();
   if(e.type===1) return '<div class="wkq">'+chips()+'<div class="sent '+S+'"><span>'+e.A+josa(e.A)+'</span>'+bx(0)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
   if(e.type===2) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는</span>'+bx(1)+'<span>의 <span class="nb">'+e.n+'배</span>입니다.</span></div></div>';
-  if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 '+e.K+'의</span>'+bx(1)+'<span><span class="nb">배</span>입니다.</span></div></div>';
+  if(e.type===3) return '<div class="wkq">'+chips()+'<div class="sent '+S+'">'+bx(0)+'<span>은/는 <span class="nb">'+e.K+'</span>의</span>'+bx(1)+'<span>배입니다.</span></div></div>';
   const L='<div class="ln"></div>';
   let g;
   if(e.type===4){ const P=String((10*e.t+e.d)*e.m); g=em+cl(0,'a')+fx(e.d,'b')+fx('×')+em+fx(e.m,'m')+L+fx(P[0],'r0')+fx(P[1],'r1')+fx(P[2],'r2'); }
@@ -908,7 +908,7 @@ function exStep(i){
   const D=EX[exType],st=D.steps[Math.max(0,Math.min(D.steps.length-1,i))]; exI=Math.max(0,Math.min(D.steps.length-1,i));
   const a=$('exArea'); if(!a) return;
   a.innerHTML=exHTML(D.ex,st.hl||[],st.vals||{});
-  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',!!((st.arrow&&D.ex.type<=3)||(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length)));
+  a.style.position='relative'; a.classList.toggle('xc',!!(st.arrow&&D.ex.type<=3)); a.classList.toggle('xa',D.ex.type<=3);
   if(D.ex.type<=3&&st.vals&&Object.keys(st.vals).length){   /* 보기에서 고른 수를 빈칸으로 옮기는 화살표, 고른 보기는 연하게 */
     const ar=a.getBoundingClientRect(),bxs=a.querySelectorAll('.bx'),chs=[...a.querySelectorAll('.chp')]; let path='';
     const pv=(D.steps[exI-1]&&D.steps[exI-1].vals)||{};
@@ -919,7 +919,7 @@ function exStep(i){
     a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><defs><marker id="xah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#d93025"/></marker></defs>'+path+'</svg>');
   }
   if(st.arrow&&D.ex.type<=3){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
-    const ar=a.getBoundingClientRect(),bxs=[...a.querySelectorAll('.bx')]; if(D.ex.type===1){ bxs.unshift(bxs[0]); bxs[0]=a.querySelector('.sent>span'); }
+    const ar=a.getBoundingClientRect(),bxs=[...a.querySelectorAll('.bx')]; if(D.ex.type===1){ bxs.unshift(bxs[0]); bxs[0]=a.querySelector('.sent>span'); } if(D.ex.type===3){ bxs[1]=a.querySelector('.nb'); }
     if(bxs.length>1){ const sm=bxs[1].getBoundingClientRect(),bg=bxs[0].getBoundingClientRect();
       const x1=sm.left+sm.width/2-ar.left,y1=sm.top-ar.top-9,x2=bg.left+bg.width/2-ar.left,y2=bg.top-ar.top-12,h=Math.max(16,Math.min(26,Math.abs(x1-x2)*.25));
       const mx=(x1+x2)/2,cy=Math.min(y1,y2)-h*1.05;
