@@ -166,7 +166,6 @@ button,a{font-family:inherit;color:inherit}
 .wk #pentools{top:auto;bottom:8px;flex-wrap:nowrap}.wk #pentools .pt{width:78px!important;height:54px!important;min-height:0!important;padding:0!important;font-size:22px!important;border-radius:14px}.wk #pentools .pt span{font-size:13px!important}.wk #szrow{display:none}
 #rec{display:none!important}
 .wk #ans{display:none}.wk #pen{pointer-events:none}.wk #probwrap{touch-action:none}
-.wkc #pad button:not(.hint){display:none}.wkc #pad{grid-template-columns:1fr;flex:none;height:96px}.wkc #right{height:auto}
 .wkq{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}
 .wkq #msg{min-height:44px;font-size:22px;text-align:center}.wkq #msg.ok{font-size:30px}
 .bogi{flex-wrap:nowrap}.sent{flex-wrap:nowrap;white-space:nowrap}
@@ -183,7 +182,7 @@ button,a{font-family:inherit;color:inherit}
 .bx.flash{animation:shake .4s}
 .cell[data-i]{cursor:pointer}
 @media (orientation:portrait){.sent{font-size:25px;gap:4px}.bx{width:62px;height:50px;font-size:28px}.chp{min-width:50px;height:46px;font-size:24px;padding:0 6px}.wkq .ins{font-size:15px}.wkq{gap:8px}
- .wk #scene{height:110px}.wk #mon{width:90px;height:90px}.wk #right{height:290px}.wk #pad button{min-height:40px;font-size:28px}.wk #pad{gap:6px}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}.wkc #right{height:auto}.wkc #pad{height:80px}}
+ .wk #scene{height:110px}.wk #mon{width:90px;height:90px}.wk #right{height:290px}.wk #pad button{min-height:40px;font-size:28px}.wk #pad{gap:6px}.wk #pentools{top:6px;bottom:auto}.wk #pentools .pt{width:64px!important;height:42px!important;font-size:18px!important}.wk #pentools .pt span{display:none}.wk .vf{--cs:calc(var(--vh)*7)!important}.wk .vf .cc{height:calc(var(--cs)*.6)}}
 </style>
 </head>
 <body>
@@ -507,7 +506,7 @@ function nextQ(){
   if(!qs.length){ endRound(); return; }
   cur=qs.shift(); cur.app++; cur.cells=cur.wk?null:buildCells(cur); cur.vals={}; cur.res={}; cur.sel=null; cur.wrong=0; cur.hinted=false; cur.flash=false; cur.wa={};
   saveHw();
-  phase='ask'; clearPen(); document.body.classList.toggle('wk',!!cur.wk); document.body.classList.toggle('wkc',!!(cur.wk&&cur.type<=3)); applyPad(); say(cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪':'',''); render();
+  phase='ask'; clearPen(); document.body.classList.toggle('wk',!!cur.wk); applyPad(); say(cur.app>=2?'다시 도전! 아까와 비슷한 문제예요 💪':'',''); render();
 }
 function hint(){
   if(phase!=='ask'||!cur) return;
@@ -668,7 +667,7 @@ function selIdx(){
 }
 function wkEnter(v){
   const i=selIdx(); if(i===null) return;
-  cur.vals[i]=v; delete cur.res[i]; cur.sel=null;
+  cur.vals[i]=v; delete cur.res[i]; cur.sel=null; cur.buf='';
   if(cur.blanks.some((b,j)=>cur.vals[j]===undefined)){ say('',''); render(); return; }   /* 빈칸을 다 채울 때까지는 정오 표시 없음 */
   if(cur.blanks.every((b,j)=>cur.vals[j]===b)){ cur.blanks.forEach((b,j)=>cur.res[j]='ok'); solved(); return; }
   cur.fails=(cur.fails||0)+1; cur.wrong++; R.streak=0; sfx.no(); setMood('laugh',600);
@@ -684,6 +683,17 @@ function wkEnter(v){
   cur.blanks.forEach((b,j)=>cur.res[j]='bad'); cur.flash=true; render();
   const q=cur; setTimeout(()=>{ if(cur===q){ q.flash=false; q.vals={}; q.res={}; render(); } },700);
 }
+function wkDigit(d){   /* 보기 문제: 숫자판으로 직접 써넣기. 보기에 있는 수가 되면 입력 확정 */
+  const i=selIdx(); if(i===null) return;
+  clearTimeout(cur.bt); const opts=cur.opts.map(String);
+  let b=(cur.buf||'')+d;
+  if(!opts.some(o=>o.startsWith(b))) b=opts.some(o=>o.startsWith(d))?d:'';
+  cur.buf=b; if(!b){ render(); return; }
+  const exact=opts.includes(b),longer=opts.some(o=>o!==b&&o.startsWith(b));
+  if(exact&&!longer){ cur.buf=''; wkEnter(+b); return; }
+  if(exact){ const q=cur; q.bt=setTimeout(()=>{ if(cur===q&&q.buf===b){ q.buf=''; wkEnter(+b); } },900); }
+  render();
+}
 function wkHint(){
   const c=cur;
   if(c.type===1) return '보기의 수에 '+c.n+'을 곱해서 '+c.A+'이 되는 수를 찾아요. (예: '+c.opts[0]+' × '+c.n+' = '+c.opts[0]*c.n+')';
@@ -696,7 +706,8 @@ function wkHint(){
 function renderWk(){
   const c=cur,act=selIdx();
   const st=i=>{ const v=c.vals[i],r=c.res[i]; return (act===i?' act':'')+(v!==undefined?' has':'')+(r==='ok'?' good':'')+(r==='bad'?' bad'+(c.flash?' flash':''):''); };
-  const bx=i=>'<button class="bx'+st(i)+'" data-i="'+i+'">'+(c.vals[i]!==undefined?c.vals[i]:'')+'</button>';
+  const sv=i=>c.vals[i]!==undefined?c.vals[i]:(act===i&&c.buf?c.buf:'');
+  const bx=i=>'<button class="bx'+st(i)+'" data-i="'+i+'">'+sv(i)+'</button>';
   const cl=i=>'<div class="cell'+st(i)+'" data-i="'+i+'">'+(c.vals[i]!==undefined?c.vals[i]:'')+'</div>';
   const fx=x=>'<div class="cell fix">'+x+'</div>',em='<div class="cc"></div>';
   const used=new Set(Object.values(c.vals));
@@ -725,7 +736,7 @@ $('prob').addEventListener('pointerdown',e=>{
   const ch=e.target.closest('[data-c]');
   if(ch){ e.preventDefault(); sfx.key(); wkEnter(+ch.dataset.c); return; }
   const b=e.target.closest('[data-i]');
-  if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
+  if(b){ e.preventDefault(); const i=+b.dataset.i; if(cur.res[i]==='ok') return; cur.sel=i; cur.buf=''; delete cur.vals[i]; delete cur.res[i]; say('',''); render(); }
 });
 const wkNew=t=>{ const p=genWk(t,Math.random); return {...p,wk:true,app:0,blanks:p.blanks.slice(),opts:p.opts&&p.opts.slice()}; };
 function wkStart(extra,list){
@@ -787,7 +798,7 @@ $('overlay').addEventListener('click',e=>{
 function press(k){
   if(phase!=='ask'||overlayMode) return;
   if(k==='💡'){ hint(); return; }
-  if(/^\d$/.test(k)){ if(cur&&cur.wk){ if(cur.type>=4){ sfx.key(); wkEnter(+k); } return; } sfx.key(); resetAns(); enter(+k); }
+  if(/^\d$/.test(k)){ if(cur&&cur.wk){ sfx.key(); if(cur.type>=4) wkEnter(+k); else wkDigit(k); return; } sfx.key(); resetAns(); enter(+k); }
 }
 $('pad').addEventListener('pointerdown',e=>{ unlock(); const b=e.target.closest('button'); if(b){ e.preventDefault(); press(b.dataset.k); } });
 document.addEventListener('keydown',e=>{ if(/^[0-9]$/.test(e.key)) press(e.key); });
