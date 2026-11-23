@@ -641,13 +641,13 @@ const WK1=[
  {type:5,a:25,m:3,blanks:[3]},
  {type:6,t:1,d:7,m:9,blanks:[1,5]}
 ];
-/* 하루 18문제 = 6유형 × 3문제 (유형별로 묶어서). 1일차의 첫 문제는 교재 문제 그대로 */
+/* 하루 12문제 = 6유형 × 2문제 (유형별로 묶어서). 1일차의 첫 문제는 교재 문제 그대로 */
 {
   const seen=new Set();
   for(let day=1;day<=5;day++){
     const rnd=mk(day*9973+17),out=[];
     for(let type=1;type<=6;type++){
-      for(let j=0;j<3;j++){
+      for(let j=0;j<2;j++){
         let p;
         if(day===1&&j===0) p=WK1[type-1];
         else for(let g=0;g<300;g++){ p=genWk(type,rnd); if(!seen.has(JSON.stringify(p))) break; }
