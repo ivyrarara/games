@@ -565,7 +565,7 @@ function solved(){
   phase='fb'; bump('r');
   let clear=false;
   if(!helped){ clear=true; if(cur.app===1) R.first++; R.streak++; R.best=Math.max(R.best,R.streak); }
-  else if(cur.app>=2) clear=true;
+  else if(cur.app>=2||cur.wk) clear=true;   /* 숙제: 틀리거나 힌트를 봐도 맞히면 완료 (추가 문제는 세 번 실패할 때만) */
   if(clear){
     R.cleared++; sfx.ok(); evolveFx();
     say(!helped?'정답! 🎉 '+(R.streak>=3?R.streak+'연속!':'멋져요'):'잘했어요! 👏','ok');
