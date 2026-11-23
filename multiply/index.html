@@ -923,12 +923,21 @@ function exStep(i){
     if(ce){ const r=ce.getBoundingClientRect(); a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%"><text x="'+(r.left+r.width*.5-ar.left)+'" y="'+(r.top-ar.top-5)+'" text-anchor="middle" class="xcarry">'+st.carry+'</text></svg>'); }
   }
   if(D.ex.type>=4){   /* 곱할 수는 빨간 타원, 결과 수는 파란 타원으로 묶기 */
-    const ar=a.getBoundingClientRect(),els=[...a.querySelectorAll('[data-h="1"]')]; let g='';
-    const groups={};
-    els.forEach(e=>{ const t=e.dataset.t,res=t[0]==='r',r=e.getBoundingClientRect(); const key=(res?'r':'o')+(res?Math.round(r.top):Math.round(r.left)); (groups[key]=groups[key]||{res,rs:[]}).rs.push(r); });
+    const ar=a.getBoundingClientRect(); let g='';
+    let eh=[]; for(let j=exI;j>=0;j--){ if((D.steps[j].hl||[]).includes('m')){ eh=D.steps[j].hl; break; } }   /* 힌트가 끝날 때까지 곱할 수 타원 유지 */
+    const els=[...a.querySelectorAll('[data-t]')].filter(e=>eh.includes(e.dataset.t));
+    const groups={},ops=[];
+    els.forEach(e=>{ const t=e.dataset.t,res=t[0]==='r',r=e.getBoundingClientRect(); if(res){ const key='r'+Math.round(r.top); (groups[key]=groups[key]||{res,rs:[]}).rs.push(r); } else ops.push(r); });
     Object.values(groups).forEach(G=>{ const L=Math.min(...G.rs.map(r=>r.left)),T=Math.min(...G.rs.map(r=>r.top)),Rr=Math.max(...G.rs.map(r=>r.right)),B=Math.max(...G.rs.map(r=>r.bottom));
       const cx=(L+Rr)/2-ar.left,cy=(T+B)/2-ar.top,rx=(Rr-L)/2*1.08+5,ry=(B-T)/2*1.1+4;
-      g+='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" class="xel'+(G.res?' xr':'')+'"/>'; });
+      g+='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" class="xel xr"/>'; });
+    if(ops.length){   /* 곱할 수는 하나의 (기울어질 수 있는) 빨간 타원으로 */
+      const cs=ops.map(r=>[(r.left+r.right)/2-ar.left,(r.top+r.bottom)/2-ar.top]); let best=[cs[0],cs[0],0];
+      cs.forEach(p1=>cs.forEach(p2=>{ const d=Math.hypot(p1[0]-p2[0],p1[1]-p2[1]); if(d>best[2]) best=[p1,p2,d]; }));
+      const w=ops[0].width,h=ops[0].height,[p1,p2,d]=best,cx=(p1[0]+p2[0])/2,cy=(p1[1]+p2[1])/2,ang=d?Math.atan2(p2[1]-p1[1],p2[0]-p1[0])*180/Math.PI:0;
+      const rx=d?d/2+w*.62:w*.6,ry=h*.62;
+      g+='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" class="xel" transform="rotate('+ang+' '+cx+' '+cy+')"/>';
+    }
     if(g) a.insertAdjacentHTML('beforeend','<svg class="xarr" width="100%" height="100%">'+g+'</svg>');
   }
   if(st.arrow&&D.ex.type<=3){   /* 두 번째 빈칸 → 첫 빈칸 화살표 + 라벨 */
